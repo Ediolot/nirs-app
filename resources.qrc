@@ -8,5 +8,6 @@
         <file>webfiles/bootflat/js/jquery.fs.stepper.min.js</file>
         <file>webfiles/bootstrap/css/bootstrap.min.css</file>
         <file>webfiles/bootstrap/js/bootstrap.min.js</file>
+        <file>webfiles/jquery-3.3.1.min.js</file>
     </qresource>
 </RCC>
