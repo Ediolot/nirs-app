@@ -27,10 +27,10 @@ private:
     template<class readAs, class convertTo>
     Frame<convertTo> readNextFrame(std::ifstream& file, uint32_t width, uint32_t height, bool has_timestamp = false) {
         std::vector<readAs> vdata(width * height);
-        TimestampData timestamp = 0; // TODO Frame::TimestampData
+        Frame<readAs>::TimestampData timestamp = 0; // TODO Frame::TimestampData
 
         if (has_timestamp) {
-            file.read(reinterpret_cast<char*>(&timestamp), sizeof(TimestampData));
+            file.read(reinterpret_cast<char*>(&timestamp), sizeof(Frame<readAs>::TimestampData));
         }
         file.read(reinterpret_cast<char*>(vdata.data()), vdata.size() * sizeof(readAs));
 

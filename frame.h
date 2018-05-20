@@ -5,84 +5,265 @@
 #include <Eigen/Dense>
 #include <iostream>
 #include <vector>
+#include <utility>
 
-// TODO check https://stackoverflow.com/questions/115703/storing-c-template-function-definitions-in-a-cpp-file
-
-using TimestampData = uint64_t; // TODO poner dentro ?
-
+/*!
+ * \brief The frame class is a template class that manipulates frames.
+ *
+ * The Frame class can reads the data from a vector and saves it internally
+ * to an Eigen matrix. Frame may be used to do simple operations between them
+ * which includes casting from one frame type to another.
+ */
 template<class T>
 class Frame
 {
-using DataMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
-using Mapper     = Eigen::Map<const DataMatrix>;
+public:
+    using TimestampData = uint64_t;                                         /*! Type of value for the timestamp.                  */
+    using DataMatrix    = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>; /*! Type of value for the raw data Eigen matrix.      */
+    using Mapper        = Eigen::Map<const DataMatrix>;                     /*! Mapper type to build Eigen matrices from vectors. */
 
 private:
-    TimestampData timestamp; // ms
-    DataMatrix data;
+    TimestampData timestamp; /*! Timestamp in milliseconds (Since 01/01/1970). */ // TODO since 1997 ?
+    DataMatrix data;         /*! Raw frame data. Saved in an Eigen matrix.     */
 
 public:
-    /*!
-     * \brief Build an empty frame
-     */
-    Frame(): timestamp(0), data()
-    {} // TODO
 
     /*!
-     * \brief Frame
-     * \param vdata
-     * \param width
-     * \param height
-     * \param timestamp
+     * \brief Construct an empty frame with timestamp 0.
      */
-    Frame(const std::vector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0): // TODO move vector data, no copy (?)
-        timestamp(timestamp),
-        data(Mapper(vdata.data(), height, width))
-    {}
+    Frame();
+
+    /*!
+     * \brief Constructs a frame from an array of data. Subsequent in the input array form columns.
+     * \param vdata Vector containing the frame raw data.
+     * \param width Frame width (number of columns).
+     * \param height Frame height (number of rows).
+     * \param timestamp Timestamp in milliseconds.
+     */
+    Frame(const std::vector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0);
+
+    /*!
+     * \brief Construct a copy of another frame.
+     */
+    Frame(const Frame& other);
+
+    /*!
+     * \brief Construct a copy from another frame of another type. The values are transformed using
+     * an static cast.
+     */
+    template<class U>
+    Frame(const Frame<U>& other);
+
+    /*!
+     * \brief Construct a frame from an rvalue.
+     */
+    Frame(Frame&& other);
+
+    /*!
+     * \brief Copy the timestamp and frame data from another Frame.
+     * \return *this
+     */
+    Frame& operator=(const Frame& other);
+
+    /*!
+     * \brief Copy the timestamp and frame data from another frame of another type. The values are
+     * transformed using an static cast.
+     * \return A reference to this object.
+     */
+    template<class U>
+    Frame& operator=(const Frame<U>& other);
+
+    /*!
+     * \brief Set the timestamp and frame data from an rvalue.
+     * \return A reference to this object.
+     */
+    Frame& operator=(Frame&& other);
+
 
     template<class U>
-    Frame(const Frame<U>& other):
-        timestamp(other.getTimestamp()),
-        data(other.getData().template cast<T>())
-    {}
-
-    template<class U>
-    Frame<T>& operator=(const Frame<U>& other)
-    {
-        timestamp = other.getTimestamp();
-        data = other.getData().template cast<T>();
-        return *this;
-    }
-
-    template<class U>
-    Frame<U> cast() {
-        return Frame<U>(*this);
-    }
+    /*!
+     * \brief Create a copy of this frame whose values are transformed to an specific
+     * frame type using static cast.
+     * \return The new frame.
+     */
+    Frame<U> cast();
 
     /*!
-     * Returns bits per pixel used by the frame.
+     * \return Bits per pixel used by the frame.
      */
-    uint32_t getBPP() const {
-        return sizeof(T);
-    }
+    uint32_t getBPP() const;
 
     /*!
-     * Returns matrix data.
+     * \return Frame raw data in the form of an Eigen matrix.
      */
-    const DataMatrix& getData() const {
-        return data;
-    }
+    const DataMatrix& getData() const;
 
-    TimestampData getTimestamp() const {
-        return timestamp;
-    }
+    /*!
+     * \return The timestamp since 01/01/1997 in milliseconds.
+     */
+    TimestampData getTimestamp() const;
 
-    uint32_t getWidth() const {
-        return data.cols();
-    }
+    /*!
+     * \return Frame width (number of columns).
+     */
+    uint32_t getWidth() const;
 
-    uint32_t getHeight() const {
-        return data.rows();
-    }
+    /*!
+     * \return Frame height (number of rows).
+     */
+    uint32_t getHeight() const;
+
+    /*!
+     * \return Minimum value in the frame data.
+     */
+    T getMin() const;
+
+    /*!
+     * \return Maximum value in the frame data.
+     */
+    T getMax() const;
+
+    /*!
+     * \brief Adds this frame with another.
+     * \return New result frame.
+     */
+    Frame operator+(const Frame& other) const;
+
+    /*!
+     * \brief Subtracts another frame to this frame.
+     * \return New result frame.
+     */
+    Frame operator-(const Frame& other) const;
+
+    /*!
+     * \brief Multiply this frame with another.
+     * \return New result frame.
+     */
+    Frame operator*(const Frame& other) const;
+
 };
+
+/*==================================== TEMPLATE FUNCTIONS ====================================*/
+template<class T>
+Frame<T>::Frame()
+    : timestamp(0)
+    , data()
+{}
+
+template<class T>
+Frame<T>::Frame(const std::vector<T>& vdata, size_t width, size_t height, TimestampData timestamp)
+    : timestamp(timestamp)
+    , data(Mapper(vdata.data(), height, width))
+{}
+
+template<class T>
+Frame<T>::Frame(const Frame& other)
+    : timestamp(other.timestamp)
+    , data(other.data)
+{}
+
+template<class T>
+template<class U>
+Frame<T>::Frame(const Frame<U>& other)
+    : timestamp(other.getTimestamp())
+    , data(other.getData().template cast<T>())
+{}
+
+template<class T>
+Frame<T>::Frame(Frame&& other)
+    : timestamp(std::move(other.timestamp))
+    , data(std::move(other.data))
+{}
+
+template<class T>
+Frame<T>& Frame<T>::operator=(const Frame& other)
+{
+    timestamp = other.timestamp;
+    data = other.data; // Check copy constructor
+    return *this;
+}
+
+template<class T>
+template<class U>
+Frame<T>& Frame<T>::operator=(const Frame<U>& other)
+{
+    timestamp = other.getTimestamp();
+    data = other.getData().template cast<T>();
+    return *this;
+}
+
+template<class T>
+Frame<T>& Frame<T>::operator=(Frame&& other)
+{
+    timestamp = std::move(other.timestamp);
+    data = std::move(other.data);
+    return *this;
+}
+
+template<class T>
+template<class U>
+Frame<U> Frame<T>::cast() {
+    return Frame<U>(*this);
+}
+
+template<class T>
+uint32_t Frame<T>::getBPP() const {
+    return sizeof(T);
+}
+
+template<class T>
+const typename Frame<T>::DataMatrix& Frame<T>::getData() const {
+    return data;
+}
+
+template<class T>
+typename Frame<T>::TimestampData Frame<T>::getTimestamp() const {
+    return timestamp;
+}
+
+template<class T>
+uint32_t Frame<T>::getWidth() const {
+    return static_cast<uint32_t>(data.cols());
+}
+
+template<class T>
+uint32_t Frame<T>::getHeight() const {
+    return static_cast<uint32_t>(data.rows());
+}
+
+template<class T>
+Frame<T> Frame<T>::operator+(const Frame& other) const {
+    Frame<T> result;
+    result.timestamp = timestamp;
+    result.data = data + other.data;
+    return result;
+}
+
+template<class T>
+Frame<T> Frame<T>::operator-(const Frame& other) const {
+    Frame<T> result;
+    result.timestamp = timestamp;
+    result.data = data - other.data;
+    return result;
+}
+
+template<class T>
+Frame<T> Frame<T>::operator*(const Frame& other) const {
+    Frame<T> result;
+    result.timestamp = timestamp;
+    result.data = data.cwiseProduct(other.data);
+    return result;
+}
+
+template<class T>
+T Frame<T>::getMin() const {
+    return data.minCoeff();
+}
+
+template<class T>
+T Frame<T>::getMax() const {
+    return data.maxCoeff();
+}
+
 
 #endif // FRAME_H

@@ -38,7 +38,7 @@ SOURCES += \
     mainwindow.cpp \
     webinterface.cpp
 
-HEADERS += \
+HEADERS +=\
         mainwindow.h \
     frame.h \
     experiment.h \
