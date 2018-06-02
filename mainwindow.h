@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "webinterface.h"
+#include "webengine.h"
 #include <QDebug>
 
 namespace Ui {
@@ -19,7 +19,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    WebInterface *webInterface;
+    WebEngine *webInterface;
 };
 
 #endif // MAINWINDOW_H

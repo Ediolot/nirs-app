@@ -7,6 +7,10 @@
 #include "frame.h"
 #include "filenotfoundexception.h"
 
+// TODO usar QFile
+// TODO usar QString en las excepciones
+// TODO file.read devuelve un código de error que hay que leer
+
 class Experiment : public QObject
 {
     Q_OBJECT // For QDebug

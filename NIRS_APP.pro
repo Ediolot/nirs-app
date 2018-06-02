@@ -36,6 +36,7 @@ SOURCES += \
     frame.cpp \
     main.cpp \
     mainwindow.cpp \
+    webengine.cpp \
     webinterface.cpp
 
 HEADERS +=\
@@ -47,6 +48,7 @@ HEADERS +=\
     filenotfoundexception.h \
     frame.h \
     mainwindow.h \
+    webengine.h \
     webinterface.h
 
 FORMS += \

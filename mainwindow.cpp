@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , webInterface(new WebInterface(this))
+    , webInterface(new WebEngine(this))
 {
     ui->setupUi(this);
     ui->gridLayout->addWidget(webInterface);

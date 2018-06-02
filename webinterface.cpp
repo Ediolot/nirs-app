@@ -1,7 +1,17 @@
 #include "webinterface.h"
 
-WebInterface::WebInterface(QWidget *parent)
-    : QWebEngineView(parent)
+int WebInterface::getInts()
 {
-    setUrl(QUrl(HTML_RESOURCE));
+    return QDateTime::currentMSecsSinceEpoch() - QDateTime(QDate::currentDate()).toMSecsSinceEpoch();;
+}
+
+void WebInterface::sayHello()
+{
+    qDebug() << "Hello";
+}
+
+WebInterface::WebInterface(QObject *parent)
+    : QObject(parent)
+{
+
 }

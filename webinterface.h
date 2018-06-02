@@ -1,16 +1,30 @@
 #ifndef WEBINTERFACE_H
 #define WEBINTERFACE_H
 
-#include <QWebEngineView>
-#include <QString>
+#include <QDebug>
+#include <QObject>
+#include <QDateTime>
 
-class WebInterface : public QWebEngineView
+class WebInterface : public QObject
 {
     Q_OBJECT
-    const QString HTML_RESOURCE = "qrc:/webfiles/app.html";
+
+private:
+    int b = 0;
+    int c() {return 0;}
 
 public:
-    explicit WebInterface(QWidget *parent = nullptr);
+    int a = 0;
+    int d() {return 0;}
+
+    Q_INVOKABLE int getInts();
+    Q_INVOKABLE void sayHello();
+
+    explicit WebInterface(QObject *parent = nullptr);
+
+signals:
+
+public slots:
 };
 
 #endif // WEBINTERFACE_H
