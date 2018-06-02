@@ -26,35 +26,28 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += "D:\Libs"
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    frame.cpp \
-    experiment.cpp \
-    filenotfoundexception.cpp \
-    experiment.cpp \
-    filenotfoundexception.cpp \
-    frame.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    webengine.cpp \
-    webinterface.cpp
+    src/experiment.cpp \
+    src/frame.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/webengine.cpp \
+    src/webinterface.cpp \
+    src/exceptions/filenotfoundexception.cpp \
+    src/exceptions/filereaderrorexception.cpp
 
 HEADERS +=\
-        mainwindow.h \
-    frame.h \
-    experiment.h \
-    filenotfoundexception.h \
-    experiment.h \
-    filenotfoundexception.h \
-    frame.h \
-    mainwindow.h \
-    webengine.h \
-    webinterface.h
+    src/experiment.h \
+    src/frame.h \
+    src/mainwindow.h \
+    src/webengine.h \
+    src/webinterface.h \
+    src/exceptions/filenotfoundexception.h \
+    src/exceptions/filereaderrorexception.h
 
 FORMS += \
-        mainwindow.ui
+    forms/mainwindow.ui
 
 DISTFILES +=
 
 RESOURCES += \
-    resources.qrc
+    resources/resources.qrc

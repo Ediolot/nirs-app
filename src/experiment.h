@@ -5,7 +5,7 @@
 #include <cassert>
 #include <fstream>
 #include "frame.h"
-#include "filenotfoundexception.h"
+#include "exceptions/filenotfoundexception.h"
 
 // TODO usar QFile
 // TODO usar QString en las excepciones
