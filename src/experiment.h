@@ -2,8 +2,11 @@
 #define EXPERIMENT_H
 
 #include <QDebug>
+#include <QString>
+#include <QVector>
 #include <cassert>
 #include <fstream>
+#include <QFile>
 #include "frame.h"
 #include "exceptions/filenotfoundexception.h"
 
@@ -20,17 +23,17 @@ private:
     uint32_t bpp;    // Bits per pixel
     Frame<double> dark;
     Frame<double> gain;
-    std::vector<Frame<double>> frames;
+    QVector<Frame<double>> frames;
 
 public:
-    explicit Experiment(const std::string &path);
-    void load(const std::string &path);
+    explicit Experiment(const QString &path);
+    void load(const QString &path);
 
 private:
 
     template<class readAs, class convertTo>
-    Frame<convertTo> readNextFrame(std::ifstream& file, uint32_t width, uint32_t height, bool has_timestamp = false) {
-        std::vector<readAs> vdata(width * height);
+    Frame<convertTo> readNextFrame(QFile& file, uint32_t width, uint32_t height, bool has_timestamp = false) {
+        QVector<readAs> vdata(width * height);
         Frame<readAs>::TimestampData timestamp = 0; // TODO Frame::TimestampData
 
         if (has_timestamp) {

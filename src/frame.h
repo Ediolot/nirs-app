@@ -1,10 +1,8 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include <string>
 #include <Eigen/Dense>
-#include <iostream>
-#include <vector>
+#include <QVector>
 #include <utility>
 
 /*!
@@ -40,7 +38,7 @@ public:
      * \param height Frame height (number of rows).
      * \param timestamp Timestamp in milliseconds.
      */
-    Frame(const std::vector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0);
+    Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0);
 
     /*!
      * \brief Construct a copy of another frame.
@@ -151,7 +149,7 @@ Frame<T>::Frame()
 {}
 
 template<class T>
-Frame<T>::Frame(const std::vector<T>& vdata, size_t width, size_t height, TimestampData timestamp)
+Frame<T>::Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp)
     : timestamp(timestamp)
     , data(Mapper(vdata.data(), height, width))
 {}
