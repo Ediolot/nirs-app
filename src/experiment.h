@@ -29,6 +29,12 @@ private:
 public:
     explicit Experiment(const QString &path);
     void load(const QString &path);
+
+signals:
+    void loadPercent(float);
+
+private:
+    int getStandardBpp(int bpp);
  };
 
 #endif // EXPERIMENT_H

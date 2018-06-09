@@ -20,29 +20,33 @@ void Experiment::load(const QString &path)
     if (file.read(reinterpret_cast<char*>(&height), sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
     if (file.read(reinterpret_cast<char*>(&width),  sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
     if (file.read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
+    bpp = getStandardBpp(bpp);
 
     // Frames
     dark = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
     gain = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
-    while (!file.atEnd()) {
+    int nframes = (file.size() - file.pos()) / (width * height * bpp / 8);
+    for (int i = 0; i < nframes; ++i) {
              if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
         else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
         else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
         else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
         else throw FrameBPPTooBig(bpp);
+
+        emit loadPercent((i + 1.0f) / nframes);
     }
 
-    qDebug() << frames.size();
-    qDebug() << frames[0].getTimestamp();
-    qDebug() << frames[1].getTimestamp();
-    qDebug() << frames[2].getTimestamp();
-    qDebug() << frames[3].getTimestamp();
-    qDebug() << frames[0].getData()(0,0) << frames[0].getData()(0,1) << frames[0].getData()(1,0);
-    qDebug() << frames[1].getData()(0,0) << frames[1].getData()(0,1) << frames[1].getData()(1,0);
-    qDebug() << frames[2].getData()(0,0) << frames[2].getData()(0,1) << frames[2].getData()(1,0);
-
     file.close();
+}
+
+int Experiment::getStandardBpp(int bpp)
+{
+         if (bpp <=  8) return 8;
+    else if (bpp <= 16) return 16;
+    else if (bpp <= 32) return 32;
+    else if (bpp <= 64) return 64;
+    else                return bpp;
 }
 
 
