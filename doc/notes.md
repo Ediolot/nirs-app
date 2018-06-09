@@ -8,6 +8,10 @@
 * Mantener todas las imágenes puede requerir que la aplicación use +2GB, así que se ha compilado una app de 64bits
 
 
+## Preocupaciones
+* ¿Podría existir algún problema al leer los datos con little endian y big endian?
+
+
 ## Misc
 * El tiempo de respuesta (latencia) desde que el js llama a una funci�n hasta que se devuelve el resultado es muy bajo (<1ms)
 * Usar punteros en las variables de clase es mejor en detereminadas sutuaciones porque la memoria se asigna en el heap.

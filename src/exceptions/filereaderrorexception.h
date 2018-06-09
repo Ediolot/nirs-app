@@ -1,9 +1,9 @@
-#ifndef FILENOTFOUNDEXCEPTION_H
-#define FILENOTFOUNDEXCEPTION_H
+#ifndef FILEREADERROREXCEPTION_H
+#define FILEREADERROREXCEPTION_H
 
 #include <QString>
-#include <string>
 #include <exception>
+#include <string>
 
 class FileReadErrorException : public std::exception // TODO Correct inheritance ? or std::runtime ?
 {

@@ -13,21 +13,21 @@ void Experiment::load(const QString &path)
     QFile file(path);
 
     if (!file.open(QIODevice::ReadOnly)) {
-        throw FileNotFoundException(path.toStdString());
+        throw FileNotFoundException(path);
     }
 
-    // Width, Height, Bpp
-    file.read(reinterpret_cast<char*>(&height), sizeof(uint32_t)); // if an error occurs, such as when attempting to read from a device opened in
-    file.read(reinterpret_cast<char*>(&width),  sizeof(uint32_t)); // WriteOnly mode, this function returns -1
-    file.read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)); // 0 is returned when no more data is available for reading
+    // Width, Height, Bpp. If any fails, throw exception
+    if (file.read(reinterpret_cast<char*>(&height), sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
+    if (file.read(reinterpret_cast<char*>(&width),  sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
+    if (file.read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
     bpp = 16; // 16 es el mínimo para guardar 12bits
 
     // Frames
-    dark = readNextFrame<float, double>(file, width, height);
-    gain = readNextFrame<float, double>(file, width, height);
+    dark = Frame<float>(file, width, height, false).cast<double>();
+    gain = Frame<float>(file, width, height, false).cast<double>();
 
     while (!file.atEnd()) {
-        frames.push_back(readNextFrame<int16_t, double>(file, width, height, true)); // TODO HAS_TIMESTAMP = true
+        frames.push_back(Frame<int16_t>(file, width, height, true).cast<double>());
     }
 
     qDebug() << frames.size();

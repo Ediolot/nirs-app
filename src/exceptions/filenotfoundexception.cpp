@@ -1,11 +1,15 @@
 #include "filenotfoundexception.h"
 
-FileNotFoundException::FileNotFoundException():
-    message("File not found")
+FileNotFoundException::FileNotFoundException()
+    : FileNotFoundException(QString(""))
 {}
 
-FileNotFoundException::FileNotFoundException(const std::string &path):
-    message("File " + path + " not found")
+FileNotFoundException::FileNotFoundException(const QString &path)
+    : FileNotFoundException(path.toStdString())
+{}
+
+FileNotFoundException::FileNotFoundException(const std::string &path)
+    : message("File " + path + " not found")
 {}
 
 const char *FileNotFoundException::what() const throw()

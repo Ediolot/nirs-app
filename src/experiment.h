@@ -28,21 +28,6 @@ private:
 public:
     explicit Experiment(const QString &path);
     void load(const QString &path);
-
-private:
-
-    template<class readAs, class convertTo>
-    Frame<convertTo> readNextFrame(QFile& file, uint32_t width, uint32_t height, bool has_timestamp = false) {
-        QVector<readAs> vdata(width * height);
-        Frame<readAs>::TimestampData timestamp = 0; // TODO Frame::TimestampData
-
-        if (has_timestamp) {
-            file.read(reinterpret_cast<char*>(&timestamp), sizeof(Frame<readAs>::TimestampData));
-        }
-        file.read(reinterpret_cast<char*>(vdata.data()), vdata.size() * sizeof(readAs));
-
-        return Frame<readAs>(vdata, width, height, timestamp).cast<convertTo>();
-    }
  };
 
 #endif // EXPERIMENT_H

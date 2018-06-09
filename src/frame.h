@@ -4,6 +4,8 @@
 #include <Eigen/Dense>
 #include <QVector>
 #include <utility>
+#include <QFile>
+#include "exceptions/filereaderrorexception.h"
 
 /*!
  * \brief The frame class is a template class that manipulates frames.
@@ -32,13 +34,23 @@ public:
     Frame();
 
     /*!
-     * \brief Constructs a frame from an array of data. Subsequent in the input array form columns.
+     * \brief Constructs a frame from an array of data. Subsequent data in the input array form columns.
      * \param vdata Vector containing the frame raw data.
      * \param width Frame width (number of columns).
      * \param height Frame height (number of rows).
      * \param timestamp Timestamp in milliseconds.
      */
     Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0);
+
+    /*!
+     * \brief Constructs a frame from an array a file. Subsequent data in the file form columns.
+     * \param file File containing the raw data. The file must be opened before calling this function.
+     * \param width Frame width (number of columns).
+     * \param height Frame height (number of rows).
+     * \param hasTimestamp Indicates if the raw data contains information about the timestamp or not.
+     * \param pos Position in which the frame is located within the file. If pos is -1, the frame is assumed to be in the current position.
+     */
+    Frame(QFile& file, uint32_t width, uint32_t height, bool hasTimestamp, int64_t pos = -1);
 
     /*!
      * \brief Construct a copy of another frame.
@@ -153,6 +165,26 @@ Frame<T>::Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampD
     : timestamp(timestamp)
     , data(Mapper(vdata.data(), height, width))
 {}
+
+template<class T>
+Frame<T>::Frame(QFile& file, uint32_t width, uint32_t height, bool hasTimestamp, int64_t pos)
+    : Frame()
+{
+    QVector<T> vdata(width * height);
+
+    if (pos >= 0) {
+        file.seek(pos);
+    }
+    if (hasTimestamp) {
+        if (file.read(reinterpret_cast<char*>(&timestamp), sizeof(TimestampData)) < 0) {
+            throw FileReadErrorException(file.fileName());
+        }
+    }
+    if (file.read(reinterpret_cast<char*>(vdata.data()), vdata.size() * sizeof(T)) < 0) {
+        throw FileReadErrorException(file.fileName());
+    }
+    data = Mapper(vdata.data(), height, width);
+}
 
 template<class T>
 Frame<T>::Frame(const Frame& other)

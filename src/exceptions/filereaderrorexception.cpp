@@ -1,15 +1,15 @@
 #include "filereaderrorexception.h"
 
 FileReadErrorException::FileReadErrorException()
-    : message("Error while reading file")
-{}
-
-FileReadErrorException::FileReadErrorException(const std::string &path)
-    : message("Error while reading file " + path )
+    : FileReadErrorException(QString(""))
 {}
 
 FileReadErrorException::FileReadErrorException(const QString &path)
-    : message(("Error while reading file" + path).toStdString())
+    : FileReadErrorException(path.toStdString())
+{}
+
+FileReadErrorException::FileReadErrorException(const std::string &path)
+    : message("Error while reading file " + path)
 {}
 
 const char *FileReadErrorException::what() const throw()
