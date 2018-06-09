@@ -28,8 +28,8 @@ void Experiment::load(const QString &path)
 
     int nframes = (file.size() - file.pos()) / (width * height * bpp / 8);
     for (int i = 0; i < nframes; ++i) {
-             if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
-        else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
+             if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>()); // TODO tal vez es mejor no convertir los frames a double
+        else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>()); // Porque el basal no usa double ??
         else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
         else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
         else throw FrameBPPTooBig(bpp);

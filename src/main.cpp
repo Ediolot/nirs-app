@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     //QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     //QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-    Experiment expe("experiment_2.exp");
+    //Experiment expe("experiment_2.exp");
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
