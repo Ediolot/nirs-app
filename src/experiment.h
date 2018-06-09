@@ -9,6 +9,7 @@
 #include <QFile>
 #include "frame.h"
 #include "exceptions/filenotfoundexception.h"
+#include "exceptions/framebpptoobig.h"
 
 // TODO usar QFile
 // TODO usar QString en las excepciones

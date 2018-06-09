@@ -10,6 +10,7 @@
 
 ## Preocupaciones
 * ¿Podría existir algún problema al leer los datos con little endian y big endian?
+* ¿Las excepciones heredan de std::exception o std::runtime mejor?
 
 
 ## Misc

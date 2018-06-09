@@ -7,6 +7,11 @@
 #include <QFile>
 #include "exceptions/filereaderrorexception.h"
 
+namespace FrameConstants {
+    const bool HAS_TIMESTAMP = true;
+    const bool NO_TIMESTAMP = false;
+}
+
 /*!
  * \brief The frame class is a template class that manipulates frames.
  *
@@ -238,7 +243,7 @@ Frame<U> Frame<T>::cast() {
 
 template<class T>
 uint32_t Frame<T>::getBPP() const {
-    return sizeof(T);
+    return sizeof(T) * 8; // In bits
 }
 
 template<class T>

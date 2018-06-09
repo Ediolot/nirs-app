@@ -33,7 +33,8 @@ SOURCES += \
     src/webengine.cpp \
     src/webinterface.cpp \
     src/exceptions/filenotfoundexception.cpp \
-    src/exceptions/filereaderrorexception.cpp
+    src/exceptions/filereaderrorexception.cpp \
+    src/exceptions/framebpptoobig.cpp
 
 HEADERS +=\
     src/experiment.h \
@@ -42,7 +43,8 @@ HEADERS +=\
     src/webengine.h \
     src/webinterface.h \
     src/exceptions/filenotfoundexception.h \
-    src/exceptions/filereaderrorexception.h
+    src/exceptions/filereaderrorexception.h \
+    src/exceptions/framebpptoobig.h
 
 FORMS += \
     forms/mainwindow.ui

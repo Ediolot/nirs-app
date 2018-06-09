@@ -5,7 +5,7 @@
 #include <exception>
 #include <string>
 
-class FileReadErrorException : public std::exception // TODO Correct inheritance ? or std::runtime ?
+class FileReadErrorException : public std::exception
 {
 private:
     std::string message;

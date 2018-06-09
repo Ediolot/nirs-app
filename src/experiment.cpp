@@ -20,14 +20,17 @@ void Experiment::load(const QString &path)
     if (file.read(reinterpret_cast<char*>(&height), sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
     if (file.read(reinterpret_cast<char*>(&width),  sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
     if (file.read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
-    bpp = 16; // 16 es el mínimo para guardar 12bits
 
     // Frames
-    dark = Frame<float>(file, width, height, false).cast<double>();
-    gain = Frame<float>(file, width, height, false).cast<double>();
+    dark = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
+    gain = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
     while (!file.atEnd()) {
-        frames.push_back(Frame<int16_t>(file, width, height, true).cast<double>());
+             if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
+        else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
+        else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
+        else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
+        else throw FrameBPPTooBig(bpp);
     }
 
     qDebug() << frames.size();

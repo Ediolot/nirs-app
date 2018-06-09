@@ -5,7 +5,7 @@
 #include <exception>
 #include <string>
 
-class FileNotFoundException : public std::exception // TODO Correct inheritance ? or std::runtime ?
+class FileNotFoundException : public std::exception
 {
 private:
     std::string message;
