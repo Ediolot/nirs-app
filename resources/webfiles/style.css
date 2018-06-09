@@ -1,3 +1,39 @@
 body {
-        background: #FFF;
+  background: #FFF;
+}
+
+.navbar {
+  height: 50px;
+}
+
+.body-div {
+	margin: 20px;
+	margin-top: 70px;
+	height: calc(100% - 50px);
+}
+
+.load-card {
+	/*background-color: #e0eef9;*/
+	width: 300px;
+}
+
+.load-card > .card-body {
+	padding: 15px;
+}
+
+.file-selector-logic {
+	display: none;
+}
+
+.file-selector-button {
+	background-color: #2691b9;
+}
+
+.file-selector-text {
+	width: 100%;
+	margin-top: 5px;
+	padding-left: 5px;
+  border: 1px solid #999;
+	border-radius: 4px;
+	background-color: white;
 }
