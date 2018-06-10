@@ -4,27 +4,28 @@
 #include <QDebug>
 #include <QObject>
 #include <QDateTime>
+#include <QFileDialog>
+#include <QVector>
+
+#include "experiment.h"
 
 class WebInterface : public QObject
 {
     Q_OBJECT
 
 private:
-    int b = 0;
-    int c() {return 0;}
+    QVector<Experiment*> experiments;
 
 public:
-    int a = 0;
-    int d() {return 0;}
-
-    Q_INVOKABLE int getInts();
-    Q_INVOKABLE void sayHello();
-
     explicit WebInterface(QObject *parent = nullptr);
+    ~WebInterface();
+
+    Q_INVOKABLE void experimentFromFile(QString file);
+    Q_INVOKABLE QString openFileDialog();
 
 signals:
-
-public slots:
+    void percentUpdateSignal(float);
+    void fileErrorSignal(QString);
 };
 
 #endif // WEBINTERFACE_H

@@ -1,21 +1,28 @@
 
 $(document).ready(function() {
-	$('#select-exp-button').click(e => {
-		$('#select-exp-logic').click();
-	});
 
-	$('#select-exp-logic').change(e => {
-	    $('#filepath-exp').html($(e.currentTarget).val());
-	});
+  let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+      let interface = channel.objects.webinterface;
 
-	$('#load-exp-button').click(function(e) {
+			$('#select-exp-button').click(e => {
+				interface.openFileDialog(filepath => {
+					$('#filepath-exp').val(filepath);
+				});
+			});
 
-	});
+      $('#load-exp-button').click(e => {
+				let filepath = $('#filepath-exp').val();
+				if (filepath) {
+					interface.experimentFromFile(filepath);
+				}
+      });
 
-	let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-	    let JSobject = channel.objects.webinterface;
-	    JSobject.getInts(console.log);
-	    JSobject.getInts(console.log);
-	    JSobject.sayHello();
+			interface.percentUpdateSignal.connect(percent => {
+				$('#load-exp-progress-val').width(Math.round(100 * percent) + "%");
+			});
+
+			interface.fileErrorSignal.connect(err => {
+				console.error(err);
+			});
 	});
 });

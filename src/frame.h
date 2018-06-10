@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include <QVector>
+#include <cmath>
 #include <utility>
 #include <QFile>
 #include "exceptions/filereaderrorexception.h"
@@ -28,8 +29,8 @@ public:
     using Mapper        = Eigen::Map<const DataMatrix>;                     /*! Mapper type to build Eigen matrices from vectors. */
 
 private:
-    TimestampData timestamp; /*! Timestamp in milliseconds (Since 01/01/1970). */ // TODO since 1997 ?
-    DataMatrix data;         /*! Raw frame data. Saved in an Eigen matrix.     */
+    TimestampData timestamp; /*! Timestamp in nanoseconds (Since 01/01/1970). */ // TODO since 1997 ?
+    DataMatrix data;         /*! Raw frame data. Saved in an Eigen matrix.    */
 
 public:
 
@@ -39,7 +40,15 @@ public:
     Frame();
 
     /*!
-     * \brief Constructs a frame from an array of data. Subsequent data in the input array form columns.
+     * \brief Construct an empty frame. (All data is set to 0).
+     * \param width Frame width (number of columns).
+     * \param height Frame height (number of rows).
+     * \param timestamp Timestamp in milliseconds.
+     */
+    Frame(size_t width, size_t height, TimestampData timestamp = 0);
+
+    /*!
+     * \brief Construct a frame from an array of data. Subsequent data in the input array form columns.
      * \param vdata Vector containing the frame raw data.
      * \param width Frame width (number of columns).
      * \param height Frame height (number of rows).
@@ -48,7 +57,7 @@ public:
     Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0);
 
     /*!
-     * \brief Constructs a frame from an array a file. Subsequent data in the file form columns.
+     * \brief Construct a frame from an array a file. Subsequent data in the file form columns.
      * \param file File containing the raw data. The file must be opened before calling this function.
      * \param width Frame width (number of columns).
      * \param height Frame height (number of rows).
@@ -94,14 +103,37 @@ public:
      */
     Frame& operator=(Frame&& other);
 
-
-    template<class U>
     /*!
      * \brief Create a copy of this frame whose values are transformed to an specific
      * frame type using static cast.
      * \return The new frame.
      */
+    template<class U>
     Frame<U> cast();
+
+    /*!
+     * \brief Get value at position.
+     * \param colum
+     * \param row
+     * \return Constant reference to value.
+     */
+    const T& at(uint32_t colum, uint32_t row) const;
+
+    /*!
+     * \brief Split the information of this frame into two new separate frames horizontally.
+     * \param colum Colum index indicating the ending of the left frame.
+     * \param left The new left frame will be saved here.
+     * \param right the new right frame will be saved here.
+     */
+    void horizontalSplit(uint32_t colum, Frame& left, Frame& right) const;
+
+    /*!
+     * \brief Split the information of this frame into two new separate frames vertically.
+     * \param row Row index indicating the ending of the top frame.
+     * \param top The new left frame will be saved here.
+     * \param bottom the new right frame will be saved here.
+     */
+    void verticalSplit(uint32_t row, Frame& top, Frame& bottom) const;
 
     /*!
      * \return Bits per pixel used by the frame.
@@ -139,22 +171,70 @@ public:
     T getMax() const;
 
     /*!
+     * \brief Apply the natural logarithm to the frame element wise.
+     * \return A reference to this object.
+     */
+    Frame& applyLog();
+
+    /*!
      * \brief Adds this frame with another.
+     * \return A reference to this object.
+     */
+    Frame& operator+=(const Frame& other);
+
+    /*!
+     * \brief Subtracts this frame with another.
+     * \return A reference to this object.
+     */
+    Frame& operator-=(const Frame& other);
+
+    /*!
+     * \brief Adds this frame with an scalar value.
+     * \return A reference to this object.
+     */
+    Frame& operator+=(const T& scalar);
+
+    /*!
+     * \brief Subtracts this frame with an scalar value.
+     * \return A reference to this object.
+     */
+    Frame& operator-=(const T& scalar);
+
+    /*!
+     * \brief Multiply this frame with an scalar value.
+     * \return A reference to this object.
+     */
+    Frame& operator*=(const T& scalar);
+
+    /*!
+     * \brief Divide this frame with an scalar value.
+     * \return A reference to this object.
+     */
+    Frame& operator/=(const T& scalar);
+
+    /*!
+     * \brief Adds this frame with another into a new frame.
      * \return New result frame.
      */
     Frame operator+(const Frame& other) const;
 
     /*!
-     * \brief Subtracts another frame to this frame.
+     * \brief Subtracts another frame to this frame into a new frame.
      * \return New result frame.
      */
     Frame operator-(const Frame& other) const;
 
     /*!
-     * \brief Multiply this frame with another.
+     * \brief Multiply this frame with another into a new frame, element wise.
      * \return New result frame.
      */
     Frame operator*(const Frame& other) const;
+
+    /*!
+     * \brief Divide this frame with another into a new frame, element wise.
+     * \return New result frame.
+     */
+    Frame operator/(const Frame& other) const;
 
 };
 
@@ -169,6 +249,12 @@ template<class T>
 Frame<T>::Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp)
     : timestamp(timestamp)
     , data(Mapper(vdata.data(), height, width))
+{}
+
+template<class T>
+Frame<T>::Frame(size_t width, size_t height, TimestampData timestamp)
+    : timestamp(timestamp)
+    , data(DataMatrix::Zero(height, width))
 {}
 
 template<class T>
@@ -242,6 +328,31 @@ Frame<U> Frame<T>::cast() {
 }
 
 template<class T>
+const T& Frame<T>::at(uint32_t row, uint32_t colum) const {
+    return data(row, colum); // In bits
+}
+
+template<class T>
+void Frame<T>::horizontalSplit(uint32_t colum, Frame& left, Frame& right) const {
+    left  = Frame<T>();
+    right = Frame<T>();
+    left.timestamp  = timestamp;
+    right.timestamp = timestamp;
+    left.data  = DataMatrix(data.block(0, 0, data.rows(), colum));
+    right.data = DataMatrix(data.block(0, colum, data.rows(), data.cols() - colum));
+}
+
+template<class T>
+void Frame<T>::verticalSplit(uint32_t row, Frame& top, Frame& bottom) const {
+    top    = Frame<T>();
+    bottom = Frame<T>();
+    top.timestamp    = timestamp;
+    bottom.timestamp = timestamp;
+    top.data    = DataMatrix(data.block(0, 0, row, data.cols()));
+    bottom.data = DataMatrix(data.block(row, 0, data.rows() - row, data.cols()));
+}
+
+template<class T>
 uint32_t Frame<T>::getBPP() const {
     return sizeof(T) * 8; // In bits
 }
@@ -266,6 +377,49 @@ uint32_t Frame<T>::getHeight() const {
     return static_cast<uint32_t>(data.rows());
 }
 
+#include <iostream>
+template<class T>
+Frame<T>& Frame<T>::applyLog() {
+    data = data.array().log();
+    return *this;
+}
+
+template<class T>
+Frame<T>& Frame<T>::operator+=(const Frame& other) {
+    data += other.data;
+    return *this;
+}
+
+template<class T>
+Frame<T>& Frame<T>::operator-=(const Frame& other) {
+    data -= other.data;
+    return *this;
+}
+
+template<class T>
+Frame<T>& Frame<T>::operator+=(const T& scalar) {
+    data = data.array() + scalar; // TODO This should be data -= scalar
+    return *this;
+}
+
+template<class T>
+Frame<T>& Frame<T>::operator-=(const T& scalar) {
+    data = data.array() - scalar; // TODO This should be data -= scalar
+    return *this;
+}
+
+template<class T>
+Frame<T>& Frame<T>::operator*=(const T& scalar) {
+    data *= scalar;
+    return *this;
+}
+
+template<class T>
+Frame<T>& Frame<T>::operator/=(const T& scalar) {
+    data /= scalar;
+    return *this;
+}
+
 template<class T>
 Frame<T> Frame<T>::operator+(const Frame& other) const {
     Frame<T> result;
@@ -287,6 +441,14 @@ Frame<T> Frame<T>::operator*(const Frame& other) const {
     Frame<T> result;
     result.timestamp = timestamp;
     result.data = data.cwiseProduct(other.data);
+    return result;
+}
+
+template<class T>
+Frame<T> Frame<T>::operator/(const Frame& other) const {
+    Frame<T> result;
+    result.timestamp = timestamp;
+    result.data = data.cwiseQuotient(other.data);
     return result;
 }
 
