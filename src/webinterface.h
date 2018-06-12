@@ -15,6 +15,7 @@ class WebInterface : public QObject
 
 private:
     QVector<Experiment*> experiments;
+    Experiment* current;
 
 public:
     explicit WebInterface(QObject *parent = nullptr);
@@ -22,10 +23,12 @@ public:
 
     Q_INVOKABLE void experimentFromFile(QString file);
     Q_INVOKABLE QString openFileDialog();
+    Q_INVOKABLE void generateBasal();
 
 signals:
     void percentUpdateSignal(float);
     void fileErrorSignal(QString);
+    void basalUpdateSignal(QByteArray, int, int);
 };
 
 #endif // WEBINTERFACE_H

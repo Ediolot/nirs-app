@@ -6,11 +6,16 @@
 #include <cmath>
 #include <utility>
 #include <QFile>
+#include <QImage>
+#include <QByteArray>
+#include <QBuffer>
 #include "exceptions/filereaderrorexception.h"
 
 namespace FrameConstants {
     const bool HAS_TIMESTAMP = true;
     const bool NO_TIMESTAMP = false;
+    const int ROW_MAJOR = 0;
+    const int COLUM_MAJOR = 1;
 }
 
 /*!
@@ -24,9 +29,9 @@ template<class T>
 class Frame
 {
 public:
-    using TimestampData = uint64_t;                                         /*! Type of value for the timestamp.                  */
-    using DataMatrix    = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>; /*! Type of value for the raw data Eigen matrix.      */
-    using Mapper        = Eigen::Map<const DataMatrix>;                     /*! Mapper type to build Eigen matrices from vectors. */
+    using TimestampData = uint64_t;                                                          /*! Type of value for the timestamp.                  */
+    using DataMatrix    = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>; /*! Type of value for the raw data Eigen matrix.      */
+    using Mapper        = Eigen::Map<const DataMatrix>;                                      /*! Mapper type to build Eigen matrices from vectors. */
 
 private:
     TimestampData timestamp; /*! Timestamp in nanoseconds (Since 01/01/1970). */ // TODO since 1997 ?
@@ -110,6 +115,16 @@ public:
      */
     template<class U>
     Frame<U> cast();
+
+
+    /*!
+     * \return
+     */
+    QByteArray toIndexed16Base64(int major) const;
+    /*!
+     * \return
+     */
+    QByteArray toIndexed8Base64(int major) const;
 
     /*!
      * \brief Get value at position.
@@ -235,7 +250,6 @@ public:
      * \return New result frame.
      */
     Frame operator/(const Frame& other) const;
-
 };
 
 /*==================================== TEMPLATE FUNCTIONS ====================================*/
@@ -274,6 +288,7 @@ Frame<T>::Frame(QFile& file, uint32_t width, uint32_t height, bool hasTimestamp,
     if (file.read(reinterpret_cast<char*>(vdata.data()), vdata.size() * sizeof(T)) < 0) {
         throw FileReadErrorException(file.fileName());
     }
+
     data = Mapper(vdata.data(), height, width);
 }
 
@@ -328,8 +343,37 @@ Frame<U> Frame<T>::cast() {
 }
 
 template<class T>
+QByteArray Frame<T>::toIndexed8Base64(int major) const {
+    QByteArray result;
+    int row = 0;
+    int col = 0;
+    int sz  = data.rows() * data.cols();
+    result.resize(sz);
+
+    for (int i = 0; i < sz; ++i) {
+        T aux = data(row, col) * 255.0;
+        if (aux > 255) aux = 255;
+        if (aux <   0) aux = 0;
+        result[i] = aux;
+
+        if (major == FrameConstants::ROW_MAJOR) {
+            if (++row >= data.rows()) {
+                col++;
+                row = 0;
+            }
+        } else if (major == FrameConstants::COLUM_MAJOR) {
+            if (++col >= data.cols()) {
+                row++;
+                col = 0;
+            }
+        }
+    }
+    return result.toBase64(); // No debería ser necesario
+}
+
+template<class T>
 const T& Frame<T>::at(uint32_t row, uint32_t colum) const {
-    return data(row, colum); // In bits
+    return data(row, colum);
 }
 
 template<class T>
@@ -377,7 +421,6 @@ uint32_t Frame<T>::getHeight() const {
     return static_cast<uint32_t>(data.rows());
 }
 
-#include <iostream>
 template<class T>
 Frame<T>& Frame<T>::applyLog() {
     data = data.array().log();

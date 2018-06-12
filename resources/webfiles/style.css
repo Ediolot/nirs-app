@@ -6,10 +6,26 @@ body {
   height: 50px;
 }
 
+.img-canvas {
+	border: 1px solid #CCC;
+}
+
 .body-div {
 	margin: 20px;
 	margin-top: 70px;
 	height: calc(100% - 50px);
+}
+
+.card {
+	margin: 20px;
+}
+
+.basal-card {
+	width: 500px;
+}
+
+.basal-card-title {
+	/*display: inline;*/
 }
 
 .load-card {
@@ -21,7 +37,7 @@ body {
 	padding: 15px;
 }
 
-.file-selector-button {
+.btn-primary {
 	background-color: #2691b9;
 }
 

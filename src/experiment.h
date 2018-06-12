@@ -36,6 +36,7 @@ public:
 
     void load(const QString &path);
     bool calculateBasal(uint32_t msStart, uint32_t msEnd);
+    const Frame<double>& getBasal() const;
 
 signals:
     void loadPercent(float);

@@ -6,6 +6,7 @@
 * Ha sido necesaria crear la clase frame. Han habido complicaciones con las matrices Eigen y los tipos de datos de los templates que se han solucionado creado esa clase
 * Webengine resize slow [https://bugreports.qt.io/browse/QTBUG-58324](https://bugreports.qt.io/browse/QTBUG-58324)
 * Mantener todas las imágenes puede requerir que la aplicación use +2GB, así que se ha compilado una app de 64bits
+* La función toIndexed8 tiene que devolver el array en base64 para que poder leero en el javascript. Debe de haber una forma de hacerlo sin necesidad de convertir a base64. Además, se pierde la información.
 
 
 ## Preocupaciones
@@ -19,6 +20,9 @@
  * Si el objeto necesita existir por la duración de la función llamante, no usar punteros (aka es almacenado en el stack)
  * Si no, usar punteros (aka heap)
 * My opinion is that the biggest advantage of the QTL is that it has the same implementation (including binary compatibility) on all OSes supported by Qt. Some STL implementations might be below par when it comes to performance or they might be missing functionality. Some platforms don’t even have an STL! On the other hand, the STL is more customizable and is available in its entirety in header files… Like I said, there is no clear winner. [4] [3]
+* https://cryptii.com
+* https://renenyffenegger.ch/notes/development/Base64/Encoding-and-decoding-base-64-with-cpp
+* Los datos en memoria están guardados como ColMajor. Formato que debe coincidir con DataMatrix en frame.h
 
 ## TODOs
 
@@ -26,9 +30,13 @@
 
 ## Bibliografía
 * [1] Documentación QT
+* Documentación Bootstrap
+* Documentación C++
+* Documentación JQuery y JS/HTML/CSS
 * [2] [https://stackoverflow.com/questions/18745839/when-do-i-use-pointers-in-qt](https://stackoverflow.com/questions/18745839/when-do-i-use-pointers-in-qt)
 * [3] [https://stackoverflow.com/questions/5623218/why-use-qvectorqt-instead-of-stdvector](https://stackoverflow.com/questions/5623218/why-use-qvectorqt-instead-of-stdvector)
 * [4] [https://web.archive.org/web/20160902015144/http://blog.codeimproved.net/posts/qtl-stl.html](https://web.archive.org/web/20160902015144/http://blog.codeimproved.net/posts/qtl-stl.html)
 * [5] [https://stackoverflow.com/questions/27670401/using-jquery-this-with-es6-arrow-functions-lexical-this-binding](https://stackoverflow.com/questions/27670401/using-jquery-this-with-es6-arrow-functions-lexical-this-binding)
 * https://www.kdab.com/new-qt-5-10-qthreadcreate/
 * https://medium.com/genymobile/how-c-lambda-expressions-can-improve-your-qt-code-8cd524f4ed9f
+* https://stackoverflow.com/questions/41965425/qt-display-qimage-or-pixel-map-in-qtwebengine-view-from-c-to-html?rq=1

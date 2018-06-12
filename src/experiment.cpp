@@ -38,9 +38,13 @@ bool Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
     aux = (aux - dark) * gain;
     aux.verticalSplit(height / 2, top, bottom);
     basal = hSaturation(top, bottom);
-    qDebug() << basal.at(0, 0);
 
     return true;
+}
+
+const Frame<double> &Experiment::getBasal() const
+{
+    return basal;
 }
 
 int Experiment::getStandardBpp(int bpp)
@@ -77,10 +81,10 @@ void Experiment::run()
         gain = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file.size() - file.pos()) / (width * height * bpp / 8);
-        nframes = 400;
+        nframes = 350;
         for (int i = 0; (i < nframes) && !QThread::isInterruptionRequested(); ++i) {
-                 if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>()); // TODO tal vez es mejor no convertir los frames a double
-            else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>()); // Porque el basal no usa double ??
+                 if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
+            else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
             else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
             else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
             else throw FrameBPPTooBig(bpp);
@@ -90,12 +94,9 @@ void Experiment::run()
 
         file.close();
         emit loadReady();
-        calculateBasal(0, 24000);
 
     // The error will be controlled by the javascript interface. So we can just emit it
     } catch (std::exception &e) {
-        emit fileError(QString(e.what()));
-    } catch (std::runtime_error &e) {
         emit fileError(QString(e.what()));
     } catch (...) {
         emit fileError("Fatal error");

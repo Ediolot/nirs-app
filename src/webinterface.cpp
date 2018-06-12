@@ -2,6 +2,7 @@
 
 WebInterface::WebInterface(QObject *parent)
     : QObject(parent)
+    , current(nullptr)
 {}
 
 WebInterface::~WebInterface()
@@ -18,6 +19,7 @@ void WebInterface::experimentFromFile(QString file)
 
     Experiment* exp = new Experiment(file);
     experiments.push_back(exp);
+    current = exp;
     connect(exp, &Experiment::loadPercent, [this](float value)   { emit percentUpdateSignal(value); });
     connect(exp, &Experiment::fileError,   [this](QString value) { emit fileErrorSignal(value);     });
 }
@@ -25,4 +27,11 @@ void WebInterface::experimentFromFile(QString file)
 QString WebInterface::openFileDialog()
 {
     return QFileDialog::getOpenFileName();
+}
+
+void WebInterface::generateBasal()
+{
+    current->calculateBasal(0, 24000);
+    Frame<double> basal = current->getBasal();
+    emit basalUpdateSignal(basal.toIndexed8Base64(FrameConstants::COLUM_MAJOR), basal.getWidth(), basal.getHeight());
 }
