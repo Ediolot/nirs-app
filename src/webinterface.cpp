@@ -35,3 +35,9 @@ void WebInterface::generateBasal()
     Frame<double> basal = current->getBasal();
     emit basalUpdateSignal(basal.toIndexed8Base64(FrameConstants::COLUM_MAJOR), basal.getWidth(), basal.getHeight());
 }
+
+void WebInterface::generateSatFrame(int index)
+{
+    Frame<double> satFrame = current->generateSatFrame(index, 24000);
+    emit satFrameSignal(satFrame.toIndexed8Base64(FrameConstants::COLUM_MAJOR), satFrame.getWidth(), satFrame.getHeight(), index);
+}

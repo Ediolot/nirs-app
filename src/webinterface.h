@@ -24,11 +24,13 @@ public:
     Q_INVOKABLE void experimentFromFile(QString file);
     Q_INVOKABLE QString openFileDialog();
     Q_INVOKABLE void generateBasal();
+    Q_INVOKABLE void generateSatFrame(int index);
 
 signals:
     void percentUpdateSignal(float);
     void fileErrorSignal(QString);
     void basalUpdateSignal(QByteArray, int, int);
+    void satFrameSignal(QByteArray, int, int, int);
 };
 
 #endif // WEBINTERFACE_H

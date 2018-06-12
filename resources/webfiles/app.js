@@ -1,3 +1,4 @@
+let navigatorId = 0;
 
 $(document).ready(function() {
   let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
@@ -30,6 +31,22 @@ $(document).ready(function() {
 
 			interface.basalUpdateSignal.connect((byteArray, width, height) => {
 				fillCanvas('#basal-canvas', byteArray, width, height);
+			});
+
+			//-------------------------------------------
+
+			$('#navigator-prev').click(e => {
+				interface.generateSatFrame(navigatorId - 1);
+			});
+
+			$('#navigator-next').click(e => {
+				interface.generateSatFrame(navigatorId + 1);
+			});
+
+			interface.satFrameSignal.connect((byteArray, width, height, index) => {
+				fillCanvas('#sat-canvas', byteArray, width, height);
+				$('#navigator-number').html(index);
+				navigatorId = index;
 			});
 	});
 });

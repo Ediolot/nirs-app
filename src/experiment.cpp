@@ -40,12 +40,19 @@ void Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
     basal = hSaturation(top, bottom);
 }
 
-void Experiment::calculateSatFrames(uint32_t msStart)
+Frame<double> Experiment::generateSatFrame(int index, uint32_t msStart)
 {
-    int firstIndex = getFrameAt(msStart);
-    for (int i = firstIndex; i < frames.size(); ++i) {
+    int indexStart = getFrameAt(msStart);
+    Frame<double> aux;
+    Frame<double> top;
+    Frame<double> bottom;
 
-    }
+    aux = frames[indexStart + index].cast<double>();
+    aux = (aux - dark) * gain;
+    aux.verticalSplit(height / 2, top, bottom);
+    aux = hSaturation(top, bottom);
+    aux -= basal;
+    return std::move(aux);
 }
 
 const Frame<double> &Experiment::getBasal() const

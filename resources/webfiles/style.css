@@ -83,3 +83,9 @@ body {
 .load-exp-progress {
 	margin-top: 10px;
 }
+
+/******************** SAVE CARD ***************************/
+.save-card {
+	width: 350px;
+	height: 39%;
+}

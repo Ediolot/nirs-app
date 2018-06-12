@@ -41,7 +41,7 @@ public:
 
     void load(const QString &path);
     void calculateBasal(uint32_t msStart, uint32_t msEnd);
-    void calculateSatFrames(uint32_t msStart);
+    Frame<double> generateSatFrame(int index, uint32_t msStart = 0);
     const Frame<double>& getBasal() const;
 
 signals:
