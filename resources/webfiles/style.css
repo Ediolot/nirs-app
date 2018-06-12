@@ -1,46 +1,74 @@
 body {
-  background: #FFF;
+  background: #F8F8F8;
 }
 
 .navbar {
   height: 50px;
 }
 
-.img-canvas {
-	border: 1px solid #CCC;
-}
-
 .body-div {
 	margin: 20px;
 	margin-top: 70px;
 	height: calc(100% - 50px);
+	display: flex;
+	flex-wrap: wrap;
 }
 
-.card {
-	margin: 20px;
+.img-canvas {
+	padding: 0;
+  margin: auto;
+  display: block;
+	border: 1px solid #CCC;
 }
-
-.basal-card {
-	width: 500px;
+.canvas-container {
+	width: 100%;
 }
-
-.basal-card-title {
-	/*display: inline;*/
-}
-
-.load-card {
-	/*background-color: #e0eef9;*/
-	width: 350px;
-}
-
-.load-card > .card-body {
-	padding: 15px;
-}
-
 .btn-primary {
 	background-color: #2691b9;
 }
+.btn-info {
+	background-color: #28a745;
+}
 
+/******************** CARD ***************************/
+.custom-card {
+	padding: 1rem;
+	background: #FFF;
+	margin: 1rem;
+	border: 1px solid #CCC;
+	border-radius: 2px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.18);
+}
+.custom-card-top {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: space-between;
+}
+.custom-card-top-left {
+	margin: 0;
+	padding: 0;
+}
+.custom-card-top-right {
+	margin: 0;
+	padding: 0;
+}
+
+/******************** BASAL CARD ***************************/
+.basal-card {
+	width: 360px;
+}
+
+/******************** LOAD CARD ***************************/
+.load-card {
+	width: 350px;
+}
+.number-input {
+	width: 30px;
+	display: inline-block;
+	text-align: center;
+	font-size: 1.2rem;
+}
 .file-selector-text {
 	font-size: 0.8em;
 	overflow-x: hidden;
@@ -52,7 +80,6 @@ body {
 	border-radius: 4px;
 	background-color: white;
 }
-
 .load-exp-progress {
 	margin-top: 10px;
 }

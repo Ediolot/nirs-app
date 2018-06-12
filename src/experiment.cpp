@@ -19,10 +19,10 @@ void Experiment::load(const QString &path)
     QThread::start();
 }
 
-bool Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
+void Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
 {
     if (frames.isEmpty()) {
-        return false;
+        basal = Frame<double>();
     }
 
     int firstIndex = getFrameAt(msStart);
@@ -32,14 +32,20 @@ bool Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
     Frame<double> aux = Frame<double>(width, height);
 
     for (int i = firstIndex; i < lastIndex; ++i) {
-        aux += frames[i];
+        aux += frames[i].cast<double>();
     }
     aux /= (lastIndex - firstIndex);
     aux = (aux - dark) * gain;
     aux.verticalSplit(height / 2, top, bottom);
     basal = hSaturation(top, bottom);
+}
 
-    return true;
+void Experiment::calculateSatFrames(uint32_t msStart)
+{
+    int firstIndex = getFrameAt(msStart);
+    for (int i = firstIndex; i < frames.size(); ++i) {
+
+    }
 }
 
 const Frame<double> &Experiment::getBasal() const
@@ -81,13 +87,13 @@ void Experiment::run()
         gain = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file.size() - file.pos()) / (width * height * bpp / 8);
-        nframes = 350;
         for (int i = 0; (i < nframes) && !QThread::isInterruptionRequested(); ++i) {
-                 if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
-            else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
-            else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
-            else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP).cast<double>());
-            else throw FrameBPPTooBig(bpp);
+            frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //     if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else throw FrameBPPTooBig(bpp);
 
             emit loadPercent((i + 1.0f) / nframes);
         }

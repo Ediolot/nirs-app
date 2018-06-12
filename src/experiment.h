@@ -27,15 +27,21 @@ private:
     Frame<double> dark;
     Frame<double> gain;
     Frame<double> basal;
-    QVector<Frame<double>> frames;
     QString path;
+
+    // TODO algo mejor ?
+    // QVector<Frame<int8_t>>  frames8;
+    QVector<Frame<int16_t>> frames;
+    // QVector<Frame<int32_t>> frames32;
+    // QVector<Frame<int64_t>> frames64;
 
 public:
     explicit Experiment(const QString &path);
     ~Experiment();
 
     void load(const QString &path);
-    bool calculateBasal(uint32_t msStart, uint32_t msEnd);
+    void calculateBasal(uint32_t msStart, uint32_t msEnd);
+    void calculateSatFrames(uint32_t msStart);
     const Frame<double>& getBasal() const;
 
 signals:

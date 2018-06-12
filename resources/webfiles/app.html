@@ -21,23 +21,50 @@
     </nav>
 
 		<div class="body-div">
-			<div class="card load-card">
-			  <div class="card-body">
+			<div class="flex-container">
+				<div class="custom-card load-card">
 					<input id="select-exp-button" class="btn btn-primary" type="button" value="Select file">
 					<input id="load-exp-button" class="btn btn-primary" type="button" value="Load file">
 					<input id="filepath-exp" class="file-selector-text" type="text">
 					<div class="progress load-exp-progress">
 					  <div id="load-exp-progress-val" class="progress-bar progress-bar-striped" role="progressbar"></div>
 					</div>
-			  </div>
+				</div>
 			</div>
 
-			<div class="card basal-card">
-			  <div class="card-body">
-					<h5 class="card-title basal-card-title">Basal</h5>
-					<input id="generate-basal-button" class="btn btn-primary" type="button" value="Generate">
-					<canvas id="basal-canvas" class="img-canvas" width="260" height="172">
-			  </div>
+			<div class="flex-container">
+				<div class="custom-card basal-card">
+					<div class="custom-card-top">
+						<div class="custom-card-top-left">
+							<h5>Basal</h5>
+						</div>
+						<div class="custom-card-top-right">
+							<input id="generate-basal-button" class="btn btn-primary" type="button" value="Generate">
+						</div>
+					</div>
+					<div class="canvas-container">
+						<canvas id="basal-canvas" class="img-canvas" width="260" height="172">
+					</div>
+				</div>
+			</div>
+
+			<div class="flex-container">
+				<div class="custom-card basal-card">
+					<div class="custom-card-top">
+						<div class="custom-card-top-left">
+							<h5>Navigator</h5>
+						</div>
+						<div class="custom-card-top-right">
+							<input id="navigator-generate-button" class="btn btn-primary" type="button" value="Generate">
+							<input id="navigator-prev-button" class="btn btn-info" type="button" value="<">
+							<div   id="navigator-number" class="number-input">0</div>
+							<input id="navigator-next-button" class="btn btn-info" type="button" value=">">
+						</div>
+					</div>
+					<div class="canvas-container">
+						<canvas id="basal-canvas" class="img-canvas" width="260" height="172">
+					</div>
+				</div>
 			</div>
 		</div>
 
