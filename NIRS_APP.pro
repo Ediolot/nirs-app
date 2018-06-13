@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCLUDEPATH += "D:\Libs"
+INCLUDEPATH += "C:\Deps"
 
 SOURCES += \
     src/experiment.cpp \
@@ -34,7 +35,9 @@ SOURCES += \
     src/webinterface.cpp \
     src/exceptions/filenotfoundexception.cpp \
     src/exceptions/filereaderrorexception.cpp \
-    src/exceptions/framebpptoobig.cpp
+    src/exceptions/framebpptoobig.cpp \
+    src/tasklauncher.cpp \
+    src/task.cpp
 
 HEADERS +=\
     src/experiment.h \
@@ -44,7 +47,9 @@ HEADERS +=\
     src/webinterface.h \
     src/exceptions/filenotfoundexception.h \
     src/exceptions/filereaderrorexception.h \
-    src/exceptions/framebpptoobig.h
+    src/exceptions/framebpptoobig.h \
+    src/tasklauncher.h \
+    src/task.h
 
 FORMS += \
     forms/mainwindow.ui

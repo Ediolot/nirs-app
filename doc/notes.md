@@ -6,7 +6,7 @@
 * Ha sido necesaria crear la clase frame. Han habido complicaciones con las matrices Eigen y los tipos de datos de los templates que se han solucionado creado esa clase
 * Webengine resize slow [https://bugreports.qt.io/browse/QTBUG-58324](https://bugreports.qt.io/browse/QTBUG-58324)
 * Mantener todas las imágenes puede requerir que la aplicación use +2GB, así que se ha compilado una app de 64bits
-
+* QVariantList es la solución para enviar números arbitrarios a través del canal
 
 ## Preocupaciones
 * ¿Podría existir algún problema al leer los datos con little endian y big endian?
