@@ -1,53 +1,88 @@
 let navigatorId = 0;
+let lineChart;
+let label = 0;
 
 $(document).ready(function() {
   let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-      let interface = channel.objects.webinterface;
+    let interface = channel.objects.webinterface;
 
-			$('#select-exp-button').click(e => {
-				interface.openFileDialog(filepath => {
-					$('#filepath-exp').val(filepath);
-				});
+		$('#select-exp-button').click(e => {
+			interface.openFileDialog(filepath => {
+				$('#filepath-exp').val(filepath);
 			});
+		});
 
-      $('#load-exp-button').click(e => {
-				let filepath = $('#filepath-exp').val();
-				if (filepath) {
-					interface.experimentFromFile(filepath);
-				}
-      });
+    $('#load-exp-button').click(e => {
+			let filepath = $('#filepath-exp').val();
+			if (filepath) {
+				interface.experimentFromFile(filepath);
+			}
+    });
 
-			interface.percentUpdateSignal.connect(percent => {
-				$('#load-exp-progress-val').width(Math.round(100 * percent) + "%");
-			});
+		interface.percentUpdateSignal.connect(percent => {
+			$('#load-exp-progress-val').width(Math.round(100 * percent) + "%");
+		});
 
-			interface.fileErrorSignal.connect(err => {
-				console.error(err);
-			});
+		interface.fileErrorSignal.connect(err => {
+			console.error(err);
+		});
 
-			$('#generate-basal-button').click(e => {
-				interface.generateBasal();
-			});
+		$('#generate-basal-button').click(e => {
+			interface.generateBasal();
+		});
 
-			interface.basalUpdateSignal.connect((byteArray, width, height) => {
-				fillCanvas('#basal-canvas', byteArray, width, height);
-			});
+		interface.basalUpdateSignal.connect((byteArray, width, height) => {
+			fillCanvas('#basal-canvas', byteArray, width, height);
+		});
 
-			//-------------------------------------------
+		//-------------------------------------------
 
-			$('#navigator-prev').click(e => {
+		$('#generate-graph-button').click(e => {
+			interface.generateAllSatFrames();
+		});
+
+		//-------------------------------------------
+
+		$('#navigator-prev').click(e => {
+			if (navigatorId > 0) {
 				interface.generateSatFrame(navigatorId - 1);
-			});
+			}
+		});
 
-			$('#navigator-next').click(e => {
-				interface.generateSatFrame(navigatorId + 1);
-			});
+		$('#navigator-next').click(e => {
+			interface.generateSatFrame(navigatorId + 1);
+		});
 
-			interface.satFrameSignal.connect((byteArray, width, height, index) => {
-				fillCanvas('#sat-canvas', byteArray, width, height);
-				$('#navigator-number').html(index);
-				navigatorId = index;
-			});
+		interface.satFrameSignal.connect((byteArray, width, height, index, meanA, meanB) => {
+			fillCanvas('#sat-canvas', byteArray, width, height);
+			$('#navigator-number').html(index);
+			navigatorId = index;
+			lineChart.data.labels.push(++label);
+			lineChart.data.datasets[0].data.push(meanA);
+			lineChart.data.datasets[1].data.push(meanB);
+			lineChart.update();
+		});
+	});
+
+	let ctx = document.getElementById("graph-canvas").getContext('2d');
+	lineChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'O2Hb',
+				data: [],
+				backgroundColor: 'rgba(255, 99, 132, 0.2)',
+				borderColor: 'rgba(255,99,132,1)',
+				borderWidth: 1
+			},{
+				label: 'HHb',
+				data: [],
+				backgroundColor: 'rgba(255, 99, 132, 0.2)',
+				borderColor: 'rgba(255,99,132,1)',
+				borderWidth: 1
+			}]
+		}
 	});
 });
 

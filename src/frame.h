@@ -127,12 +127,17 @@ public:
     QByteArray toIndexed8Base64(int major) const;
 
     /*!
+     * \return
+     */
+    void set(uint32_t row, uint32_t colum, T val);
+
+    /*!
      * \brief Get value at position.
      * \param colum
      * \param row
      * \return Constant reference to value.
      */
-    const T& at(uint32_t colum, uint32_t row) const;
+    const T& at(uint32_t row, uint32_t colum) const;
 
     /*!
      * \brief Split the information of this frame into two new separate frames horizontally.
@@ -369,6 +374,11 @@ QByteArray Frame<T>::toIndexed8Base64(int major) const {
         }
     }
     return result.toBase64(); // No debería ser necesario
+}
+
+template<class T>
+void Frame<T>::set(uint32_t row, uint32_t colum, T val) {
+    data(row, colum) = std::move(val);
 }
 
 template<class T>

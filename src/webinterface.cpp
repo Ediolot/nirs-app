@@ -22,6 +22,7 @@ void WebInterface::experimentFromFile(QString file)
     current = exp;
     connect(exp, &Experiment::loadPercent, [this](float value)   { emit percentUpdateSignal(value); });
     connect(exp, &Experiment::fileError,   [this](QString value) { emit fileErrorSignal(value);     });
+    connect(exp, &Experiment::satFrame,    [this](QByteArray frame, int w, int h, int idx, double meanA, double meanB) { emit satFrameSignal(frame, w, h, idx, meanA, meanB); });
 }
 
 QString WebInterface::openFileDialog()
@@ -38,6 +39,10 @@ void WebInterface::generateBasal()
 
 void WebInterface::generateSatFrame(int index)
 {
-    Frame<double> satFrame = current->generateSatFrame(index, 24000);
-    emit satFrameSignal(satFrame.toIndexed8Base64(FrameConstants::COLUM_MAJOR), satFrame.getWidth(), satFrame.getHeight(), index);
+    current->generateSatFrame(index, 24000);
+}
+
+void WebInterface::generateAllSatFrames()
+{
+    current->generateGraphValues(24000);
 }

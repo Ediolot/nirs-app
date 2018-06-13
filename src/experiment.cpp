@@ -3,6 +3,7 @@
 Experiment::Experiment(const QString &path)
     : QThread()
     , path("")
+    , task(1)
 {
     load(path);
 }
@@ -16,6 +17,7 @@ Experiment::~Experiment()
 void Experiment::load(const QString &path)
 {
     this->path = path;
+    task = 1;
     QThread::start();
 }
 
@@ -40,19 +42,58 @@ void Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
     basal = hSaturation(top, bottom);
 }
 
-Frame<double> Experiment::generateSatFrame(int index, uint32_t msStart)
+void Experiment::maskOperation(Frame<double> &img1, Frame<double> &img2) const
+{
+    auto m1 = img1.getData();
+    auto m2 = img2.getData();
+
+    for (int row = 0; row < m1.rows(); ++row) {
+        for (int col = 0; col < m1.cols(); ++col) {
+            if (m1(row, col) > 0.9 || m2(row, col) > 0.9) {// TODO constant
+                img1.set(row, col, 0);
+                img2.set(row, col, 0);
+            }
+        }
+    }
+}
+
+void Experiment::generateSatFrame(int index, uint32_t msStart)
 {
     int indexStart = getFrameAt(msStart);
     Frame<double> aux;
     Frame<double> top;
     Frame<double> bottom;
+    double topMean;
+    double bottomMean;
 
     aux = frames[indexStart + index].cast<double>();
     aux = (aux - dark) * gain;
     aux.verticalSplit(height / 2, top, bottom);
+    maskOperation(top, bottom);
+    topMean = top.getData().mean();
+    bottomMean = bottom.getData().mean();
+
     aux = hSaturation(top, bottom);
     aux -= basal;
-    return std::move(aux);
+    aux *= 100;
+
+    emit satFrame(aux.toIndexed8Base64(FrameConstants::COLUM_MAJOR),
+                  aux.getWidth(),
+                  aux.getHeight(),
+                  index,
+                  topMean,
+                  bottomMean);
+}
+
+void Experiment::generateGraphValues(uint32_t msStart)
+{
+    task = 0;
+    this->msStart = msStart;
+    QThread::start();
+//    for (int i = getFrameAt(msStart); i < frames.size(); ++i) {
+//        generateSatFrame(i);
+//    }
+//    qDebug() << "done";
 }
 
 const Frame<double> &Experiment::getBasal() const
@@ -72,6 +113,13 @@ int Experiment::getStandardBpp(int bpp)
 // Es conveniente que run no haga throw de ninguna excepción
 void Experiment::run()
 {
+    if (task == 0) {
+        for (int i = getFrameAt(msStart); i < frames.size(); ++i) {
+            generateSatFrame(i);
+        }
+        return;
+    }
+
     try {
         assert(sizeof(float ) == 4); // 32 bit Float  // TODO que ambos sean por configuración
         assert(sizeof(double) == 8); // 64 bit Double
@@ -118,6 +166,10 @@ void Experiment::run()
 
 int Experiment::getFrameAt(uint32_t ms) const
 {
+    if (ms == 0) {
+        return 0;
+    }
+
     uint64_t ns = uint64_t(ms) * 1000000UL;
     uint64_t firstTimestamp = frames[0].getTimestamp();
     uint64_t currentNs = 0;

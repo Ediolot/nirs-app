@@ -28,6 +28,8 @@ private:
     Frame<double> gain;
     Frame<double> basal;
     QString path;
+    int task;
+    int msStart;
 
     // TODO algo mejor ?
     // QVector<Frame<int8_t>>  frames8;
@@ -41,7 +43,9 @@ public:
 
     void load(const QString &path);
     void calculateBasal(uint32_t msStart, uint32_t msEnd);
-    Frame<double> generateSatFrame(int index, uint32_t msStart = 0);
+    void maskOperation(Frame<double>& img1, Frame<double>& img2) const;
+    void generateSatFrame(int index, uint32_t msStart = 0);
+    void generateGraphValues(uint32_t msStart = 0);
     const Frame<double>& getBasal() const;
 
 signals:
@@ -49,6 +53,7 @@ signals:
     void loadStarted();
     void loadReady();
     void fileError(QString);
+    void satFrame(QByteArray, int, int, int, double, double); // frame, width, height, index, meanTop, meanBot
 
 private:
     int getStandardBpp(int bpp);

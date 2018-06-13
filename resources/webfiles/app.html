@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="bootflat/css/bootflat.min.css">
     <link rel="stylesheet" href="style.css">
 <body>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.3/Chart.bundle.min.js"></script>
 
     <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
         <a class="navbar-brand" href="#">NIRS APP</a>
@@ -67,6 +68,20 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="custom-card graph-card">
+				<div class="custom-card-top">
+					<div class="custom-card-top-left">
+						<h5>Graph</h5>
+					</div>
+					<div class="custom-card-top-right">
+						<input id="generate-graph-button" class="btn btn-primary" type="button" value="Generate">
+					</div>
+				</div>
+				<div class="canvas-container">
+					<canvas id="graph-canvas" class="img-canvas" width="1140" height="260">
+				</div>
+			</div>
 		</div>
 
     <!-- QT -->
@@ -80,6 +95,9 @@
     <script src="bootflat/js/icheck.min.js"></script>
     <script src="bootflat/js/jquery.fs.selecter.min.js"></script>
     <script src="bootflat/js/jquery.fs.stepper.min.js"></script>
+
+		<!-- Chart JS NO FUNCIONA ??? -->
+		<script src="chartjs/Chart.bundle.min.js"></script>
 
     <!-- APP -->
     <script src="app.js"></script>
