@@ -16,7 +16,7 @@
 
 	<div class="content">
 		<div class="top-content">
-			<div class="card-spacer-vertical"></div>
+			<div class="card-spacer-top"></div>
 			<!-- Card -->
 			<div class="card">
 				<div class="card-top">
@@ -27,7 +27,7 @@
 			<!-- /Card -->
 		</div>
 		<div class="bottom-content">
-			<div class="card-spacer-vertical"></div>
+			<div class="card-spacer-top"></div>
 			<div class="card-container card-container-load">
 				<!-- Card -->
 				<div class="card-spacer"></div>
@@ -36,10 +36,11 @@
 						<span class="card-title">LOAD & SAVE</span>
 					</div>
 					<div class="card-content">
-						<input class="btn btn-big" type="button" name="" value="SELECT">
-						<input class="btn btn-big" type="button" name="" value="LOAD">
-						<input class="exp-selector" type="text" name"" placeholder="Select file...">
+						<input id="select-exp-button" class="btn btn-big" type="button" name="" value="SELECT">
+						<input id="load-exp-button"   class="btn btn-big" type="button" name="" value="LOAD">
+						<input id="filepath-exp"      class="exp-selector" type="text" name"" placeholder="Select file...">
 					</div>
+          <div id="load-exp-progress" class="card-load"></div>
 				</div>
 				<!-- /Card -->
 			</div>
@@ -51,9 +52,10 @@
 						<span class="card-title">BIAS</span>
 					</div>
 					<div class="card-content">
-						<input class="btn btn-big" type="button" name="" value="GENERATE">
-						<canvas id="sat-canvas" class="img-canvas" width="260" height="172">
+						<input id="generate-basal-button" class="btn btn-big" type="button" name="" value="GENERATE">
+						<canvas id="basal-canvas" class="img-canvas" width="260" height="172">
 					</div>
+          <div class="card-load"></div>
 				</div>
 				<!-- /Card -->
 			</div>
@@ -63,12 +65,15 @@
 				<div class="card">
 					<div class="card-top">
 						<span class="card-title">SATURATION</span>
+            <span id="nav-number" class="card-badge">0</span>
 					</div>
 					<div class="card-content">
-						<input class="btn btn-big" type="button" name="" value="PREV">
-						<input class="btn btn-big" type="button" name="" value="NEXT">
-						<canvas id="graph-canvas" class="img-canvas" width="260" height="172">
+						<input id="navigator-prev" class="btn btn-big" type="button" name="" value="PREV">
+						<input id="navigator-next" class="btn btn-big" type="button" name="" value="NEXT">
+						<input id="generate-graph-button" class="btn btn-big" type="button" name="" value="GRAPH ALL">
+						<canvas id="sat-canvas" class="img-canvas" width="260" height="172">
 					</div>
+          <div class="card-load"></div>
 				</div>
 				<!-- /Card -->
 			</div>

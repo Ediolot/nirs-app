@@ -3,69 +3,77 @@ let lineChart;
 let label = 0;
 
 $(document).ready(function() {
-  // let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-  //   let interface = channel.objects.webinterface;
-	//
-	// 	$('#select-exp-button').click(e => {
-	// 		interface.openFileDialog(filepath => {
-	// 			$('#filepath-exp').val(filepath);
-	// 		});
-	// 	});
-	//
-  //   $('#load-exp-button').click(e => {
-	// 		let filepath = $('#filepath-exp').val();
-	// 		if (filepath) {
-	// 			interface.experimentFromFile(filepath);
-	// 		}
-  //   });
-	//
-	// 	interface.percentUpdateSignal.connect(percent => {
-	// 		$('#load-exp-progress-val').width(Math.round(100 * percent) + '%');
-	// 	});
-	//
-	// 	interface.fileErrorSignal.connect(err => {
-	// 		console.error(err);
-	// 	});
-	//
-	// 	$('#generate-basal-button').click(e => {
-	// 		interface.generateBasal();
-	// 	});
-	//
-	// 	interface.basalUpdateSignal.connect((byteArray, width, height) => {
-	// 		fillCanvas('#basal-canvas', byteArray, width, height);
-	// 	});
-	//
-	// 	//-------------------------------------------
-	//
-	// 	$('#generate-graph-button').click(e => {
-	// 		interface.generateAllSatFrames();
-	// 	});
-	//
-	// 	//-------------------------------------------
-	//
-	// 	$('#navigator-prev').click(e => {
-	// 		if (navigatorId > 0) {
-	// 			interface.generateSatFrame(navigatorId - 1);
-	// 		}
-	// 	});
-	//
-	// 	$('#navigator-next').click(e => {
-	// 		interface.generateSatFrame(navigatorId + 1);
-	// 	});
-	//
-	// 	interface.satFrameSignal.connect((byteArray, width, height, index, meanA, meanB) => {
-	// 		fillCanvas('#sat-canvas', byteArray, width, height);
-	// 		$('#navigator-number').html(index);
-	// 		navigatorId = index;
-	// 		lineChart.data.labels.push(++label);
-	// 		lineChart.data.datasets[0].data.push(meanA);
-	// 		lineChart.data.datasets[1].data.push(meanB);
-	// 		lineChart.update();
-	// 	});
-	// });
+  let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+    let interface = channel.objects.webinterface;
 
-	var data = [];
-  var g = new Dygraph(document.getElementById('graph'), data,
+		$('#select-exp-button').click(e => {
+			interface.openFileDialog(filepath => {
+				$('#filepath-exp').val(filepath);
+			});
+		});
+
+    $('#load-exp-button').click(e => {
+			let filepath = $('#filepath-exp').val();
+			if (filepath) {
+				interface.experimentFromFile(filepath);
+			}
+    });
+
+		interface.percentUpdateSignal.connect(percent => {
+			if (percent >= 1)
+				$('#load-exp-progress').hide();
+			else
+				$('#load-exp-progress').show();
+
+			$('#load-exp-progress').width(Math.round(100 * percent) + '%');
+		});
+
+		interface.fileErrorSignal.connect(err => {
+			console.error(err);
+		});
+
+		$('#generate-basal-button').click(e => {
+			interface.generateBasal();
+		});
+
+		interface.basalUpdateSignal.connect((byteArray, width, height) => {
+			fillCanvas('#basal-canvas', byteArray, width, height);
+		});
+
+		//-------------------------------------------
+
+		$('#generate-graph-button').click(e => {
+			interface.calculateAllSatValues();
+		});
+
+		//-------------------------------------------
+
+		$('#navigator-prev').click(e => {
+			if (navigatorId > 0) {
+				interface.generateSatFrame(navigatorId - 1);
+			}
+		});
+
+		$('#navigator-next').click(e => {
+			interface.generateSatFrame(navigatorId + 1);
+		});
+
+		interface.satFrameSignal.connect((byteArray, width, height, index) => {
+			fillCanvas('#sat-canvas', byteArray, width, height);
+			$('#nav-number').html(index);
+			navigatorId = index;
+		});
+
+		interface.satValues.connect((A, B) => {
+		  let data = [];
+		  for (let i = 0; i < A.length; ++i) {
+		    data.push([i, A[i], B[i]]);
+		  }
+		  g.updateOptions( { 'file': data } );
+		});
+	});
+
+  var g = new Dygraph(document.getElementById('graph'), [],
   {
     showRoller: true,
     labels: ['', 'Hhb', 'OxHb'],
@@ -84,12 +92,6 @@ $(document).ready(function() {
 		legend: 'always',
 		gridLineColor: '#ddd'
   });
-
-  data = [];
-  for (let i = 0; i < 300; ++i) {
-    data.push([i, 100 * Math.sin(i * 0.1) + Math.random() * 50 + 200, i * 0.5 + Math.random() * 50 - 20]);
-  }
-  g.updateOptions( { 'file': data } );
 });
 
 let fillCanvas = function(canvasId, byteArray, width, height) {
