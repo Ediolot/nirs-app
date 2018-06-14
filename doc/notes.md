@@ -13,7 +13,7 @@
 ## Preocupaciones
 * ¿Podría existir algún problema al leer los datos con little endian y big endian?
 * ¿Las excepciones heredan de std::exception o std::runtime mejor?
-
+* Hay que hacer un wait() de los TaskLauncher antes de acabar el programa
 
 ## Misc
 * El tiempo de respuesta (latencia) desde que el js llama a una funci�n hasta que se devuelve el resultado es muy bajo (<1ms)
