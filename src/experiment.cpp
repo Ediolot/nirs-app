@@ -107,8 +107,12 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     // 1" 17'
     QVariantList *meanA_1 = new QVariantList;
     QVariantList *meanA_2 = new QVariantList;
+    QVariantList *meanA_3 = new QVariantList;
+    QVariantList *meanA_4 = new QVariantList;
     QVariantList *meanB_1 = new QVariantList;
     QVariantList *meanB_2 = new QVariantList;
+    QVariantList *meanB_3 = new QVariantList;
+    QVariantList *meanB_4 = new QVariantList;
     int start = getFrameAt(msStart);
     int length = frames.size() - start;
 
@@ -122,7 +126,7 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
 
     emit taskStart(TAG_PROCESS);
     TaskLauncher([=, this](){
-        for (int i = start; i < (start + length / 2); ++i) {
+        for (int i = start; i < (start + length / 4); ++i) {
             Frame<double> aux;
             Frame<double> top;
             Frame<double> bottom;
@@ -140,14 +144,18 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
         }
         if (--(*threads) == 0) {
             meanA_1->append(*meanA_2);
+            meanA_1->append(*meanA_3);
+            meanA_1->append(*meanA_4);
             meanB_1->append(*meanB_2);
+            meanB_1->append(*meanB_3);
+            meanB_1->append(*meanB_4);
             emit taskComplete(TAG_PROCESS);
             emit satValues(*meanA_1, *meanB_1);
             // delete
         }
     });
     TaskLauncher([=, this](){
-        for (int i = (start + length / 2); i < frames.size(); ++i) {
+        for (int i = (start + length / 4); i < (start + length / 4) * 2; ++i) {
             Frame<double> aux;
             Frame<double> top;
             Frame<double> bottom;
@@ -165,7 +173,67 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
         }
         if (--(*threads) == 0) {
             meanA_1->append(*meanA_2);
+            meanA_1->append(*meanA_3);
+            meanA_1->append(*meanA_4);
             meanB_1->append(*meanB_2);
+            meanB_1->append(*meanB_3);
+            meanB_1->append(*meanB_4);
+            emit taskComplete(TAG_PROCESS);
+            emit satValues(*meanA_1, *meanB_1);
+        }
+    });
+    TaskLauncher([=, this](){
+        for (int i = (start + length / 4) * 2; i < (start + length / 4) * 3; ++i) {
+            Frame<double> aux;
+            Frame<double> top;
+            Frame<double> bottom;
+
+            aux = frames[i].cast<double>();
+            aux = (aux - dark) * gain;
+            aux.verticalSplit(height / 2, top, bottom);
+            this->maskOperation(top, bottom);
+            meanA_3->append(top.getData().mean());
+            meanB_3->append(bottom.getData().mean());
+            if (i % 10 == 0) {
+                (*elementsDone) += 10;
+                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
+            }
+        }
+        if (--(*threads) == 0) {
+            meanA_1->append(*meanA_2);
+            meanA_1->append(*meanA_3);
+            meanA_1->append(*meanA_4);
+            meanB_1->append(*meanB_2);
+            meanB_1->append(*meanB_3);
+            meanB_1->append(*meanB_4);
+            emit taskComplete(TAG_PROCESS);
+            emit satValues(*meanA_1, *meanB_1);
+        }
+    });
+    TaskLauncher([=, this](){
+        for (int i = (start + length / 4) * 3; i < frames.size(); ++i) {
+            Frame<double> aux;
+            Frame<double> top;
+            Frame<double> bottom;
+
+            aux = frames[i].cast<double>();
+            aux = (aux - dark) * gain;
+            aux.verticalSplit(height / 2, top, bottom);
+            this->maskOperation(top, bottom);
+            meanA_4->append(top.getData().mean());
+            meanB_4->append(bottom.getData().mean());
+            if (i % 10 == 0) {
+                (*elementsDone) += 10;
+                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
+            }
+        }
+        if (--(*threads) == 0) {
+            meanA_1->append(*meanA_2);
+            meanA_1->append(*meanA_3);
+            meanA_1->append(*meanA_4);
+            meanB_1->append(*meanB_2);
+            meanB_1->append(*meanB_3);
+            meanB_1->append(*meanB_4);
             emit taskComplete(TAG_PROCESS);
             emit satValues(*meanA_1, *meanB_1);
         }
