@@ -22,6 +22,8 @@ class Experiment : private QThread, public QObject
 {
     Q_OBJECT // For QDebug
 private:
+    const QString TAG_LOAD = "LOAD";
+
     uint32_t width;  // Full frame width
     uint32_t height; // Full frame height (2x subframes)
     uint32_t bpp;    // Bits per pixel
@@ -50,9 +52,10 @@ public:
     const Frame<double>& getBasal() const;
 
 signals:
-    void loadPercent(float);
-    void loadStarted();
-    void loadReady();
+    void taskUpdate(QString, double);
+    void taskStart(QString);
+    void taskComplete(QString);
+
     void fileError(QString);
     void satFrame(QByteArray, int, int, int, double, double); // frame, width, height, index, meanTop, meanBot
     void satValues(QVariantList, QVariantList);

@@ -88,12 +88,9 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     QVariantList meanA;
     QVariantList meanB;
     for (int i = getFrameAt(msStart); i < frames.size(); ++i) {
-        int indexStart = getFrameAt(msStart);
         Frame<double> aux;
         Frame<double> top;
         Frame<double> bottom;
-        double topMean;
-        double bottomMean;
 
         aux = frames[i].cast<double>();
         aux = (aux - dark) * gain;
@@ -123,6 +120,7 @@ int Experiment::getStandardBpp(int bpp)
 // Es conveniente que run no haga throw de ninguna excepción
 void Experiment::run()
 {
+    emit taskStart(TAG_LOAD);
     try {
         assert(sizeof(float ) == 4); // 32 bit Float  // TODO que ambos sean por configuración
         assert(sizeof(double) == 8); // 64 bit Double
@@ -134,7 +132,6 @@ void Experiment::run()
         }
 
         // Width, Height, Bpp. If any fails, throw exception
-        emit loadStarted();
         if (file.read(reinterpret_cast<char*>(&height), sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
         if (file.read(reinterpret_cast<char*>(&width),  sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
         if (file.read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
@@ -153,11 +150,10 @@ void Experiment::run()
             //else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
             //else throw FrameBPPTooBig(bpp);
 
-            emit loadPercent((i + 1.0f) / nframes);
+            emit taskUpdate(TAG_LOAD, (i + 1.0f) / nframes);
         }
 
         file.close();
-        emit loadReady();
 
     // The error will be controlled by the javascript interface. So we can just emit it
     } catch (std::exception &e) {
@@ -165,6 +161,7 @@ void Experiment::run()
     } catch (...) {
         emit fileError("Fatal error");
     }
+    emit taskComplete(TAG_LOAD);
 }
 
 int Experiment::getFrameAt(uint32_t ms) const

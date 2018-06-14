@@ -29,7 +29,10 @@ public:
     Q_INVOKABLE void calculateAllSatValues();
 
 signals:
-    void percentUpdateSignal(float);
+    void taskUpdateSignal(QString, double);
+    void taskCompleteSignal(QString);
+    void taskStartSignal(QString);
+
     void fileErrorSignal(QString);
     void basalUpdateSignal(QByteArray, int, int);
     void satFrameSignal(QByteArray, int, int, int);

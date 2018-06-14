@@ -20,7 +20,10 @@ void WebInterface::experimentFromFile(QString file)
     Experiment* exp = new Experiment(file);
     experiments.push_back(exp);
     current = exp;
-    connect(exp, &Experiment::loadPercent, [this](float value)   { emit percentUpdateSignal(value); });
+    connect(exp, &Experiment::taskComplete, [this](QString tag)             { emit taskCompleteSignal(tag);    });
+    connect(exp, &Experiment::taskStart,    [this](QString tag)             { emit taskStartSignal(tag);       });
+    connect(exp, &Experiment::taskUpdate,   [this](QString tag, double val) { emit taskUpdateSignal(tag, val); });
+
     connect(exp, &Experiment::fileError,   [this](QString value) { emit fileErrorSignal(value);     });
     connect(exp, &Experiment::satValues,   [this](QVariantList A, QVariantList B) { emit satValues(A, B); });
     connect(exp, &Experiment::satFrame,    [this](QByteArray frame, int w, int h, int idx) { emit satFrameSignal(frame, w, h, idx); });

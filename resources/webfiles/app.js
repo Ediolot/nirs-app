@@ -19,13 +19,39 @@ $(document).ready(function() {
 			}
     });
 
-		interface.percentUpdateSignal.connect(percent => {
-			if (percent >= 1)
-				$('#load-exp-progress').hide();
-			else
-				$('#load-exp-progress').show();
+		interface.taskCompleteSignal.connect(tag => {
+      let element = null
+			if (tag === 'LOAD') {
+        element = $('#load-exp-progress');
+      }
 
-			$('#load-exp-progress').width(Math.round(100 * percent) + '%');
+      if (element) {
+  			element.width('100%');
+				element.hide();
+      }
+		});
+
+		interface.taskStartSignal.connect(tag => {
+      let element = null
+			if (tag === 'LOAD') {
+        element = $('#load-exp-progress');
+      }
+
+      if (element) {
+  			element.width('0%');
+				element.show();
+      }
+		});
+
+		interface.taskUpdateSignal.connect((tag, percent) => {
+      let element = null
+			if (tag === 'LOAD') {
+        element = $('#load-exp-progress');
+      }
+
+      if (element) {
+        element.width(Math.round(100 * percent) + '%');
+      }
 		});
 
 		interface.fileErrorSignal.connect(err => {
