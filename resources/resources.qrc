@@ -67,5 +67,6 @@
         <file>webfiles/jquery-3.3.1.min.js</file>
         <file>webfiles/style.css</file>
         <file>images/test.png</file>
+        <file>webfiles/images/ico.png</file>
     </qresource>
 </RCC>

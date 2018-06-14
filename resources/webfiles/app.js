@@ -3,92 +3,98 @@ let lineChart;
 let label = 0;
 
 $(document).ready(function() {
-  let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-    let interface = channel.objects.webinterface;
+  // let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+  //   let interface = channel.objects.webinterface;
+	//
+	// 	$('#select-exp-button').click(e => {
+	// 		interface.openFileDialog(filepath => {
+	// 			$('#filepath-exp').val(filepath);
+	// 		});
+	// 	});
+	//
+  //   $('#load-exp-button').click(e => {
+	// 		let filepath = $('#filepath-exp').val();
+	// 		if (filepath) {
+	// 			interface.experimentFromFile(filepath);
+	// 		}
+  //   });
+	//
+	// 	interface.percentUpdateSignal.connect(percent => {
+	// 		$('#load-exp-progress-val').width(Math.round(100 * percent) + '%');
+	// 	});
+	//
+	// 	interface.fileErrorSignal.connect(err => {
+	// 		console.error(err);
+	// 	});
+	//
+	// 	$('#generate-basal-button').click(e => {
+	// 		interface.generateBasal();
+	// 	});
+	//
+	// 	interface.basalUpdateSignal.connect((byteArray, width, height) => {
+	// 		fillCanvas('#basal-canvas', byteArray, width, height);
+	// 	});
+	//
+	// 	//-------------------------------------------
+	//
+	// 	$('#generate-graph-button').click(e => {
+	// 		interface.generateAllSatFrames();
+	// 	});
+	//
+	// 	//-------------------------------------------
+	//
+	// 	$('#navigator-prev').click(e => {
+	// 		if (navigatorId > 0) {
+	// 			interface.generateSatFrame(navigatorId - 1);
+	// 		}
+	// 	});
+	//
+	// 	$('#navigator-next').click(e => {
+	// 		interface.generateSatFrame(navigatorId + 1);
+	// 	});
+	//
+	// 	interface.satFrameSignal.connect((byteArray, width, height, index, meanA, meanB) => {
+	// 		fillCanvas('#sat-canvas', byteArray, width, height);
+	// 		$('#navigator-number').html(index);
+	// 		navigatorId = index;
+	// 		lineChart.data.labels.push(++label);
+	// 		lineChart.data.datasets[0].data.push(meanA);
+	// 		lineChart.data.datasets[1].data.push(meanB);
+	// 		lineChart.update();
+	// 	});
+	// });
 
-		$('#select-exp-button').click(e => {
-			interface.openFileDialog(filepath => {
-				$('#filepath-exp').val(filepath);
-			});
-		});
-
-    $('#load-exp-button').click(e => {
-			let filepath = $('#filepath-exp').val();
-			if (filepath) {
-				interface.experimentFromFile(filepath);
+	var data = [];
+  var g = new Dygraph(document.getElementById('graph'), data,
+  {
+    showRoller: true,
+    labels: ['', 'Hhb', 'OxHb'],
+		series: {
+			Hhb: {
+				color: '#2A8BB9',
+				strokeWidth: 2,
+				drawPoints: false
+			},
+			OxHb: {
+				color: '#fc0023',
+				strokeWidth: 2,
+				drawPoints: false
 			}
-    });
+		},
+		legend: 'always',
+		gridLineColor: '#ddd'
+  });
 
-		interface.percentUpdateSignal.connect(percent => {
-			$('#load-exp-progress-val').width(Math.round(100 * percent) + "%");
-		});
-
-		interface.fileErrorSignal.connect(err => {
-			console.error(err);
-		});
-
-		$('#generate-basal-button').click(e => {
-			interface.generateBasal();
-		});
-
-		interface.basalUpdateSignal.connect((byteArray, width, height) => {
-			fillCanvas('#basal-canvas', byteArray, width, height);
-		});
-
-		//-------------------------------------------
-
-		$('#generate-graph-button').click(e => {
-			interface.generateAllSatFrames();
-		});
-
-		//-------------------------------------------
-
-		$('#navigator-prev').click(e => {
-			if (navigatorId > 0) {
-				interface.generateSatFrame(navigatorId - 1);
-			}
-		});
-
-		$('#navigator-next').click(e => {
-			interface.generateSatFrame(navigatorId + 1);
-		});
-
-		interface.satFrameSignal.connect((byteArray, width, height, index, meanA, meanB) => {
-			fillCanvas('#sat-canvas', byteArray, width, height);
-			$('#navigator-number').html(index);
-			navigatorId = index;
-			lineChart.data.labels.push(++label);
-			lineChart.data.datasets[0].data.push(meanA);
-			lineChart.data.datasets[1].data.push(meanB);
-			lineChart.update();
-		});
-	});
-
-	let ctx = document.getElementById("graph-canvas").getContext('2d');
-	lineChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: [],
-			datasets: [{
-				label: 'O2Hb',
-				data: [],
-				backgroundColor: 'rgba(255, 99, 132, 0.2)',
-				borderColor: 'rgba(255,99,132,1)',
-				borderWidth: 1
-			},{
-				label: 'HHb',
-				data: [],
-				backgroundColor: 'rgba(255, 99, 132, 0.2)',
-				borderColor: 'rgba(255,99,132,1)',
-				borderWidth: 1
-			}]
-		}
-	});
+  data = [];
+  for (let i = 0; i < 300; ++i) {
+    data.push([i, 100 * Math.sin(i * 0.1) + Math.random() * 50 + 200, i * 0.5 + Math.random() * 50 - 20]);
+  }
+  g.updateOptions( { 'file': data } );
 });
 
 let fillCanvas = function(canvasId, byteArray, width, height) {
 	let canvas = $(canvasId);
-	let ctx = canvas[0].getContext("2d");
+	let ctx = canvas[0].getContext('2d');
 	let id = ctx.createImageData(width, height);
 	let sz = width * height;
 
