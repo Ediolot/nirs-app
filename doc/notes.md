@@ -8,7 +8,7 @@
 * Mantener todas las imágenes puede requerir que la aplicación use +2GB, así que se ha compilado una app de 64bits
 * La función toIndexed8 tiene que devolver el array en base64 para que poder leero en el javascript. Debe de haber una forma de hacerlo sin necesidad de convertir a base64. Además, se pierde la información.
 * Siguen habiendo problemas con el tema de las unidades del frame
-
+* QVariantList es la solución para enviar números arbitrarios a través del canal
 
 ## Preocupaciones
 * ¿Podría existir algún problema al leer los datos con little endian y big endian?
