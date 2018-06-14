@@ -23,6 +23,8 @@ $(document).ready(function() {
       let element = null
 			if (tag === 'LOAD') {
         element = $('#load-exp-progress');
+      } else if (tag === 'PROCESS') {
+        element = $('#process-progress');
       }
 
       if (element) {
@@ -35,6 +37,8 @@ $(document).ready(function() {
       let element = null
 			if (tag === 'LOAD') {
         element = $('#load-exp-progress');
+      } else if (tag === 'PROCESS') {
+        element = $('#process-progress');
       }
 
       if (element) {
@@ -47,6 +51,8 @@ $(document).ready(function() {
       let element = null
 			if (tag === 'LOAD') {
         element = $('#load-exp-progress');
+      } else if (tag === 'PROCESS') {
+        element = $('#process-progress');
       }
 
       if (element) {

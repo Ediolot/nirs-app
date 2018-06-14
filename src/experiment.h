@@ -13,6 +13,7 @@
 #include "frame.h"
 #include "exceptions/filenotfoundexception.h"
 #include "exceptions/framebpptoobig.h"
+#include "tasklauncher.h"
 
 // TODO usar QFile
 // TODO usar QString en las excepciones
@@ -23,6 +24,7 @@ class Experiment : private QThread, public QObject
     Q_OBJECT // For QDebug
 private:
     const QString TAG_LOAD = "LOAD";
+    const QString TAG_PROCESS = "PROCESS";
 
     uint32_t width;  // Full frame width
     uint32_t height; // Full frame height (2x subframes)
