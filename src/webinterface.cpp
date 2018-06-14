@@ -22,7 +22,8 @@ void WebInterface::experimentFromFile(QString file)
     current = exp;
     connect(exp, &Experiment::loadPercent, [this](float value)   { emit percentUpdateSignal(value); });
     connect(exp, &Experiment::fileError,   [this](QString value) { emit fileErrorSignal(value);     });
-    connect(exp, &Experiment::satFrame,    [this](QByteArray frame, int w, int h, int idx, double meanA, double meanB) { emit satFrameSignal(frame, w, h, idx, meanA, meanB); });
+    connect(exp, &Experiment::satValues,   [this](QVariantList A, QVariantList B) { emit satValues(A, B); });
+    connect(exp, &Experiment::satFrame,    [this](QByteArray frame, int w, int h, int idx) { emit satFrameSignal(frame, w, h, idx); });
 }
 
 QString WebInterface::openFileDialog()
@@ -42,7 +43,7 @@ void WebInterface::generateSatFrame(int index)
     current->generateSatFrame(index, 24000);
 }
 
-void WebInterface::generateAllSatFrames()
+void WebInterface::calculateAllSatValues()
 {
-    current->generateGraphValues(24000);
+    current->calculateAllSatValues(24000);
 }

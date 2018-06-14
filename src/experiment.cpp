@@ -3,7 +3,6 @@
 Experiment::Experiment(const QString &path)
     : QThread()
     , path("")
-    , task(1)
 {
     load(path);
 }
@@ -17,7 +16,6 @@ Experiment::~Experiment()
 void Experiment::load(const QString &path)
 {
     this->path = path;
-    task = 1;
     QThread::start();
 }
 
@@ -85,15 +83,27 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
                   bottomMean);
 }
 
-void Experiment::generateGraphValues(uint32_t msStart)
+void Experiment::calculateAllSatValues(uint32_t msStart)
 {
-    task = 0;
-    this->msStart = msStart;
-    QThread::start();
-//    for (int i = getFrameAt(msStart); i < frames.size(); ++i) {
-//        generateSatFrame(i);
-//    }
-//    qDebug() << "done";
+    QVariantList meanA;
+    QVariantList meanB;
+    for (int i = getFrameAt(msStart); i < frames.size(); ++i) {
+        int indexStart = getFrameAt(msStart);
+        Frame<double> aux;
+        Frame<double> top;
+        Frame<double> bottom;
+        double topMean;
+        double bottomMean;
+
+        aux = frames[i].cast<double>();
+        aux = (aux - dark) * gain;
+        aux.verticalSplit(height / 2, top, bottom);
+        maskOperation(top, bottom);
+        meanA.append(top.getData().mean());
+        meanB.append(bottom.getData().mean());
+        qDebug() << i << "/" << frames.size();
+    }
+    emit satValues(meanA, meanB);
 }
 
 const Frame<double> &Experiment::getBasal() const
@@ -113,13 +123,6 @@ int Experiment::getStandardBpp(int bpp)
 // Es conveniente que run no haga throw de ninguna excepción
 void Experiment::run()
 {
-    if (task == 0) {
-        for (int i = getFrameAt(msStart); i < frames.size(); ++i) {
-            generateSatFrame(i);
-        }
-        return;
-    }
-
     try {
         assert(sizeof(float ) == 4); // 32 bit Float  // TODO que ambos sean por configuración
         assert(sizeof(double) == 8); // 64 bit Double

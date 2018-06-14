@@ -9,6 +9,7 @@
 #include <cmath>
 #include <QFile>
 #include <QThread>
+#include <QVariantList>
 #include "frame.h"
 #include "exceptions/filenotfoundexception.h"
 #include "exceptions/framebpptoobig.h"
@@ -45,7 +46,7 @@ public:
     void calculateBasal(uint32_t msStart, uint32_t msEnd);
     void maskOperation(Frame<double>& img1, Frame<double>& img2) const;
     void generateSatFrame(int index, uint32_t msStart = 0);
-    void generateGraphValues(uint32_t msStart = 0);
+    void calculateAllSatValues(uint32_t msStart = 0);
     const Frame<double>& getBasal() const;
 
 signals:
@@ -54,6 +55,7 @@ signals:
     void loadReady();
     void fileError(QString);
     void satFrame(QByteArray, int, int, int, double, double); // frame, width, height, index, meanTop, meanBot
+    void satValues(QVariantList, QVariantList);
 
 private:
     int getStandardBpp(int bpp);

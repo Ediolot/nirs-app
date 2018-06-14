@@ -28,6 +28,7 @@
 ## TODOs
 
 * Selector idioma
+* Multitask al generar el gráfico
 
 ## Bibliografía
 * [1] Documentación QT
