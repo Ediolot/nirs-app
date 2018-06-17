@@ -8,11 +8,18 @@
 class TaskLauncher : public QObject
 {
     Q_OBJECT
-private:
-    Task *task;
 
 public:
-    TaskLauncher(std::function<void (void)> task, std::function<void (QString)> onError = [](QString dummy){});
+    static void create(std::function<void (void)> task,
+                       std::function<void (void)> after,
+                       std::function<void (QString)> onError = [](QString dummy){});
+
+    static void create(std::function<void (void)> task,
+                       std::function<void (QString)> onError = [](QString dummy){});
+
+    static void afterAll(std::vector<std::function<void (void)>> tasks,
+                         std::function<void (void)> afterAll,
+                         std::function<void (QString)> onError = [](QString dummy){});
 };
 
 #endif // TASKLAUNCHER_H

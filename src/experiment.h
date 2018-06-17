@@ -19,7 +19,7 @@
 // TODO usar QString en las excepciones
 // TODO file.read devuelve un código de error que hay que leer
 
-class Experiment : private QThread, public QObject
+class Experiment : public QObject
 {
     Q_OBJECT // For QDebug
 private:
@@ -43,8 +43,8 @@ private:
     // QVector<Frame<int64_t>> frames64;
 
 public:
+    Experiment();
     explicit Experiment(const QString &path);
-    ~Experiment();
 
     void load(const QString &path);
     void calculateBasal(uint32_t msStart, uint32_t msEnd);
@@ -64,7 +64,6 @@ signals:
 
 private:
     int getStandardBpp(int bpp);
-    void run() override;
     int getFrameAt(uint32_t ms) const;
     Frame<double> hSaturation(Frame<double> img1, Frame<double> img2) const;
  };

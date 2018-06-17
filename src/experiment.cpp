@@ -1,22 +1,63 @@
 #include "experiment.h"
 
+Experiment::Experiment()
+    : QObject()
+    , path("")
+{}
+
 Experiment::Experiment(const QString &path)
-    : QThread()
+    : QObject()
     , path("")
 {
     load(path);
 }
 
-Experiment::~Experiment()
-{
-    QThread::requestInterruption();
-    QThread::wait();
-}
-
 void Experiment::load(const QString &path)
 {
+    assert(sizeof(float ) == 4); // 32 bit Float  // TODO que ambos sean por configuración
+    assert(sizeof(double) == 8); // 64 bit Double
     this->path = path;
-    QThread::start();
+
+    emit taskStart(TAG_LOAD);
+    QFile* file = new QFile(path);
+
+    TaskLauncher::create([=](){
+        if (!file->open(QIODevice::ReadOnly)) {
+            throw FileNotFoundException(path);
+        }
+
+        // Width, Height, Bpp. If any fails, throw exception
+        if (file->read(reinterpret_cast<char*>(&height), sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
+        if (file->read(reinterpret_cast<char*>(&width),  sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
+        if (file->read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
+        bpp = getStandardBpp(bpp);
+
+        // Frames
+        dark = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
+        gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
+
+        int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
+        nframes = 400;
+        for (int i = 0; (i < nframes); ++i) {
+            frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //     if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else throw FrameBPPTooBig(bpp);
+
+            if (i % 10 == 0) { // TODO constant (Hay más)
+                emit taskUpdate(TAG_LOAD, (i + 1.0f) / nframes);
+            }
+        }
+
+    }, [=](){
+        file->close();
+        delete file;
+        emit taskComplete(TAG_LOAD);
+    }, [=](QString err){
+        emit fileError(err);
+    });
 }
 
 void Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
@@ -105,139 +146,139 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     emit satValues(meanA, meanB);
     */
     // 1" 17'
-    QVariantList *meanA_1 = new QVariantList;
-    QVariantList *meanA_2 = new QVariantList;
-    QVariantList *meanA_3 = new QVariantList;
-    QVariantList *meanA_4 = new QVariantList;
-    QVariantList *meanB_1 = new QVariantList;
-    QVariantList *meanB_2 = new QVariantList;
-    QVariantList *meanB_3 = new QVariantList;
-    QVariantList *meanB_4 = new QVariantList;
-    int start = getFrameAt(msStart);
-    int length = frames.size() - start;
+//    QVariantList *meanA_1 = new QVariantList;
+//    QVariantList *meanA_2 = new QVariantList;
+//    QVariantList *meanA_3 = new QVariantList;
+//    QVariantList *meanA_4 = new QVariantList;
+//    QVariantList *meanB_1 = new QVariantList;
+//    QVariantList *meanB_2 = new QVariantList;
+//    QVariantList *meanB_3 = new QVariantList;
+//    QVariantList *meanB_4 = new QVariantList;
+//    int start = getFrameAt(msStart);
+//    int length = frames.size() - start;
 
-    meanA_1->reserve(length);
-    meanB_1->reserve(length);
-    meanA_2->reserve(length / 2);
-    meanB_2->reserve(length / 2);
+//    meanA_1->reserve(length);
+//    meanB_1->reserve(length);
+//    meanA_2->reserve(length / 2);
+//    meanB_2->reserve(length / 2);
 
-    QAtomicInt *threads = new QAtomicInt(2);
-    QAtomicInt *elementsDone = new QAtomicInt(0);
+//    QAtomicInt *threads = new QAtomicInt(2);
+//    QAtomicInt *elementsDone = new QAtomicInt(0);
 
-    emit taskStart(TAG_PROCESS);
-    TaskLauncher([=, this](){
-        for (int i = start; i < (start + length / 4); ++i) {
-            Frame<double> aux;
-            Frame<double> top;
-            Frame<double> bottom;
+//    emit taskStart(TAG_PROCESS);
+//    TaskLauncher([=, this](){
+//        for (int i = start; i < (start + length / 4); ++i) {
+//            Frame<double> aux;
+//            Frame<double> top;
+//            Frame<double> bottom;
 
-            aux = frames[i].cast<double>();
-            aux = (aux - dark) * gain;
-            aux.verticalSplit(height / 2, top, bottom);
-            this->maskOperation(top, bottom);
-            meanA_1->append(top.getData().mean());
-            meanB_1->append(bottom.getData().mean());
-            if (i % 10 == 0) {
-                (*elementsDone) += 10;
-                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-            }
-        }
-        if (--(*threads) == 0) {
-            meanA_1->append(*meanA_2);
-            meanA_1->append(*meanA_3);
-            meanA_1->append(*meanA_4);
-            meanB_1->append(*meanB_2);
-            meanB_1->append(*meanB_3);
-            meanB_1->append(*meanB_4);
-            emit taskComplete(TAG_PROCESS);
-            emit satValues(*meanA_1, *meanB_1);
-            // delete
-        }
-    });
-    TaskLauncher([=, this](){
-        for (int i = (start + length / 4); i < (start + length / 4) * 2; ++i) {
-            Frame<double> aux;
-            Frame<double> top;
-            Frame<double> bottom;
+//            aux = frames[i].cast<double>();
+//            aux = (aux - dark) * gain;
+//            aux.verticalSplit(height / 2, top, bottom);
+//            this->maskOperation(top, bottom);
+//            meanA_1->append(top.getData().mean());
+//            meanB_1->append(bottom.getData().mean());
+//            if (i % 10 == 0) {
+//                (*elementsDone) += 10;
+//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
+//            }
+//        }
+//        if (--(*threads) == 0) {
+//            meanA_1->append(*meanA_2);
+//            meanA_1->append(*meanA_3);
+//            meanA_1->append(*meanA_4);
+//            meanB_1->append(*meanB_2);
+//            meanB_1->append(*meanB_3);
+//            meanB_1->append(*meanB_4);
+//            emit taskComplete(TAG_PROCESS);
+//            emit satValues(*meanA_1, *meanB_1);
+//            // delete
+//        }
+//    });
+//    TaskLauncher([=, this](){
+//        for (int i = (start + length / 4); i < (start + length / 4) * 2; ++i) {
+//            Frame<double> aux;
+//            Frame<double> top;
+//            Frame<double> bottom;
 
-            aux = frames[i].cast<double>();
-            aux = (aux - dark) * gain;
-            aux.verticalSplit(height / 2, top, bottom);
-            this->maskOperation(top, bottom);
-            meanA_2->append(top.getData().mean());
-            meanB_2->append(bottom.getData().mean());
-            if (i % 10 == 0) {
-                (*elementsDone) += 10;
-                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-            }
-        }
-        if (--(*threads) == 0) {
-            meanA_1->append(*meanA_2);
-            meanA_1->append(*meanA_3);
-            meanA_1->append(*meanA_4);
-            meanB_1->append(*meanB_2);
-            meanB_1->append(*meanB_3);
-            meanB_1->append(*meanB_4);
-            emit taskComplete(TAG_PROCESS);
-            emit satValues(*meanA_1, *meanB_1);
-        }
-    });
-    TaskLauncher([=, this](){
-        for (int i = (start + length / 4) * 2; i < (start + length / 4) * 3; ++i) {
-            Frame<double> aux;
-            Frame<double> top;
-            Frame<double> bottom;
+//            aux = frames[i].cast<double>();
+//            aux = (aux - dark) * gain;
+//            aux.verticalSplit(height / 2, top, bottom);
+//            this->maskOperation(top, bottom);
+//            meanA_2->append(top.getData().mean());
+//            meanB_2->append(bottom.getData().mean());
+//            if (i % 10 == 0) {
+//                (*elementsDone) += 10;
+//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
+//            }
+//        }
+//        if (--(*threads) == 0) {
+//            meanA_1->append(*meanA_2);
+//            meanA_1->append(*meanA_3);
+//            meanA_1->append(*meanA_4);
+//            meanB_1->append(*meanB_2);
+//            meanB_1->append(*meanB_3);
+//            meanB_1->append(*meanB_4);
+//            emit taskComplete(TAG_PROCESS);
+//            emit satValues(*meanA_1, *meanB_1);
+//        }
+//    });
+//    TaskLauncher([=, this](){
+//        for (int i = (start + length / 4) * 2; i < (start + length / 4) * 3; ++i) {
+//            Frame<double> aux;
+//            Frame<double> top;
+//            Frame<double> bottom;
 
-            aux = frames[i].cast<double>();
-            aux = (aux - dark) * gain;
-            aux.verticalSplit(height / 2, top, bottom);
-            this->maskOperation(top, bottom);
-            meanA_3->append(top.getData().mean());
-            meanB_3->append(bottom.getData().mean());
-            if (i % 10 == 0) {
-                (*elementsDone) += 10;
-                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-            }
-        }
-        if (--(*threads) == 0) {
-            meanA_1->append(*meanA_2);
-            meanA_1->append(*meanA_3);
-            meanA_1->append(*meanA_4);
-            meanB_1->append(*meanB_2);
-            meanB_1->append(*meanB_3);
-            meanB_1->append(*meanB_4);
-            emit taskComplete(TAG_PROCESS);
-            emit satValues(*meanA_1, *meanB_1);
-        }
-    });
-    TaskLauncher([=, this](){
-        for (int i = (start + length / 4) * 3; i < frames.size(); ++i) {
-            Frame<double> aux;
-            Frame<double> top;
-            Frame<double> bottom;
+//            aux = frames[i].cast<double>();
+//            aux = (aux - dark) * gain;
+//            aux.verticalSplit(height / 2, top, bottom);
+//            this->maskOperation(top, bottom);
+//            meanA_3->append(top.getData().mean());
+//            meanB_3->append(bottom.getData().mean());
+//            if (i % 10 == 0) {
+//                (*elementsDone) += 10;
+//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
+//            }
+//        }
+//        if (--(*threads) == 0) {
+//            meanA_1->append(*meanA_2);
+//            meanA_1->append(*meanA_3);
+//            meanA_1->append(*meanA_4);
+//            meanB_1->append(*meanB_2);
+//            meanB_1->append(*meanB_3);
+//            meanB_1->append(*meanB_4);
+//            emit taskComplete(TAG_PROCESS);
+//            emit satValues(*meanA_1, *meanB_1);
+//        }
+//    });
+//    TaskLauncher([=, this](){
+//        for (int i = (start + length / 4) * 3; i < frames.size(); ++i) {
+//            Frame<double> aux;
+//            Frame<double> top;
+//            Frame<double> bottom;
 
-            aux = frames[i].cast<double>();
-            aux = (aux - dark) * gain;
-            aux.verticalSplit(height / 2, top, bottom);
-            this->maskOperation(top, bottom);
-            meanA_4->append(top.getData().mean());
-            meanB_4->append(bottom.getData().mean());
-            if (i % 10 == 0) {
-                (*elementsDone) += 10;
-                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-            }
-        }
-        if (--(*threads) == 0) {
-            meanA_1->append(*meanA_2);
-            meanA_1->append(*meanA_3);
-            meanA_1->append(*meanA_4);
-            meanB_1->append(*meanB_2);
-            meanB_1->append(*meanB_3);
-            meanB_1->append(*meanB_4);
-            emit taskComplete(TAG_PROCESS);
-            emit satValues(*meanA_1, *meanB_1);
-        }
-    });
+//            aux = frames[i].cast<double>();
+//            aux = (aux - dark) * gain;
+//            aux.verticalSplit(height / 2, top, bottom);
+//            this->maskOperation(top, bottom);
+//            meanA_4->append(top.getData().mean());
+//            meanB_4->append(bottom.getData().mean());
+//            if (i % 10 == 0) {
+//                (*elementsDone) += 10;
+//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
+//            }
+//        }
+//        if (--(*threads) == 0) {
+//            meanA_1->append(*meanA_2);
+//            meanA_1->append(*meanA_3);
+//            meanA_1->append(*meanA_4);
+//            meanB_1->append(*meanB_2);
+//            meanB_1->append(*meanB_3);
+//            meanB_1->append(*meanB_4);
+//            emit taskComplete(TAG_PROCESS);
+//            emit satValues(*meanA_1, *meanB_1);
+//        }
+//    });
 }
 
 const Frame<double> &Experiment::getBasal() const
@@ -252,55 +293,6 @@ int Experiment::getStandardBpp(int bpp)
     else if (bpp <= 32) return 32;
     else if (bpp <= 64) return 64;
     else                return bpp;
-}
-
-// Es conveniente que run no haga throw de ninguna excepción
-void Experiment::run()
-{
-    emit taskStart(TAG_LOAD);
-    try {
-        assert(sizeof(float ) == 4); // 32 bit Float  // TODO que ambos sean por configuración
-        assert(sizeof(double) == 8); // 64 bit Double
-
-        QFile file(path);
-
-        if (!file.open(QIODevice::ReadOnly)) {
-            throw FileNotFoundException(path);
-        }
-
-        // Width, Height, Bpp. If any fails, throw exception
-        if (file.read(reinterpret_cast<char*>(&height), sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
-        if (file.read(reinterpret_cast<char*>(&width),  sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
-        if (file.read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
-        bpp = getStandardBpp(bpp);
-
-        // Frames
-        dark = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
-        gain = Frame<float>(file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
-
-        int nframes = (file.size() - file.pos()) / (width * height * bpp / 8);
-        for (int i = 0; (i < nframes) && !QThread::isInterruptionRequested(); ++i) {
-            frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //     if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else throw FrameBPPTooBig(bpp);
-
-            if (i % 10 == 0) { // TODO constant (Hay más)
-                emit taskUpdate(TAG_LOAD, (i + 1.0f) / nframes);
-            }
-        }
-
-        file.close();
-
-    // The error will be controlled by the javascript interface. So we can just emit it
-    } catch (std::exception &e) {
-        emit fileError(QString(e.what()));
-    } catch (...) {
-        emit fileError("Fatal error");
-    }
-    emit taskComplete(TAG_LOAD);
 }
 
 int Experiment::getFrameAt(uint32_t ms) const

@@ -11,13 +11,13 @@ WebInterface::~WebInterface()
         delete exp;
 }
 
-void WebInterface::experimentFromFile(QString file)
+void WebInterface::experimentFromFile(QString filepath)
 {
-    if (file.isEmpty()) {
+    if (filepath.isEmpty()) {
         return;
     }
 
-    Experiment* exp = new Experiment(file);
+    Experiment* exp = new Experiment();
     experiments.push_back(exp);
     current = exp;
     connect(exp, &Experiment::taskComplete, [this](QString tag)             { emit taskCompleteSignal(tag);    });
@@ -27,6 +27,7 @@ void WebInterface::experimentFromFile(QString file)
     connect(exp, &Experiment::fileError,   [this](QString value) { emit fileErrorSignal(value);     });
     connect(exp, &Experiment::satValues,   [this](QVariantList A, QVariantList B) { emit satValues(A, B); });
     connect(exp, &Experiment::satFrame,    [this](QByteArray frame, int w, int h, int idx) { emit satFrameSignal(frame, w, h, idx); });
+    exp->load(filepath);
 }
 
 QString WebInterface::openFileDialog()

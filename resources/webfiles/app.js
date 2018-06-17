@@ -36,7 +36,7 @@ $(document).ready(function() {
 
 		// QVariant(double, 0.625939) QVariant(double, 0.627675) QVariant(double, 0.627332) QVariant(double, 0.62529) QVariant(double, 0.627373) QVariant(double, 0.62532) QVariant(double, 0.627344) QVariant(double, 0.625778) QVariant(double, 0.627174) QVariant(double, 0.625323) QVariant(double, 0.627796) QVariant(double, 0.625486) QVariant(double, 0.628241) QVariant(double, 0.62466) QVariant(double, 0.627198)
 		// QVariant(double, 0.625939) QVariant(double, 0.62529) QVariant(double, 0.62532) QVariant(double, 0.625778) QVariant(double, 0.625323) QVariant(double, 0.625486) QVariant(double, 0.62466) QVariant(double, 0.624901) QVariant(double, 0.62493) QVariant(double, 0.624232) QVariant(double, 0.625485) QVariant(double, 0.62421) QVariant(double, 0.626086) QVariant(double, 0.623704) QVariant(double, 0.625327)
-		
+
 		interface.taskStartSignal.connect(tag => {
       let element = null;
 			if (tag === 'LOAD') {
