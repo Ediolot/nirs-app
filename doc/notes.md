@@ -24,11 +24,26 @@
 * https://cryptii.com
 * https://renenyffenegger.ch/notes/development/Base64/Encoding-and-decoding-base-64-with-cpp
 * Los datos en memoria están guardados como ColMajor. Formato que debe coincidir con DataMatrix en frame.h
+* Hablar sobre poder hacer debugging en una pestaña de Chrome (localhost:8080)
 
 ## TODOs
 
 * Selector idioma
-* Multitask al generar el gráfico
+* Settings
+* Animación cambio pestañas
+* Exportar datos de gráfica
+* Cargar basal de archivo
+* Frame superclass
+* Guardar imágenes
+* Mapa de color ¿correcto?
+* Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
+* Enviar datos de imagen con QVariantList en vez de en base64
+* (DONE) Multitask al generar el gráfico
+
+* Cargar de archivo y hacer la gráfica son muy lentas con respecto a Matlab
+ * ¿ Tal vez si no hiciera falta usar el mapper ?
+ * ¿ Usar GPU acceleration eigen ?
+ * ¿ Profiler ?
 
 ## Bibliografía
 * [1] Documentación QT
