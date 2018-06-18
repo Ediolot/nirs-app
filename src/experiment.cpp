@@ -37,7 +37,7 @@ void Experiment::load(const QString &path)
         gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
-        nframes = 400;
+        frames.reserve(nframes);
         for (int i = 0; (i < nframes); ++i) {
             frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
             //     if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
@@ -126,159 +126,61 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
 
 void Experiment::calculateAllSatValues(uint32_t msStart)
 {
-    // 2 Threads => 45'
-    // 1 Thread  => 1" 33'
-    /* 1" 58'
-    QVariantList meanA;
-    QVariantList meanB;
-    for (int i = getFrameAt(msStart); i < frames.size(); ++i) {
-        Frame<double> aux;
-        Frame<double> top;
-        Frame<double> bottom;
+    static int THREADS = 8;
+    int first = getFrameAt(msStart);
+    int length = frames.size() - first;
+    QAtomicInt *elementsDone = new QAtomicInt(0);
+    QVector<std::function<void (void)>> tasks;
+    QVector<QVariantList>* meanListsA = new QVector<QVariantList>();
+    QVector<QVariantList>* meanListsB = new QVector<QVariantList>();
 
-        aux = frames[i].cast<double>();
-        aux = (aux - dark) * gain;
-        aux.verticalSplit(height / 2, top, bottom);
-        maskOperation(top, bottom);
-        meanA.append(top.getData().mean());
-        meanB.append(bottom.getData().mean());
+    emit taskStart(TAG_PROCESS);
+
+    for (int th = 0; th < THREADS; ++th) {
+        meanListsA->push_back(QVariantList());
+        meanListsB->push_back(QVariantList());
+        meanListsA->back().reserve(length / THREADS);
+        meanListsB->back().reserve(length / THREADS);
+
+        tasks.push_back([=](){
+            Frame<double> aux;
+            Frame<double> top;
+            Frame<double> bottom;
+            int start = first + length * th / THREADS;
+            int end   = first + length * (th + 1) / THREADS;
+
+            for (int i = start; i < end; ++i) {
+                aux = frames[i].cast<double>();
+                aux = (aux - dark) * gain;
+                aux.verticalSplit(height / 2, top, bottom);
+                maskOperation(top, bottom);
+                (*meanListsA)[th].append(top.getData().mean());
+                (*meanListsB)[th].append(bottom.getData().mean());
+                if (i % 10 == 0) {
+                    (*elementsDone) += 10;
+                    emit taskUpdate(TAG_PROCESS, *elementsDone / double(length));
+                }
+            }
+        });
     }
-    emit satValues(meanA, meanB);
-    */
-    // 1" 17'
-//    QVariantList *meanA_1 = new QVariantList;
-//    QVariantList *meanA_2 = new QVariantList;
-//    QVariantList *meanA_3 = new QVariantList;
-//    QVariantList *meanA_4 = new QVariantList;
-//    QVariantList *meanB_1 = new QVariantList;
-//    QVariantList *meanB_2 = new QVariantList;
-//    QVariantList *meanB_3 = new QVariantList;
-//    QVariantList *meanB_4 = new QVariantList;
-//    int start = getFrameAt(msStart);
-//    int length = frames.size() - start;
 
-//    meanA_1->reserve(length);
-//    meanB_1->reserve(length);
-//    meanA_2->reserve(length / 2);
-//    meanB_2->reserve(length / 2);
-
-//    QAtomicInt *threads = new QAtomicInt(2);
-//    QAtomicInt *elementsDone = new QAtomicInt(0);
-
-//    emit taskStart(TAG_PROCESS);
-//    TaskLauncher([=, this](){
-//        for (int i = start; i < (start + length / 4); ++i) {
-//            Frame<double> aux;
-//            Frame<double> top;
-//            Frame<double> bottom;
-
-//            aux = frames[i].cast<double>();
-//            aux = (aux - dark) * gain;
-//            aux.verticalSplit(height / 2, top, bottom);
-//            this->maskOperation(top, bottom);
-//            meanA_1->append(top.getData().mean());
-//            meanB_1->append(bottom.getData().mean());
-//            if (i % 10 == 0) {
-//                (*elementsDone) += 10;
-//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-//            }
-//        }
-//        if (--(*threads) == 0) {
-//            meanA_1->append(*meanA_2);
-//            meanA_1->append(*meanA_3);
-//            meanA_1->append(*meanA_4);
-//            meanB_1->append(*meanB_2);
-//            meanB_1->append(*meanB_3);
-//            meanB_1->append(*meanB_4);
-//            emit taskComplete(TAG_PROCESS);
-//            emit satValues(*meanA_1, *meanB_1);
-//            // delete
-//        }
-//    });
-//    TaskLauncher([=, this](){
-//        for (int i = (start + length / 4); i < (start + length / 4) * 2; ++i) {
-//            Frame<double> aux;
-//            Frame<double> top;
-//            Frame<double> bottom;
-
-//            aux = frames[i].cast<double>();
-//            aux = (aux - dark) * gain;
-//            aux.verticalSplit(height / 2, top, bottom);
-//            this->maskOperation(top, bottom);
-//            meanA_2->append(top.getData().mean());
-//            meanB_2->append(bottom.getData().mean());
-//            if (i % 10 == 0) {
-//                (*elementsDone) += 10;
-//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-//            }
-//        }
-//        if (--(*threads) == 0) {
-//            meanA_1->append(*meanA_2);
-//            meanA_1->append(*meanA_3);
-//            meanA_1->append(*meanA_4);
-//            meanB_1->append(*meanB_2);
-//            meanB_1->append(*meanB_3);
-//            meanB_1->append(*meanB_4);
-//            emit taskComplete(TAG_PROCESS);
-//            emit satValues(*meanA_1, *meanB_1);
-//        }
-//    });
-//    TaskLauncher([=, this](){
-//        for (int i = (start + length / 4) * 2; i < (start + length / 4) * 3; ++i) {
-//            Frame<double> aux;
-//            Frame<double> top;
-//            Frame<double> bottom;
-
-//            aux = frames[i].cast<double>();
-//            aux = (aux - dark) * gain;
-//            aux.verticalSplit(height / 2, top, bottom);
-//            this->maskOperation(top, bottom);
-//            meanA_3->append(top.getData().mean());
-//            meanB_3->append(bottom.getData().mean());
-//            if (i % 10 == 0) {
-//                (*elementsDone) += 10;
-//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-//            }
-//        }
-//        if (--(*threads) == 0) {
-//            meanA_1->append(*meanA_2);
-//            meanA_1->append(*meanA_3);
-//            meanA_1->append(*meanA_4);
-//            meanB_1->append(*meanB_2);
-//            meanB_1->append(*meanB_3);
-//            meanB_1->append(*meanB_4);
-//            emit taskComplete(TAG_PROCESS);
-//            emit satValues(*meanA_1, *meanB_1);
-//        }
-//    });
-//    TaskLauncher([=, this](){
-//        for (int i = (start + length / 4) * 3; i < frames.size(); ++i) {
-//            Frame<double> aux;
-//            Frame<double> top;
-//            Frame<double> bottom;
-
-//            aux = frames[i].cast<double>();
-//            aux = (aux - dark) * gain;
-//            aux.verticalSplit(height / 2, top, bottom);
-//            this->maskOperation(top, bottom);
-//            meanA_4->append(top.getData().mean());
-//            meanB_4->append(bottom.getData().mean());
-//            if (i % 10 == 0) {
-//                (*elementsDone) += 10;
-//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(frames.size() - start));
-//            }
-//        }
-//        if (--(*threads) == 0) {
-//            meanA_1->append(*meanA_2);
-//            meanA_1->append(*meanA_3);
-//            meanA_1->append(*meanA_4);
-//            meanB_1->append(*meanB_2);
-//            meanB_1->append(*meanB_3);
-//            meanB_1->append(*meanB_4);
-//            emit taskComplete(TAG_PROCESS);
-//            emit satValues(*meanA_1, *meanB_1);
-//        }
-//    });
+    TaskLauncher::afterAll(tasks, [=](){
+        QVariantList meanListA;
+        QVariantList meanListB;
+        meanListA.reserve(length);
+        meanListB.reserve(length);
+        for (QVariantList& list : *meanListsA) {
+            meanListA.append(list);
+        }
+        for (QVariantList& list : *meanListsB) {
+            meanListB.append(list);
+        }
+        emit taskComplete(TAG_PROCESS);
+        emit satValues(meanListA, meanListB);
+        delete elementsDone;
+        delete meanListsA;
+        delete meanListsB;
+    });
 }
 
 const Frame<double> &Experiment::getBasal() const

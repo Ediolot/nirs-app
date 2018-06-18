@@ -2,6 +2,7 @@
 #define EXPERIMENT_H
 
 #include <QDebug>
+#include <QElapsedTimer>
 #include <QString>
 #include <QVector>
 #include <cassert>

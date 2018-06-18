@@ -12,7 +12,7 @@ void TaskLauncher::create(std::function<void ()> task, std::function<void (QStri
     create(std::move(task), [](){}, std::move(onError));
 }
 
-void TaskLauncher::afterAll(std::vector<std::function<void ()> > tasks, std::function<void ()> afterAll, std::function<void (QString)> onError)
+void TaskLauncher::afterAll(QVector<std::function<void ()> > tasks, std::function<void ()> afterAll, std::function<void (QString)> onError)
 {
     QAtomicInt* todo = new QAtomicInt(tasks.size());
 

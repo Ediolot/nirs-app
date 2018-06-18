@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <utility>
+#include <QVector>
+#include <QAtomicInt>
 #include "task.h"
 
 class TaskLauncher : public QObject
@@ -17,7 +19,7 @@ public:
     static void create(std::function<void (void)> task,
                        std::function<void (QString)> onError = [](QString dummy){});
 
-    static void afterAll(std::vector<std::function<void (void)>> tasks,
+    static void afterAll(QVector<std::function<void (void)>> tasks,
                          std::function<void (void)> afterAll,
                          std::function<void (QString)> onError = [](QString dummy){});
 };

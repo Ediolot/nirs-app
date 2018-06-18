@@ -37,17 +37,17 @@ QString WebInterface::openFileDialog()
 
 void WebInterface::generateBasal()
 {
-    current->calculateBasal(0, 24000);
+    current->calculateBasal(0, 1000);
     Frame<double> basal = current->getBasal();
     emit basalUpdateSignal(basal.toIndexed8Base64(FrameConstants::COLUM_MAJOR), basal.getWidth(), basal.getHeight());
 }
 
 void WebInterface::generateSatFrame(int index)
 {
-    current->generateSatFrame(index, 24000);
+    current->generateSatFrame(index, 1000);
 }
 
 void WebInterface::calculateAllSatValues()
 {
-    current->calculateAllSatValues(24000);
+    current->calculateAllSatValues(1000);
 }
