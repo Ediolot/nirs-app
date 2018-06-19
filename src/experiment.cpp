@@ -126,7 +126,7 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
 
 void Experiment::calculateAllSatValues(uint32_t msStart)
 {
-    static int THREADS = 8;
+    static int THREADS = 2;
     int first = getFrameAt(msStart);
     int length = frames.size() - first;
     QAtomicInt *elementsDone = new QAtomicInt(0);
