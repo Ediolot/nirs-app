@@ -2,7 +2,35 @@ let navigatorId = 0;
 let lineChart;
 let label = 0;
 
+let icons = {
+  home:     null,
+  settings: null,
+  arduino:  null,
+  about:    null
+}
+
+let sections = {
+  home:     null,
+  settings: null,
+  arduino:  null,
+  about:    null
+}
+
 $(document).ready(function() {
+
+  icons.home        = $('#go-home');
+  icons.settings    = $('#go-settings');
+  icons.about       = $('#go-about');
+  icons.arduino     = $('#go-arduino');
+  sections.home     = $('#home-section');
+  sections.settings = $('#settings-section');
+  sections.about    = $('#about-section');
+  sections.arduino  = $('#arduino-section');
+
+  icons.home    .click(e => goToSection(sections.home));
+  icons.settings.click(e => goToSection(sections.settings));
+  icons.about   .click(e => goToSection(sections.about));
+  icons.arduino .click(e => goToSection(sections.arduino));
 
   let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
     let interface = channel.objects.webinterface;
@@ -129,6 +157,17 @@ $(document).ready(function() {
 		gridLineColor: '#ddd'
   });
 });
+
+let goToSection = function(section) {
+    if (section !== sections.home    ) icons.home    .removeClass('active'); else icons.home    .addClass('active');
+    if (section !== sections.settings) icons.settings.removeClass('active'); else icons.settings.addClass('active');
+    if (section !== sections.about   ) icons.about   .removeClass('active'); else icons.about   .addClass('active');
+    if (section !== sections.arduino ) icons.arduino .removeClass('active'); else icons.arduino .addClass('active');
+
+    $('#body-content').animate({
+        scrollTop: section.offset().top - sections.home.offset().top
+    }, 800);
+}
 
 let fillCanvas = function(canvasId, data, width, height) {
 	let canvas = $(canvasId);

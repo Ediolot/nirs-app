@@ -9,75 +9,87 @@
 	<!-- Fixed nav bar -->
 	<div class="nav-bar">
 		<img class="logo" src="images/ico.png" alt="logo">
-		<div class="nav-icon active"><i class="icon ion-md-home"></i></div>
-		<div class="nav-icon"><i class="icon ion-md-settings"></i></div>
-		<div class="nav-icon"><i class="icon ion-md-information-circle"></i></div>
+		<div id="go-home" class="nav-icon active"><i class="icon ion-md-home"></i></div>
+		<div id="go-arduino" class="nav-icon"><i class="icon ion-md-flash"></i></div>
+		<div id="go-settings" class="nav-icon"><i class="icon ion-md-settings"></i></div>
+		<div id="go-about" class="nav-icon"><i class="icon ion-md-information-circle"></i></div>
 	</div>
 
-	<div class="content">
-		<div class="top-content">
-			<div class="card-spacer-top"></div>
-			<!-- Card -->
-			<div class="card">
-				<div class="card-top">
-					<span class="card-title">GRAPH</span>
-				</div>
-				<div id="graph" class="graph-div"></div>
-			</div>
-			<!-- /Card -->
-		</div>
-		<div class="bottom-content">
-			<div class="card-spacer-top"></div>
-			<div class="card-container card-container-load">
-				<!-- Card -->
-				<div class="card-spacer"></div>
-				<div class="card">
-					<div class="card-top">
-						<span class="card-title">LOAD & SAVE</span>
-					</div>
-					<div class="card-content">
-						<input id="select-exp-button" class="btn btn-big" type="button" name="" value="SELECT">
-						<input id="load-exp-button"   class="btn btn-big" type="button" name="" value="LOAD">
-						<input id="filepath-exp"      class="exp-selector" type="text" name"" placeholder="Select file...">
-					</div>
-          <div id="load-exp-progress" class="card-load"></div>
-				</div>
-				<!-- /Card -->
-			</div>
-			<div class="card-container card-container-image">
-				<!-- Card -->
-				<div class="card-spacer"></div>
-				<div class="card">
-					<div class="card-top">
-						<span class="card-title">BIAS</span>
-					</div>
-					<div class="card-content">
-						<input id="generate-basal-button" class="btn btn-big" type="button" name="" value="GENERATE">
-						<canvas id="basal-canvas" class="img-canvas" width="260" height="172">
-					</div>
-          <div class="card-load"></div>
-				</div>
-				<!-- /Card -->
-			</div>
-			<div class="card-container card-container-image">
-				<!-- Card -->
-				<div class="card-spacer"></div>
-				<div class="card">
-					<div class="card-top">
-						<span class="card-title">SATURATION</span>
-            <span id="nav-number" class="card-badge">0</span>
-					</div>
-					<div class="card-content">
-						<input id="navigator-prev" class="btn btn-big" type="button" name="" value="PREV">
-						<input id="navigator-next" class="btn btn-big" type="button" name="" value="NEXT">
-						<input id="generate-graph-button" class="btn btn-big" type="button" name="" value="GRAPH ALL">
-						<canvas id="sat-canvas" class="img-canvas" width="260" height="172">
-					</div>
-          <div id="process-progress" class="card-load"></div>
-				</div>
-				<!-- /Card -->
-			</div>
-		</div>
+	<div id="body-content" class="content">
+    <div id="home-section" class="content-section">
+  		<div class="top-content">
+  			<div class="card-spacer-top"></div>
+  			<!-- Card -->
+  			<div class="card">
+  				<div class="card-top">
+  					<span class="card-title">GRAPH</span>
+  				</div>
+  				<div id="graph" class="graph-div"></div>
+  			</div>
+  			<!-- /Card -->
+  		</div>
+  		<div class="bottom-content">
+  			<div class="card-spacer-top"></div>
+  			<div class="card-container card-container-load">
+  				<!-- Card -->
+  				<div class="card-spacer"></div>
+  				<div class="card">
+  					<div class="card-top">
+  						<span class="card-title">LOAD & SAVE</span>
+  					</div>
+  					<div class="card-content">
+  						<input id="select-exp-button" class="btn btn-big" type="button" name="" value="SELECT">
+  						<input id="load-exp-button"   class="btn btn-big" type="button" name="" value="LOAD">
+  						<input id="filepath-exp"      class="exp-selector" type="text" name"" placeholder="Select file...">
+  					</div>
+            <div id="load-exp-progress" class="card-load"></div>
+  				</div>
+  				<!-- /Card -->
+  			</div>
+  			<div class="card-container card-container-image">
+  				<!-- Card -->
+  				<div class="card-spacer"></div>
+  				<div class="card">
+  					<div class="card-top">
+  						<span class="card-title">BIAS</span>
+  					</div>
+  					<div class="card-content">
+  						<input id="generate-basal-button" class="btn btn-big" type="button" name="" value="GENERATE">
+  						<canvas id="basal-canvas" class="img-canvas" width="260" height="172">
+  					</div>
+            <div class="card-load"></div>
+  				</div>
+  				<!-- /Card -->
+  			</div>
+  			<div class="card-container card-container-image">
+  				<!-- Card -->
+  				<div class="card-spacer"></div>
+  				<div class="card">
+  					<div class="card-top">
+  						<span class="card-title">SATURATION</span>
+              <span id="nav-number" class="card-badge">0</span>
+  					</div>
+  					<div class="card-content">
+  						<input id="navigator-prev" class="btn btn-big" type="button" name="" value="PREV">
+  						<input id="navigator-next" class="btn btn-big" type="button" name="" value="NEXT">
+  						<input id="generate-graph-button" class="btn btn-big" type="button" name="" value="GRAPH ALL">
+  						<canvas id="sat-canvas" class="img-canvas" width="260" height="172">
+  					</div>
+            <div id="process-progress" class="card-load"></div>
+  				</div>
+  				<!-- /Card -->
+  			</div>
+  		</div>
+    </div>
+    <div id="arduino-section" class="content-section">
+      Arduino
+    </div>
+    <div id="settings-section" class="content-section">
+      Settings
+    </div>
+    <div id="about-section" class="content-section">
+      About
+    </div>
 	</div>
 
   <!-- JQuery -->
