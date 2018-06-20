@@ -26,7 +26,7 @@ void WebInterface::experimentFromFile(QString filepath)
 
     connect(exp, &Experiment::fileError,   [this](QString value) { emit fileErrorSignal(value);     });
     connect(exp, &Experiment::satValues,   [this](QVariantList A, QVariantList B) { emit satValues(A, B); });
-    connect(exp, &Experiment::satFrame,    [this](QByteArray frame, int w, int h, int idx) { emit satFrameSignal(frame, w, h, idx); });
+    connect(exp, &Experiment::satFrame,    [this](QVariantList frame, int w, int h, int idx) { emit satFrameSignal(frame, w, h, idx); });
     exp->load(filepath);
 }
 
@@ -39,7 +39,7 @@ void WebInterface::generateBasal()
 {
     current->calculateBasal(0, 1000);
     Frame<double> basal = current->getBasal();
-    emit basalUpdateSignal(basal.toIndexed8Base64(FrameConstants::COLUM_MAJOR), basal.getWidth(), basal.getHeight());
+    emit basalUpdateSignal(basal.toQVariantList(FrameConstants::COLUM_MAJOR), basal.getWidth(), basal.getHeight());
 }
 
 void WebInterface::generateSatFrame(int index)

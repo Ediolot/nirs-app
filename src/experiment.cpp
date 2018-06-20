@@ -116,7 +116,7 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
     aux -= basal;
     aux *= 100;
 
-    emit satFrame(aux.toIndexed8Base64(FrameConstants::COLUM_MAJOR),
+    emit satFrame(aux.toQVariantList(FrameConstants::COLUM_MAJOR),
                   aux.getWidth(),
                   aux.getHeight(),
                   index,

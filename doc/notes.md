@@ -38,7 +38,9 @@
 * Guardar imágenes
 * Mapa de color ¿correcto?
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
-* Enviar datos de imagen con QVariantList en vez de en base64
+* Generar basal en una tarea separada
+* Indicador de color en las imágenes
+* (DONE) Enviar datos de imagen con QVariantList en vez de en base64
 * (DONE) Multitask al generar el gráfico
 
 * Cargar de archivo y hacer la gráfica son muy lentas con respecto a Matlab

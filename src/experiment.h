@@ -60,7 +60,7 @@ signals:
     void taskComplete(QString);
 
     void fileError(QString);
-    void satFrame(QByteArray, int, int, int, double, double); // frame, width, height, index, meanTop, meanBot
+    void satFrame(QVariantList, int, int, int, double, double); // frame, width, height, index, meanTop, meanBot
     void satValues(QVariantList, QVariantList);
 
 private:

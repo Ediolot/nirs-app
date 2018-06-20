@@ -72,8 +72,8 @@ $(document).ready(function() {
 			interface.generateBasal();
 		});
 
-		interface.basalUpdateSignal.connect((byteArray, width, height) => {
-			fillCanvas('#basal-canvas', byteArray, width, height);
+		interface.basalUpdateSignal.connect((data, width, height) => {
+			fillCanvas('#basal-canvas', data, width, height);
 		});
 
 		//-------------------------------------------
@@ -94,8 +94,8 @@ $(document).ready(function() {
 			interface.generateSatFrame(navigatorId + 1);
 		});
 
-		interface.satFrameSignal.connect((byteArray, width, height, index) => {
-			fillCanvas('#sat-canvas', byteArray, width, height);
+		interface.satFrameSignal.connect((data, width, height, index) => {
+			fillCanvas('#sat-canvas', data, width, height);
 			$('#nav-number').html(index);
 			navigatorId = index;
 		});
@@ -130,19 +130,18 @@ $(document).ready(function() {
   });
 });
 
-let fillCanvas = function(canvasId, byteArray, width, height) {
+let fillCanvas = function(canvasId, data, width, height) {
 	let canvas = $(canvasId);
 	let ctx = canvas[0].getContext('2d');
 	let id = ctx.createImageData(width, height);
 	let sz = width * height;
 
-	let dec = atob(byteArray);
 	let src = 0;
 	let dst = 0;
 	for (let i = 0; i < sz; ++i) {
-		id.data[dst    ]   = red(dec.charCodeAt(src) / 128.0 - 1) * 255.0;
-		id.data[dst + 1]   = green(dec.charCodeAt(src) / 128.0 - 1) * 255.0;
-		id.data[dst + 2]   = blue(dec.charCodeAt(src) / 128.0 - 1) * 255.0;
+		id.data[dst    ]   = red(  data[src] * 2.0 - 1.0) * 255.0;
+		id.data[dst + 1]   = green(data[src] * 2.0 - 1.0) * 255.0;
+		id.data[dst + 2]   = blue( data[src] * 2.0 - 1.0) * 255.0;
 		id.data[dst + 3]   = 255;
 		dst += 4;
 		src++;

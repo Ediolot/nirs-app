@@ -116,15 +116,10 @@ public:
     template<class U>
     Frame<U> cast();
 
-
     /*!
      * \return
      */
-    QByteArray toIndexed16Base64(int major) const;
-    /*!
-     * \return
-     */
-    QByteArray toIndexed8Base64(int major) const;
+    QVariantList toQVariantList(int major, bool norm = false) const;
 
     /*!
      * \return
@@ -348,32 +343,44 @@ Frame<U> Frame<T>::cast() {
 }
 
 template<class T>
-QByteArray Frame<T>::toIndexed8Base64(int major) const {
-    QByteArray result;
+QVariantList Frame<T>::toQVariantList(int major, bool norm = false) const {
+    QVariantList result;
     int row = 0;
     int col = 0;
     int sz  = data.rows() * data.cols();
-    result.resize(sz);
+    result.reserve(sz);
+
+    const T max = data.maxCoeff();
+    const T min = data.minCoeff();
 
     for (int i = 0; i < sz; ++i) {
-        T aux = data(row, col) * 255.0;
-        if (aux > 255) aux = 255;
-        if (aux <   0) aux = 0;
-        result[i] = aux;
-
+        const T aux = data(row, col);
+        if (norm) {
+            result.push_back((aux - min) / (max - min));
+        }
+        else if (aux > 1.0) {
+            result.push_back(1.0);
+        }
+        else if (aux < 0.0) {
+            result.push_back(0.0);
+        }
+        else {
+            result.push_back(aux);
+        }
         if (major == FrameConstants::ROW_MAJOR) {
             if (++row >= data.rows()) {
                 col++;
                 row = 0;
             }
-        } else if (major == FrameConstants::COLUM_MAJOR) {
+        }
+        else if (major == FrameConstants::COLUM_MAJOR) {
             if (++col >= data.cols()) {
                 row++;
                 col = 0;
             }
         }
     }
-    return result.toBase64(); // No debería ser necesario
+    return result; // No debería ser necesario
 }
 
 template<class T>

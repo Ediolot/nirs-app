@@ -34,8 +34,8 @@ signals:
     void taskStartSignal(QString);
 
     void fileErrorSignal(QString);
-    void basalUpdateSignal(QByteArray, int, int);
-    void satFrameSignal(QByteArray, int, int, int);
+    void basalUpdateSignal(QVariantList, int, int);
+    void satFrameSignal(QVariantList, int, int, int);
     void satValues(QVariantList, QVariantList);
 };
 
