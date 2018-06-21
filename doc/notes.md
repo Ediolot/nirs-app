@@ -35,10 +35,10 @@
 * Cargar basal de archivo
 * Frame superclass
 * Guardar imágenes
-* Mapa de color ¿correcto?
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
 * Generar basal en una tarea separada
 * Indicador de color en las imágenes
+* (DONE) Mapa de color ¿correcto?
 * (DONE) Animación cambio pestañas
 * (DONE) Enviar datos de imagen con QVariantList en vez de en base64
 * (DONE) Multitask al generar el gráfico

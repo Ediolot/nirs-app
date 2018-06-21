@@ -343,7 +343,7 @@ Frame<U> Frame<T>::cast() {
 }
 
 template<class T>
-QVariantList Frame<T>::toQVariantList(int major, bool norm = false) const {
+QVariantList Frame<T>::toQVariantList(int major, bool norm = true) const { // TODO, this is only for double images
     QVariantList result;
     int row = 0;
     int col = 0;

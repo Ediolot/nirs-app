@@ -114,7 +114,11 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
 
     aux = hSaturation(top, bottom);
     aux -= basal;
-    aux *= 100;
+
+    qDebug() << indexStart + index;
+    qDebug() << aux.getData()(0, 0) <<  aux.getData()(0, 1) <<  aux.getData()(0, 2);
+    qDebug() << aux.getData()(1, 0);
+    qDebug() << aux.getData()(2, 0);
 
     emit satFrame(aux.toQVariantList(FrameConstants::COLUM_MAJOR),
                   aux.getWidth(),
