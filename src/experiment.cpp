@@ -37,6 +37,7 @@ void Experiment::load(const QString &path)
         gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
+        nframes = 2000;
         frames.reserve(nframes);
         for (int i = 0; (i < nframes); ++i) {
             frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
@@ -60,25 +61,37 @@ void Experiment::load(const QString &path)
     });
 }
 
-void Experiment::calculateBasal(uint32_t msStart, uint32_t msEnd)
+void Experiment::generateBasalFrame(uint32_t msStart, uint32_t msEnd)
 {
     if (frames.isEmpty()) {
         basal = Frame<double>();
+        return;
     }
+    emit taskStart(TAG_BASALGEN);
+    TaskLauncher::create([=](){
+        int firstIndex = getFrameAt(msStart);
+        int lastIndex  = getFrameAt(msEnd);
+        int sz = lastIndex - firstIndex;
+        Frame<double> top;
+        Frame<double> bottom;
+        Frame<double> aux = Frame<double>(width, height);
 
-    int firstIndex = getFrameAt(msStart);
-    int lastIndex  = getFrameAt(msEnd);
-    Frame<double> top;
-    Frame<double> bottom;
-    Frame<double> aux = Frame<double>(width, height);
+        for (int i = 0; i < sz; ++i) {
+            aux += this->frames[i + firstIndex].cast<double>();
 
-    for (int i = firstIndex; i < lastIndex; ++i) {
-        aux += frames[i].cast<double>();
-    }
-    aux /= (lastIndex - firstIndex);
-    aux = (aux - dark) * gain;
-    aux.verticalSplit(height / 2, top, bottom);
-    basal = hSaturation(top, bottom);
+            if (i % 10 == 0) { // TODO constant (Hay más)
+                emit taskUpdate(TAG_BASALGEN, (i + 1.0f) / sz);
+            }
+        }
+        aux /= (lastIndex - firstIndex);
+        aux = (aux - this->dark) * this->gain;
+        aux.verticalSplit(height / 2, top, bottom);
+        this->basal = hSaturation(top, bottom);
+        emit basalFrame(this->basal.toQVariantList(FrameConstants::COLUM_MAJOR),
+                        this->basal.getWidth(),
+                        this->basal.getHeight());
+        emit taskComplete(TAG_BASALGEN);
+    });
 }
 
 void Experiment::maskOperation(Frame<double> &img1, Frame<double> &img2) const

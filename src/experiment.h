@@ -26,6 +26,7 @@ class Experiment : public QObject
 private:
     const QString TAG_LOAD = "LOAD";
     const QString TAG_PROCESS = "PROCESS";
+    const QString TAG_BASALGEN = "BASAL";
 
     uint32_t width;  // Full frame width
     uint32_t height; // Full frame height (2x subframes)
@@ -48,7 +49,7 @@ public:
     explicit Experiment(const QString &path);
 
     void load(const QString &path);
-    void calculateBasal(uint32_t msStart, uint32_t msEnd);
+    void generateBasalFrame(uint32_t msStart, uint32_t msEnd);
     void maskOperation(Frame<double>& img1, Frame<double>& img2) const;
     void generateSatFrame(int index, uint32_t msStart = 0);
     void calculateAllSatValues(uint32_t msStart = 0);
@@ -61,6 +62,7 @@ signals:
 
     void fileError(QString);
     void satFrame(QVariantList, int, int, int, double, double); // frame, width, height, index, meanTop, meanBot
+    void basalFrame(QVariantList, int, int); // frame, width, height
     void satValues(QVariantList, QVariantList);
 
 private:

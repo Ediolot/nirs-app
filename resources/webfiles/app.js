@@ -52,16 +52,10 @@ $(document).ready(function() {
     });
 
 		interface.taskCompleteSignal.connect(tag => {
-      let element = null;
-			if (tag === 'LOAD') {
-        element = $('#load-exp-progress');
-      } else if (tag === 'PROCESS') {
-        element = $('#process-progress');
-      }
-
+			let element = elementFromTag(tag);
       if (element) {
-  			element.width('100%');
-				element.hide();
+  		  element.width('100%');
+			  element.hide();
       }
 		});
 
@@ -69,27 +63,15 @@ $(document).ready(function() {
 		// QVariant(double, 0.625939) QVariant(double, 0.62529) QVariant(double, 0.62532) QVariant(double, 0.625778) QVariant(double, 0.625323) QVariant(double, 0.625486) QVariant(double, 0.62466) QVariant(double, 0.624901) QVariant(double, 0.62493) QVariant(double, 0.624232) QVariant(double, 0.625485) QVariant(double, 0.62421) QVariant(double, 0.626086) QVariant(double, 0.623704) QVariant(double, 0.625327)
 
 		interface.taskStartSignal.connect(tag => {
-      let element = null;
-			if (tag === 'LOAD') {
-        element = $('#load-exp-progress');
-      } else if (tag === 'PROCESS') {
-        element = $('#process-progress');
-      }
-
+			let element = elementFromTag(tag);
       if (element) {
-  			element.width('0%');
-				element.show();
+  		  element.width('0%');
+			  element.show();
       }
 		});
 
 		interface.taskUpdateSignal.connect((tag, percent) => {
-      let element = null;
-			if (tag === 'LOAD') {
-        element = $('#load-exp-progress');
-      } else if (tag === 'PROCESS') {
-        element = $('#process-progress');
-      }
-
+			let element = elementFromTag(tag);
       if (element) {
         element.width(Math.round(100 * percent) + '%');
       }
@@ -103,7 +85,7 @@ $(document).ready(function() {
 			interface.generateBasal();
 		});
 
-		interface.basalUpdateSignal.connect((data, width, height) => {
+		interface.basalFrameSignal.connect((data, width, height) => {
 			fillCanvas('#basal-canvas', data.splice(2), width, height, TRUNCATE);
 		});
 
@@ -126,8 +108,6 @@ $(document).ready(function() {
 		});
 
 		interface.satFrameSignal.connect((data, width, height, index) => {
-			console.log('max: ' + data[0]);
-			console.log('min: ' + data[1]);
 			fillCanvas('#sat-canvas', data.splice(2), width, height, NORMALIZE, 0, 0.06);
 			$('#nav-number').html(index);
 			navigatorId = index;
@@ -163,13 +143,27 @@ $(document).ready(function() {
   });
 });
 
+let elementFromTag = function(tag) {
+	if (tag === 'LOAD') {
+		return $('#load-exp-progress');
+	} else if (tag === 'PROCESS') {
+		return $('#graph-progress');
+	} else if (tag === 'BASAL') {
+		return $('#basal-progress');
+	} else {
+		return null;
+	}
+}
+
 let goToSection = function(section) {
     if (section !== sections.home    ) icons.home    .removeClass('active'); else icons.home    .addClass('active');
     if (section !== sections.settings) icons.settings.removeClass('active'); else icons.settings.addClass('active');
     if (section !== sections.about   ) icons.about   .removeClass('active'); else icons.about   .addClass('active');
     if (section !== sections.arduino ) icons.arduino .removeClass('active'); else icons.arduino .addClass('active');
 
-    $('#body-content').animate({
+		let body = $('#body-content');
+		body.stop();
+    body.animate({
         scrollTop: section.offset().top - sections.home.offset().top
     }, 800);
 }

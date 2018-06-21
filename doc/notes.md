@@ -36,8 +36,9 @@
 * Frame superclass
 * Guardar imágenes
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
-* Generar basal en una tarea separada
 * Indicador de color en las imágenes
+* Tamaño de imágenes dinámico
+* (DONE) Generar basal en una tarea separada
 * (DONE) Mapa de color ¿correcto?
 * (DONE) Animación cambio pestañas
 * (DONE) Enviar datos de imagen con QVariantList en vez de en base64

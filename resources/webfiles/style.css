@@ -148,7 +148,8 @@ body, html {
 
 .graph-div {
 	width: calc(90% - 2px);
-	height: calc(90% - 45px);
+  height: calc(90% - 45px);
+	margin-bottom: calc(0.6 * 0.95 * 0.99 * 0.1 * 100vh - 15px);
 	margin-top: 15px;
 }
 
