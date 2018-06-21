@@ -37,6 +37,8 @@
 * Guardar imágenes
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
 * Indicador de color en las imágenes
+* Problema con las fuentes de iconos desde archivo local
+* Poder elegir la imagen de saturación con el número
 * (DONE) Tamaño de imágenes dinámico
 * (DONE) Generar basal en una tarea separada
 * (DONE) Mapa de color ¿correcto?
