@@ -4,6 +4,7 @@ let label = 0;
 
 const TRUNCATE = 1;
 const NORMALIZE = 2;
+const RATIO = 260 / 172;
 
 let icons = {
   home:     null,
@@ -18,6 +19,8 @@ let sections = {
   arduino:  null,
   about:    null
 }
+
+let canvasData = {}
 
 $(document).ready(function() {
 
@@ -86,7 +89,16 @@ $(document).ready(function() {
 		});
 
 		interface.basalFrameSignal.connect((data, width, height) => {
-			fillCanvas('#basal-canvas', data.splice(2), width, height, TRUNCATE);
+			canvasData.basal = {
+				width: width,
+				height: height,
+				px: data.splice(2),
+				operation: TRUNCATE,
+				max: 1.0,
+				min: 0.0,
+				id: '#basal-canvas'
+			}
+			fillCanvas(canvasData.basal);
 		});
 
 		//-------------------------------------------
@@ -108,7 +120,16 @@ $(document).ready(function() {
 		});
 
 		interface.satFrameSignal.connect((data, width, height, index) => {
-			fillCanvas('#sat-canvas', data.splice(2), width, height, NORMALIZE, 0, 0.06);
+			canvasData.sat = {
+				width: width,
+				height: height,
+				px: data.splice(2),
+				operation: NORMALIZE,
+				max: 0.06,
+				min: 0.0,
+				id: '#sat-canvas'
+			}
+			fillCanvas(canvasData.sat);
 			$('#nav-number').html(index);
 			navigatorId = index;
 		});
@@ -120,6 +141,10 @@ $(document).ready(function() {
 		  }
 		  g.updateOptions( { 'file': data } );
 		});
+	});
+
+	$(window).on('resize', function() {
+		resizeAllCanvas();
 	});
 
   var g = new Dygraph(document.getElementById('graph'), [],
@@ -141,7 +166,37 @@ $(document).ready(function() {
 		legend: 'always',
 		gridLineColor: '#ddd'
   });
+
+	resizeAllCanvas();
 });
+
+let resizeAllCanvas = function() {
+	resizeCanvas("#basal-canvas", "#basal-canvas-container", canvasData.basal);
+	resizeCanvas("#sat-canvas", "#sat-canvas-container", canvasData.sat);
+}
+
+let resizeCanvas = function(canvasId, canvasContentId, canvasFillData) {
+  let canvas = $(canvasId);
+  let container = $(canvasContentId);
+	let cw = container.width();
+	let ch = container.height() - 60;
+	let w  = cw;
+	let h  = cw / RATIO;
+
+	if (h > ch) {
+		w = ch * RATIO;
+		h = ch;
+	}
+	w = Math.round(w);
+	h = Math.round(h);
+	canvas.width(w);
+	canvas.height(h);
+	canvas[0].width = w;
+	canvas[0].height = h;
+	if (canvasFillData) {
+		fillCanvas(canvasFillData);
+	}
+}
 
 let elementFromTag = function(tag) {
 	if (tag === 'LOAD') {
@@ -168,31 +223,34 @@ let goToSection = function(section) {
     }, 800);
 }
 
-let fillCanvas = function(canvasId, data, width, height, operation, min, max) {
-	let canvas = $(canvasId);
-	let ctx = canvas[0].getContext('2d');
-	let id = ctx.createImageData(width, height);
-	let sz = width * height;
+let fillCanvas = function(data) {
+	let canvas = $(data.id)[0];
+	let ctx = canvas.getContext('2d');
+	let id  = ctx.createImageData(canvas.width, canvas.height);
 	let src = 0;
 	let dst = 0;
-	max = (max === undefined) ? 1.0 : max;
-	min = (min === undefined) ? 0.0 : min;
+	let ratioCols = data.width / canvas.width;
+	let ratioRows = data.height / canvas.height;
 
-	for (let i = 0; i < sz; ++i) {
-		let val =  data[src];
+	for (let row = 0; row < canvas.height; ++row) {
+		for (let col = 0; col < canvas.width; ++col) {
+			let srcRow = Math.round(row * ratioRows);
+			let srcCol = Math.round(col * ratioCols);
+			let dst    = (col + row * canvas.width) * 4;
+			let src    = (srcCol + srcRow * data.width);
+			let val    = data.px[src];
 
-		if (operation === NORMALIZE) {
-			val = (val - min) / (max - min);
+			if (data.operation === NORMALIZE) {
+				val = (val - data.min) / (data.max - data.min);
+			}
+			if (val > 1.0) val = 1.0
+			else if (val < 0.0) val = 0.0;
+
+			id.data[dst    ]   = red(  val * 2 - 1) * 255.0;
+			id.data[dst + 1]   = green(val * 2 - 1) * 255.0;
+			id.data[dst + 2]   = blue( val * 2 - 1) * 255.0;
+			id.data[dst + 3]   = 255;
 		}
-		if (val > 1.0) val = 1.0
-		else if (val < 0.0) val = 0.0;
-
-		id.data[dst    ]   = red(  val * 2 - 1) * 255.0;
-		id.data[dst + 1]   = green(val * 2 - 1) * 255.0;
-		id.data[dst + 2]   = blue( val * 2 - 1) * 255.0;
-		id.data[dst + 3]   = 255;
-		dst += 4;
-		src++;
 	}
 	ctx.putImageData(id, 0, 0);
 }

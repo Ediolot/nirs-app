@@ -158,6 +158,8 @@ body, html {
 	padding: 0;
   margin: auto;
   display: block;
+	width: 100%;
+	height: calc(100% - 45px - 20px);
 }
 
 .exp-selector {
