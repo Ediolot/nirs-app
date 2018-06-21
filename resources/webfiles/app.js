@@ -2,6 +2,9 @@ let navigatorId = 0;
 let lineChart;
 let label = 0;
 
+const TRUNCATE = 1;
+const NORMALIZE = 2;
+
 let icons = {
   home:     null,
   settings: null,
@@ -101,7 +104,7 @@ $(document).ready(function() {
 		});
 
 		interface.basalUpdateSignal.connect((data, width, height) => {
-			fillCanvas('#basal-canvas', data, width, height);
+			fillCanvas('#basal-canvas', data.splice(2), width, height, TRUNCATE);
 		});
 
 		//-------------------------------------------
@@ -123,7 +126,9 @@ $(document).ready(function() {
 		});
 
 		interface.satFrameSignal.connect((data, width, height, index) => {
-			fillCanvas('#sat-canvas', data, width, height);
+			console.log('max: ' + data[0]);
+			console.log('min: ' + data[1]);
+			fillCanvas('#sat-canvas', data.splice(2), width, height, NORMALIZE, 0, 0.06);
 			$('#nav-number').html(index);
 			navigatorId = index;
 		});
@@ -169,18 +174,28 @@ let goToSection = function(section) {
     }, 800);
 }
 
-let fillCanvas = function(canvasId, data, width, height) {
+let fillCanvas = function(canvasId, data, width, height, operation, min, max) {
 	let canvas = $(canvasId);
 	let ctx = canvas[0].getContext('2d');
 	let id = ctx.createImageData(width, height);
 	let sz = width * height;
-
 	let src = 0;
 	let dst = 0;
+	max = (max === undefined) ? 1.0 : max;
+	min = (min === undefined) ? 0.0 : min;
+
 	for (let i = 0; i < sz; ++i) {
-		id.data[dst    ]   = red(  data[src] * 2.0 - 1.0) * 255.0;
-		id.data[dst + 1]   = green(data[src] * 2.0 - 1.0) * 255.0;
-		id.data[dst + 2]   = blue( data[src] * 2.0 - 1.0) * 255.0;
+		let val =  data[src];
+
+		if (operation === NORMALIZE) {
+			val = (val - min) / (max - min);
+		}
+		if (val > 1.0) val = 1.0
+		else if (val < 0.0) val = 0.0;
+
+		id.data[dst    ]   = red(  val * 2 - 1) * 255.0;
+		id.data[dst + 1]   = green(val * 2 - 1) * 255.0;
+		id.data[dst + 2]   = blue( val * 2 - 1) * 255.0;
 		id.data[dst + 3]   = 255;
 		dst += 4;
 		src++;

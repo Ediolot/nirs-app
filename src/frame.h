@@ -119,7 +119,7 @@ public:
     /*!
      * \return
      */
-    QVariantList toQVariantList(int major, bool norm = false) const;
+    QVariantList toQVariantList(int major) const;
 
     /*!
      * \return
@@ -343,30 +343,19 @@ Frame<U> Frame<T>::cast() {
 }
 
 template<class T>
-QVariantList Frame<T>::toQVariantList(int major, bool norm = true) const { // TODO, this is only for double images
+QVariantList Frame<T>::toQVariantList(int major) const { // TODO, this is only for double images
     QVariantList result;
     int row = 0;
     int col = 0;
     int sz  = data.rows() * data.cols();
-    result.reserve(sz);
 
-    const T max = data.maxCoeff();
-    const T min = data.minCoeff();
+    result.reserve(sz + 2);
+    result.push_back(data.maxCoeff());
+    result.push_back(data.minCoeff());
 
     for (int i = 0; i < sz; ++i) {
         const T aux = data(row, col);
-        if (norm) {
-            result.push_back((aux - min) / (max - min));
-        }
-        else if (aux > 1.0) {
-            result.push_back(1.0);
-        }
-        else if (aux < 0.0) {
-            result.push_back(0.0);
-        }
-        else {
-            result.push_back(aux);
-        }
+        result.push_back(aux);
         if (major == FrameConstants::ROW_MAJOR) {
             if (++row >= data.rows()) {
                 col++;
