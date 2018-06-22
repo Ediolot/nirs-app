@@ -144,7 +144,7 @@ h1 {
 }
 
 .custom-checbox-checked {
-	background-color: #f35429;
+	background-color: #5da5cc;
 }
 
 .custom-checbox-unchecked {
@@ -163,6 +163,10 @@ h1 {
 	height: 15px;
 	margin-top: calc((45px - 15px) / 2 - 1px);
 	float: left;
+  color: #fff;
+  text-align: center;
+  font-size: 15px;
+  line-height: 10px;
 }
 
 .custom-checkbox:hover .custom-checkbox-sq {
@@ -220,8 +224,28 @@ h1 {
 .graph-div {
 	width: calc(100% - 10px);
   height: calc(90% - 45px);
-	margin-bottom: calc(0.6 * 0.95 * 0.1 * 100vh - 15px);
+	margin-bottom: calc(0.6 * 0.95 * 0.1 * 100vh - 15px - 30px);
 	margin-top: 15px;
+}
+
+.graph-avg-div {
+  height: 20px;
+  margin-bottom: 10px;
+  margin-left: 60px;
+}
+
+.graph-avg-val {
+  width: 45px;
+  font-size: 12px;
+  height: 100%;
+  border: 2px solid rgba(44, 67, 107, 0.2);
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.graph-avg-text {
+  font-size: 12px;
+  display: inline-block;
 }
 
 .img-canvas {
@@ -299,7 +323,7 @@ h1 {
 .filter-content {
 	height: 100%;
 	width: 25%;
-	border: 5px solid red;
+	border: 15px solid white;
   box-sizing: border-box;
 	float: left;
 }

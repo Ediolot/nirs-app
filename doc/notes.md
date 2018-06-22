@@ -26,30 +26,32 @@
 * Los datos en memoria están guardados como ColMajor. Formato que debe coincidir con DataMatrix en frame.h
 * Hablar sobre poder hacer debugging en una pestaña de Chrome (localhost:8080)
 * MTuner
+* Color picker
 
 ## TODOs
 
+* Indicador de color en las imágenes
 * Selector idioma
 * Settings
 * Exportar datos de gráfica
 * Cargar basal de archivo
-* Frame superclass
 * Guardar imágenes
+* Interfaz filtros
+* Smooth function
+* Funcionalidad de las checkbox
+* HP LP BP BS interfaces
+
+* ¿No usar Mapper?
+* Frame superclass
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
-* Indicador de color en las imágenes
 * Problema con las fuentes de iconos desde archivo local
-* Poder elegir la imagen de saturación con el número
+* (DONE) Poder elegir la imagen de saturación con el número
 * (DONE) Tamaño de imágenes dinámico
 * (DONE) Generar basal en una tarea separada
 * (DONE) Mapa de color ¿correcto?
 * (DONE) Animación cambio pestañas
 * (DONE) Enviar datos de imagen con QVariantList en vez de en base64
 * (DONE) Multitask al generar el gráfico
-
-* Cargar de archivo y hacer la gráfica son muy lentas con respecto a Matlab
- * ¿ Tal vez si no hiciera falta usar el mapper ?
- * ¿ Usar GPU acceleration eigen ?
- * ¿ Profiler ?
 
 ## Bibliografía
 * [1] Documentación QT

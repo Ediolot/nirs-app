@@ -37,7 +37,7 @@ void Experiment::load(const QString &path)
         gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
-        nframes = 2000;
+        nframes = 400;
         frames.reserve(nframes);
         for (int i = 0; (i < nframes); ++i) {
             frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
@@ -190,7 +190,7 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
         for (Signal& signal : *meanListsB) {
             B.append(signal);
         }
-        emit satValues(A.runHighPassFilter(sampleFreq, 3000, 1).toQVariantList(), B.toQVariantList());
+        emit satValues(A.toQVariantList(), B.toQVariantList());
         emit taskComplete(TAG_PROCESS);
         delete elementsDone;
         delete meanListsA;

@@ -25,20 +25,24 @@
 	  					<span class="card-title">GRAPH</span>
 	  					<div class="card-options">
 	  						<div id="checkbox-hhb" class="custom-checkbox">
-									<div class="custom-checkbox-sq custom-checbox-unchecked"></div>
+									<div class="custom-checkbox-sq custom-checbox-unchecked"><i class="icon ion-md-checkmark"></i></div>
 									<div class="custom-checkbox-label">HHb</div>
 								</div>
 	  						<div id="checkbox-oxhb" class="custom-checkbox">
-									<div class="custom-checkbox-sq custom-checbox-unchecked"></div>
+									<div class="custom-checkbox-sq custom-checbox-unchecked"><i class="icon ion-md-checkmark"></i></div>
 									<div class="custom-checkbox-label">OxHb</div>
 								</div>
 	  						<div id="checkbox-invert" class="custom-checkbox">
-									<div class="custom-checkbox-sq custom-checbox-unchecked"></div>
+									<div class="custom-checkbox-sq custom-checbox-unchecked"><i class="icon ion-md-checkmark"></i></div>
 									<div class="custom-checkbox-label">Invert OxHb</div>
 								</div>
 	  					</div>
 	  				</div>
 	  				<div id="graph" class="graph-div"></div>
+            <div class="graph-avg-div">
+              <div class="graph-avg-text">Smooth:</div>
+              <div id="graph-avg" class="graph-avg-val" contenteditable="true"></div>
+            </div>
 						<div id="graph-progress" class="card-load"></div>
 	  			</div>
 	  			<!-- /Card -->
@@ -57,10 +61,10 @@
 						</div>
 						<div id="filters-scroll" class="filters-container-parent">
 							<div class="filters-container-child">
-								<div id="filter-hp" class="filter-content"></div>
-								<div id="filter-lp" class="filter-content"></div>
-								<div id="filter-bp" class="filter-content"></div>
-								<div id="filter-bs" class="filter-content"></div>
+								<div id="filter-hp" class="filter-content">High pass filter</div>
+								<div id="filter-lp" class="filter-content">Low pass filter</div>
+								<div id="filter-bp" class="filter-content">Band pass filter</div>
+								<div id="filter-bs" class="filter-content">Band stop filter</div>
 							</div>
 						</div>
 	  			</div>
