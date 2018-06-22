@@ -1,4 +1,5 @@
 let navigatorId = 0;
+let navigatorMax = 0;
 let lineChart;
 let label = 0;
 
@@ -20,7 +21,32 @@ let sections = {
   about:    null
 }
 
+let filterIcons = {
+  hp: null,
+  lp: null,
+  bp: null,
+	bs: null
+}
+
+let filters = {
+  hp: null,
+  lp: null,
+  bp: null,
+	bs: null
+}
+
 let canvasData = {}
+
+let isChecked = function(customCheckboxId) {
+	return $(customCheckboxId + ' > .custom-checkbox-sq').haseClass('custom-checbox-checked');
+}
+
+let addCheckboxTrigger = function(customCheckboxId) {
+	$(customCheckboxId).click(e => {
+		$(customCheckboxId + ' > .custom-checkbox-sq').toggleClass('custom-checbox-checked');
+		$(customCheckboxId + ' > .custom-checkbox-sq').toggleClass('custom-checbox-unchecked');
+	});
+}
 
 $(document).ready(function() {
 
@@ -32,11 +58,27 @@ $(document).ready(function() {
   sections.settings = $('#settings-section');
   sections.about    = $('#about-section');
   sections.arduino  = $('#arduino-section');
+	filters.hp        = $('#filter-hp');
+	filters.lp        = $('#filter-lp');
+	filters.bp        = $('#filter-bp');
+	filters.bs        = $('#filter-bs');
+	filterIcons.hp    = $('#filter-hp-icon');
+	filterIcons.lp    = $('#filter-lp-icon');
+	filterIcons.bp    = $('#filter-bp-icon');
+	filterIcons.bs    = $('#filter-bs-icon');
 
   icons.home    .click(e => goToSection(sections.home));
   icons.settings.click(e => goToSection(sections.settings));
   icons.about   .click(e => goToSection(sections.about));
   icons.arduino .click(e => goToSection(sections.arduino));
+  filterIcons.hp.click(e => goToFilter(filters.hp));
+  filterIcons.lp.click(e => goToFilter(filters.lp));
+  filterIcons.bp.click(e => goToFilter(filters.bp));
+  filterIcons.bs.click(e => goToFilter(filters.bs));
+
+	addCheckboxTrigger('#checkbox-invert');
+	addCheckboxTrigger('#checkbox-hhb');
+	addCheckboxTrigger('#checkbox-oxhb');
 
   let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
     let interface = channel.objects.webinterface;
@@ -68,9 +110,6 @@ $(document).ready(function() {
 				interface.generateSatFrame(0);
 			}
 		});
-
-		// QVariant(double, 0.625939) QVariant(double, 0.627675) QVariant(double, 0.627332) QVariant(double, 0.62529) QVariant(double, 0.627373) QVariant(double, 0.62532) QVariant(double, 0.627344) QVariant(double, 0.625778) QVariant(double, 0.627174) QVariant(double, 0.625323) QVariant(double, 0.627796) QVariant(double, 0.625486) QVariant(double, 0.628241) QVariant(double, 0.62466) QVariant(double, 0.627198)
-		// QVariant(double, 0.625939) QVariant(double, 0.62529) QVariant(double, 0.62532) QVariant(double, 0.625778) QVariant(double, 0.625323) QVariant(double, 0.625486) QVariant(double, 0.62466) QVariant(double, 0.624901) QVariant(double, 0.62493) QVariant(double, 0.624232) QVariant(double, 0.625485) QVariant(double, 0.62421) QVariant(double, 0.626086) QVariant(double, 0.623704) QVariant(double, 0.625327)
 
 		interface.taskStartSignal.connect(tag => {
 			let element = elementFromTag(tag);
@@ -123,10 +162,12 @@ $(document).ready(function() {
 		});
 
 		$('#navigator-next').click(e => {
-			interface.generateSatFrame(navigatorId + 1);
+			if (navigatorId + 1 < navigatorMax) {
+				interface.generateSatFrame(navigatorId + 1);
+			}
 		});
 
-		interface.satFrameSignal.connect((data, width, height, index) => {
+		interface.satFrameSignal.connect((data, width, height, index, max) => {
 			canvasData.sat = {
 				width: width,
 				height: height,
@@ -138,7 +179,9 @@ $(document).ready(function() {
 			}
 			fillCanvas(canvasData.sat);
 			$('#nav-number').html(index);
+			$('#nav-number-max').html(max - 1);
 			navigatorId = index;
+			navigatorMax = max;
 		});
 
 		interface.satValues.connect((A, B) => {
@@ -148,13 +191,37 @@ $(document).ready(function() {
 		  }
 		  g.updateOptions( { 'file': data } );
 		});
+
+		let navNumber = $("#nav-number");
+		navNumber.keypress(function(e) {
+			let number = Number(navNumber.html());
+	    if (isNaN(String.fromCharCode(e.which))) {
+				e.preventDefault();
+			}
+			if (number >= navigatorMax) {
+				number = navigatorMax;
+				navNumber.html(number);
+			}
+			if (number < 0) {
+				number = 0;
+				navNumber.html(number);
+			}
+			if (e.which == 13) {
+				e.preventDefault();
+				interface.generateSatFrame(number);
+			}
+		});
+
+		navNumber.focusout(e => {
+			navNumber.html(navigatorId);
+		});
 	});
 
 	$(window).on('resize', function() {
 		resizeAllCanvas();
 	});
 
-  var g = new Dygraph(document.getElementById('graph'), [],
+  var g = new Dygraph(document.getElementById('graph'), [[0, 0, 0]],
   {
     showRoller: true,
     labels: ['', 'Hhb', 'OxHb'],
@@ -223,11 +290,24 @@ let goToSection = function(section) {
     if (section !== sections.about   ) icons.about   .removeClass('active'); else icons.about   .addClass('active');
     if (section !== sections.arduino ) icons.arduino .removeClass('active'); else icons.arduino .addClass('active');
 
-		let body = $('#body-content');
-		body.stop();
-    body.animate({
+		let container = $('#body-content');
+		container.stop();
+    container.animate({
         scrollTop: section.offset().top - sections.home.offset().top
     }, 800);
+}
+
+let goToFilter = function(filter) {
+	if (filter !== filters.hp) filterIcons.hp.removeClass('filter-active'); else filterIcons.hp.addClass('filter-active');
+	if (filter !== filters.lp) filterIcons.lp.removeClass('filter-active'); else filterIcons.lp.addClass('filter-active');
+	if (filter !== filters.bp) filterIcons.bp.removeClass('filter-active'); else filterIcons.bp.addClass('filter-active');
+	if (filter !== filters.bs) filterIcons.bs.removeClass('filter-active'); else filterIcons.bs.addClass('filter-active');
+
+	let container = $('#filters-scroll');
+	container.stop();
+  container.animate({
+      scrollLeft: filter.offset().left - filters.hp.offset().left
+  }, 400);
 }
 
 let fillCanvas = function(data) {

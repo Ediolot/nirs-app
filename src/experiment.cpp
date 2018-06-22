@@ -52,6 +52,8 @@ void Experiment::load(const QString &path)
             }
         }
 
+        sampleFreq = nframes / ((frames.back().getTimestamp() - frames.first().getTimestamp()) * 1e-9);
+
     }, [=](){
         file->close();
         delete file;
@@ -132,6 +134,7 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
                   aux.getWidth(),
                   aux.getHeight(),
                   index,
+                  frames.size() - indexStart,
                   topMean,
                   bottomMean);
 }
@@ -143,14 +146,14 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     int length = frames.size() - first;
     QAtomicInt *elementsDone = new QAtomicInt(0);
     QVector<std::function<void (void)>> tasks;
-    QVector<QVariantList>* meanListsA = new QVector<QVariantList>();
-    QVector<QVariantList>* meanListsB = new QVector<QVariantList>();
+    QVector<Signal>* meanListsA = new QVector<Signal>();
+    QVector<Signal>* meanListsB = new QVector<Signal>();
 
     emit taskStart(TAG_PROCESS);
 
     for (int th = 0; th < THREADS; ++th) {
-        meanListsA->push_back(QVariantList());
-        meanListsB->push_back(QVariantList());
+        meanListsA->push_back(Signal());
+        meanListsB->push_back(Signal());
         meanListsA->back().reserve(length / THREADS);
         meanListsB->back().reserve(length / THREADS);
 
@@ -177,18 +180,18 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     }
 
     TaskLauncher::afterAll(tasks, [=](){
-        QVariantList meanListA;
-        QVariantList meanListB;
-        meanListA.reserve(length);
-        meanListB.reserve(length);
-        for (QVariantList& list : *meanListsA) {
-            meanListA.append(list);
+        A.clear();
+        B.clear();
+        A.reserve(length);
+        B.reserve(length);
+        for (Signal& signal : *meanListsA) {
+            A.append(signal);
         }
-        for (QVariantList& list : *meanListsB) {
-            meanListB.append(list);
+        for (Signal& signal : *meanListsB) {
+            B.append(signal);
         }
+        emit satValues(A.runHighPassFilter(sampleFreq, 3000, 1).toQVariantList(), B.toQVariantList());
         emit taskComplete(TAG_PROCESS);
-        emit satValues(meanListA, meanListB);
         delete elementsDone;
         delete meanListsA;
         delete meanListsB;

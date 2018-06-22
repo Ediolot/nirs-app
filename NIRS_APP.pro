@@ -24,7 +24,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCLUDEPATH += "D:\Libs"
+INCLUDEPATH += "D:\Libs\DSPFiltersComplete\shared\DSPFilters\include"
 INCLUDEPATH += "C:\Deps"
+
+SOURCES += \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Bessel.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Biquad.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Butterworth.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Cascade.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\ChebyshevI.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\ChebyshevII.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Custom.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Design.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Documentation.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Elliptic.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Filter.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Legendre.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Param.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\PoleFilter.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RBJ.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RootFinder.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\State.cpp"
 
 SOURCES += \
     src/experiment.cpp \
@@ -37,7 +57,8 @@ SOURCES += \
     src/exceptions/filereaderrorexception.cpp \
     src/exceptions/framebpptoobig.cpp \
     src/tasklauncher.cpp \
-    src/task.cpp
+    src/task.cpp \
+    src/signal.cpp
 
 HEADERS +=\
     src/experiment.h \
@@ -49,7 +70,8 @@ HEADERS +=\
     src/exceptions/filereaderrorexception.h \
     src/exceptions/framebpptoobig.h \
     src/tasklauncher.h \
-    src/task.h
+    src/task.h \
+    src/signal.h
 
 FORMS += \
     forms/mainwindow.ui

@@ -35,7 +35,7 @@ signals:
 
     void fileErrorSignal(QString);
     void basalFrameSignal(QVariantList, int, int);
-    void satFrameSignal(QVariantList, int, int, int);
+    void satFrameSignal(QVariantList, int, int, int, int);
     void satValues(QVariantList, QVariantList);
 };
 

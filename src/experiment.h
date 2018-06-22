@@ -15,6 +15,7 @@
 #include "exceptions/filenotfoundexception.h"
 #include "exceptions/framebpptoobig.h"
 #include "tasklauncher.h"
+#include "signal.h"
 
 // TODO usar QFile
 // TODO usar QString en las excepciones
@@ -44,6 +45,10 @@ private:
     // QVector<Frame<int32_t>> frames32;
     // QVector<Frame<int64_t>> frames64;
 
+    Signal A;
+    Signal B;
+    double sampleFreq;
+
 public:
     Experiment();
     explicit Experiment(const QString &path);
@@ -61,7 +66,7 @@ signals:
     void taskComplete(QString);
 
     void fileError(QString);
-    void satFrame(QVariantList, int, int, int, double, double); // frame, width, height, index, meanTop, meanBot
+    void satFrame(QVariantList, int, int, int, int, double, double); // frame, width, height, index, max, meanTop, meanBot
     void basalFrame(QVariantList, int, int); // frame, width, height
     void satValues(QVariantList, QVariantList);
 

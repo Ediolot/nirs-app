@@ -18,19 +18,56 @@
 	<div id="body-content" class="content">
     <div id="home-section" class="content-section">
   		<div class="top-content">
-  			<div class="card-spacer-top"></div>
-  			<!-- Card -->
-  			<div class="card">
-  				<div class="card-top">
-  					<span class="card-title">GRAPH</span>
-  				</div>
-  				<div id="graph" class="graph-div"></div>
-					<div id="graph-progress" class="card-load"></div>
-  			</div>
-  			<!-- /Card -->
+  			<div class="card-container card-container-graph">
+	  			<!-- Card -->
+	  			<div class="card">
+	  				<div class="card-top">
+	  					<span class="card-title">GRAPH</span>
+	  					<div class="card-options">
+	  						<div id="checkbox-hhb" class="custom-checkbox">
+									<div class="custom-checkbox-sq custom-checbox-unchecked"></div>
+									<div class="custom-checkbox-label">HHb</div>
+								</div>
+	  						<div id="checkbox-oxhb" class="custom-checkbox">
+									<div class="custom-checkbox-sq custom-checbox-unchecked"></div>
+									<div class="custom-checkbox-label">OxHb</div>
+								</div>
+	  						<div id="checkbox-invert" class="custom-checkbox">
+									<div class="custom-checkbox-sq custom-checbox-unchecked"></div>
+									<div class="custom-checkbox-label">Invert OxHb</div>
+								</div>
+	  					</div>
+	  				</div>
+	  				<div id="graph" class="graph-div"></div>
+						<div id="graph-progress" class="card-load"></div>
+	  			</div>
+	  			<!-- /Card -->
+				</div>
+  			<div class="card-container card-container-filter">
+	  			<!-- Card -->
+	  			<div class="card">
+	  				<div class="card-top">
+	  					<span class="card-title">FILTER</span>
+	  				</div>
+						<div class="filter-row">
+							<div id="filter-hp-icon" class="filter filter-active" title="High pass filter">HP</div>
+							<div id="filter-lp-icon" class="filter" title="Low pass filter">LP</div>
+							<div id="filter-bp-icon" class="filter" title="Band pass filter">BP</div>
+							<div id="filter-bs-icon" class="filter" title="Band stop filter">BS</div>
+						</div>
+						<div id="filters-scroll" class="filters-container-parent">
+							<div class="filters-container-child">
+								<div id="filter-hp" class="filter-content"></div>
+								<div id="filter-lp" class="filter-content"></div>
+								<div id="filter-bp" class="filter-content"></div>
+								<div id="filter-bs" class="filter-content"></div>
+							</div>
+						</div>
+	  			</div>
+	  			<!-- /Card -->
+				</div>
   		</div>
   		<div class="bottom-content">
-  			<div class="card-spacer-top"></div>
   			<div class="card-container card-container-load">
   				<!-- Card -->
   				<div class="card-spacer"></div>
@@ -68,7 +105,11 @@
   				<div class="card">
   					<div class="card-top">
   						<span class="card-title">SATURATION</span>
-              <span id="nav-number" class="card-badge">0</span>
+							<div>
+	              <span id="nav-number" class="card-badge" contenteditable="true">0</span>
+		            <span class="card-badge">/</span>
+	              <span id="nav-number-max" class="card-badge">0</span>
+							</div>
   					</div>
   					<div id="sat-canvas-container" class="card-content">
   						<input id="navigator-prev" class="btn btn-big" type="button" name="" value="PREV">
