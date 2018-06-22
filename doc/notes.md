@@ -40,6 +40,12 @@
 * Smooth function
 * Funcionalidad de las checkbox
 * HP LP BP BS interfaces
+* ¿HSat no se usa en nada para calcular las medias?
+* ¿Cuál es hhb y oxhb?
+* ¿Cuál se puede invertir?
+* ROI
+* DRIFTER
+* Smooth images
 
 * ¿No usar Mapper?
 * Frame superclass
