@@ -68,5 +68,6 @@
         <file>webfiles/style.css</file>
         <file>images/test.png</file>
         <file>webfiles/images/ico.png</file>
+        <file>webfiles/images/arduino.jpg</file>
     </qresource>
 </RCC>

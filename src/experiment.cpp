@@ -53,11 +53,11 @@ void Experiment::load(const QString &path)
         }
 
         sampleFreq = nframes / ((frames.back().getTimestamp() - frames.first().getTimestamp()) * 1e-9);
+        emit taskComplete(TAG_LOAD);
 
     }, [=](){
         file->close();
         delete file;
-        emit taskComplete(TAG_LOAD);
     }, [=](QString err){
         emit fileError(err);
     });

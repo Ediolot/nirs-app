@@ -303,3 +303,21 @@ h1 {
   box-sizing: border-box;
 	float: left;
 }
+
+.error-text {
+  text-transform: capitalize;
+	width: 100%;
+	color: rgba(255, 80, 10, 0.9);
+	font-size: 0.9rem;
+	padding: 5px;
+	word-break: break-all;
+	text-overflow: clip;
+}
+
+#arduino-section {
+  background-image: url('images/arduino.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: calc(100% - 15%) calc(100% - 15px);
+	background-size: 30%;
+}

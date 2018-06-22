@@ -104,6 +104,7 @@ $(document).ready(function() {
       }
 
 			if (tag === 'LOAD') {
+				$('#load-error-text').html('');
 				interface.generateBasal();
 			}
 			if (tag === 'BASAL') {
@@ -127,7 +128,9 @@ $(document).ready(function() {
 		});
 
 		interface.fileErrorSignal.connect(err => {
-			console.error(err);
+			$('#load-error-text').html(err);
+			$('#load-exp-progress').hide();
+			$('#load-exp-progress').width('0%');
 		});
 
 		$('#generate-basal-button').click(e => {
