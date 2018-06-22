@@ -37,7 +37,6 @@ void Experiment::load(const QString &path)
         gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
-        nframes = 400;
         frames.reserve(nframes);
         for (int i = 0; (i < nframes); ++i) {
             frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
