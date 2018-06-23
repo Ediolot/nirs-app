@@ -72,17 +72,20 @@ h1 {
   padding-left: 15px;
   color: #ffffff;
 }
+.card-title .card-title-text {
+  line-height: 1px;
+}
 
-.card-help {
+.card-title-help {
   display: inline-block;
   text-align: center;
   color: rgba(255, 255, 255, 0.5);
   font-size: 22px;
-  cursor: pointer;
   margin-right: 10px;
+  cursor: pointer;
 }
 
-.card-help:hover {
+.card-title-help:hover {
   color: #FFF;
 }
 
@@ -122,7 +125,7 @@ h1 {
   height: calc(100% - 20px);
   width: 100%;
   margin: auto;
-  box-shadow: inset 0px 0px 0px 2px rgba(44, 67, 107, 0.2), 0px 0px 58px -13px rgba(0, 0, 0, 0.31);
+  box-shadow: inset 0px 0px 0px 2px rgba(31, 34, 63, 0.2), 0px 0px 58px -13px rgba(0, 0, 0, 0.31);
 }
 
 .card-top-margin {
@@ -220,7 +223,7 @@ h1 {
 
 .graph-container {
   width: 100%;
-  height: calc(100% - 45px - 25px - 5px);
+  height: calc(100% - 45px - 5px);
   padding-right: 15px;
   padding-bottom: 0px;
   padding-top: 20px;
@@ -233,62 +236,76 @@ h1 {
 }
 
 .graph-avg-div {
-  height: 25px;
-  margin-left: 30px;
-  font-size: 12px;
+  height: 45px;
+  float: left;
 }
 
 .graph-avg-val {
   width: 45px;
-  border: 2px solid rgba(44, 67, 107, 0.2);
+  border: 2px solid rgba(181, 218, 238, 0.5);
   box-sizing: border-box;
   display: inline-block;
+  border-radius: 4px;
 }
 
 .graph-avg-text {
+  height: 100%;
+  line-height: 45px;
   display: inline-block;
+  margin-right: 6px;
+}
+
+.opts-separator {
+  float: left;
+  height: calc(100% - 10px);
+  width: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: calc(15px - 2px);
+  margin-left: calc(15px - 2px);
+  box-sizing: border-box;
 }
 
 .img-canvas {
-  border: 1px solid rgba(44, 67, 107, 0.2);
+  border: 1px solid rgba(31, 34, 63, 0.2);
   padding: 0;
   margin: auto;
   display: block;
   width: 100%;
-  height: calc(100% - 5px - 20px);
+  height: calc(100% - 5px);
 }
 
 .load-text {
   width: calc(100% - 10px);
   height: 1.6rem;
-  border: 1px solid rgba(44, 67, 107, 0.2);
+  border: 1px solid rgba(31, 34, 63, 0.2);
   border-radius: 4px;
   margin-right: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
 
-.btn-big {
-  width: 6rem;
-}
-
 .btn {
-  display: none;
-  height: 2rem;
-  background-color: #2C436B;
-  color: #ffffff;
-  border: none;
-  margin-bottom: 20px;
-  margin-right: 4px;
+  font-size: 10px;
+  color: #FFF;
+  background: rgba(181, 218, 238, 0.1);
+  height: 25px;
+  margin-top: calc((45px - 25px) / 2);
+  border: 2px solid rgba(181, 218, 238, 0.5);
+  box-sizing: border-box;
+  border-radius: 4px;
+  margin-left: 5px;
 }
 
 .btn:hover {
-  border: 2px solid #B5DAEE;
   cursor: pointer;
 }
 
 .filter-row {
   height: 30px;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .filter {
@@ -331,7 +348,6 @@ h1 {
 }
 
 .error-text {
-  text-transform: capitalize;
   width: 100%;
   color: rgba(255, 80, 10, 0.9);
   font-size: 0.9rem;

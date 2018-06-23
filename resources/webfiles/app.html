@@ -24,14 +24,16 @@
 	  				<div class="card">
 	  					<div class="card-top">
 								<div class="card-title">
-									<span class="card-help"><i class="icon ion-md-help-circle"></i></span>
-									<span>LOAD</span>
+									<span class="card-title-help"><i class="icon ion-md-help-circle"></i></span>
+									<span class="card-title-text">LOAD</span>
 								</div>
+		  					<div class="card-options">
+		  						<input class="btn" id="select-exp-button" type="button" value="SELECT">
+		  						<input class="btn" id="load-exp-button"   type="button" value="LOAD">
+		  					</div>
 							</div>
 	  					<div class="card-content">
-	  						<input id="select-exp-button" class="btn btn-big" type="button" name="" value="SELECT">
-	  						<input id="load-exp-button"   class="btn btn-big" type="button" name="" value="LOAD">
-	  						<input id="filepath-exp"      class="load-text" type="text" name"" placeholder="Select file...">
+	  						<input id="filepath-exp" class="load-text" type="text" placeholder="Select file...">
 								<div id="load-error-text" class="error-text"></div>
 	  					</div>
 	            <div id="load-exp-progress" class="card-load"></div>
@@ -44,7 +46,7 @@
 						<div class="card">
 							<div class="card-top">
 								<div class="card-title">
-									<span class="card-help"><i class="icon ion-md-help-circle"></i></span>
+									<span class="card-title-help"><i class="icon ion-md-help-circle"></i></span>
 									<span>FILTERS</span>
 								</div>
 							</div>
@@ -72,12 +74,14 @@
   				<div class="card">
   					<div class="card-top">
 							<div class="card-title">
-								<span class="card-help"><i class="icon ion-md-help-circle"></i></span>
+								<span class="card-title-help"><i class="icon ion-md-help-circle"></i></span>
 								<span>BASAL</span>
+							</div>
+							<div class="card-options">
+	  						<input id="generate-basal-button" class="btn" type="button" value="GENERATE">
 							</div>
   					</div>
   					<div id="basal-canvas-container" class="card-content">
-  						<input id="generate-basal-button" class="btn btn-big" type="button" name="" value="GENERATE">
   						<canvas id="basal-canvas" class="img-canvas">
   					</div>
             <div id="basal-progress" class="card-load"></div>
@@ -90,19 +94,21 @@
   				<div class="card">
   					<div class="card-top">
 							<div class="card-title">
-								<span class="card-help"><i class="icon ion-md-help-circle"></i></span>
+								<span class="card-title-help"><i class="icon ion-md-help-circle"></i></span>
 								<span>SATURATION</span>
 							</div>
-							<div>
+							<div class="card-options">
+	  						<input id="navigator-prev" class="btn" type="button" value="PREV">
+	  						<input id="navigator-next" class="btn" type="button" value="NEXT">
+	  						<input id="generate-graph-button" class="btn" type="button" value="GRAPH ALL">
+							</div>
+							<!--<div>
 	              <span id="nav-number" class="card-badge" contenteditable="true">0</span>
 		            <span class="card-badge">/</span>
 	              <span id="nav-number-max" class="card-badge">0</span>
-							</div>
+							</div>-->
   					</div>
   					<div id="sat-canvas-container" class="card-content">
-  						<input id="navigator-prev" class="btn btn-big" type="button" name="" value="PREV">
-  						<input id="navigator-next" class="btn btn-big" type="button" name="" value="NEXT">
-  						<input id="generate-graph-button" class="btn btn-big" type="button" name="" value="GRAPH ALL">
   						<canvas id="sat-canvas" class="img-canvas" width="260" height="172">
   					</div>
             <div id="saturation-progress" class="card-load"></div>
@@ -117,10 +123,16 @@
 	  			<div class="card">
 	  				<div class="card-top">
 	  					<div class="card-title">
-								<span class="card-help"><i class="icon ion-md-help-circle"></i></span>
+								<span class="card-title-help"><i class="icon ion-md-help-circle"></i></span>
 								<span>GRAPH</span>
 							</div>
 	  					<div class="card-options">
+								<div class="opts-separator"></div>
+								<div class="graph-avg-div">
+		              <div class="graph-avg-text">Smooth order</div>
+		              <div id="graph-avg" class="graph-avg-val" contenteditable="true"></div>
+		            </div>
+								<div class="opts-separator"></div>
 	  						<div id="checkbox-hhb" class="custom-checkbox">
 									<div class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
 									<div class="custom-checkbox-label">HbR</div>
@@ -138,10 +150,6 @@
 						<div class="graph-container">
 	  					<div id="graph" class="graph-div"></div>
 						</div>
-            <div class="graph-avg-div">
-              <div class="graph-avg-text">Smooth function order:</div>
-              <div id="graph-avg" class="graph-avg-val" contenteditable="true"></div>
-            </div>
 						<div id="graph-progress" class="card-load"></div>
 	  			</div>
 	  			<!-- /Card -->

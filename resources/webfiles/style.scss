@@ -8,8 +8,8 @@ $color-primary-dark:     #1F223F;
 $color-text:             #FFF;
 $color-background:       #FFF;
 $color-card-background:  #FFF;
-$color-border-light:     rgba(#2C436B, 0.2);
 $color-help-icon:        rgba($color-text, 0.5);
+$color-separator:        rgba($color-text, 0.2);
 
 $nav-bar-size: 100px;
 $nav-icon-size: 32px;
@@ -30,16 +30,19 @@ $card-help-ico-title-space: 10px;
 $card-title-left-padding: 15px;
 $card-fix-width: 250px;
 $card-fix-height: 130px;
+$card-opts-separator: 30px;
 
 $checkbox-sq-size: 15px;
 $graph-right-margin: 10px;
 $graph-padding-right: 15px;
 $graph-padding-top: 20px;
 $graph-padding-bot: 0px;
-$graph-smooth-opt-height: 25px;
-$graph-smooth-opt-margin-left: 30px;
 $graph-smooth-opt-box-width: 45px;
 $graph-smooth-opt-font-size: 12px;
+
+$btn-font-size: 10px;
+$btn-height: 25px;
+$btn-margin-between: 5px;
 
 body, html {
   background: $color-background;
@@ -114,18 +117,21 @@ h1 {
 	line-height: $card-top-height;
 	padding-left: $card-title-left-padding;
 	color: #ffffff;
+	.card-title-text {
+		line-height: 1px;
+	}
 }
 
-.card-help {
+.card-title-help {
 	display: inline-block;
 	text-align: center;
 	color: $color-help-icon;
 	font-size: $card-help-ico-size;
-	cursor: pointer;
 	margin-right: $card-help-ico-title-space;
+	cursor: pointer;
 }
 
-.card-help:hover {
+.card-title-help:hover {
 	color: $color-text;
 }
 
@@ -166,7 +172,7 @@ h1 {
 	width: 100%;
 	margin: auto;
   box-shadow:
-		inset 0px 0px 0px 2px $color-border-light,
+		inset 0px 0px 0px 2px rgba($color-primary-dark, 0.2),
 		0px 0px 58px -13px rgba(0,0,0,0.31);
 }
 
@@ -265,7 +271,7 @@ h1 {
 
 .graph-container {
 	width: 100%;
-	height: calc(100% - #{$card-top-height} - #{$graph-smooth-opt-height} - #{$card-load-bar-height});
+	height: calc(100% - #{$card-top-height} - #{$card-load-bar-height});
 	padding-right: $graph-padding-right;
 	padding-bottom: $graph-padding-bot;
 	padding-top: $graph-padding-top;
@@ -278,62 +284,83 @@ h1 {
 }
 
 .graph-avg-div {
-  height: $graph-smooth-opt-height;
-  margin-left: $graph-smooth-opt-margin-left;
-	font-size: $graph-smooth-opt-font-size;
+	height: $card-top-height;
+	float: left;
 }
 
 .graph-avg-val {
   width: $graph-smooth-opt-box-width;
-  border: 2px solid $color-border-light;
+  border: 2px solid rgba($color-secondary-light, 0.5);
   box-sizing: border-box;
   display: inline-block;
+	border-radius: 4px;
 }
 
 .graph-avg-text {
+	height: 100%;
+	line-height: $card-top-height;
   display: inline-block;
+	margin-right: 6px;
+}
+
+.opts-separator {
+	float: left;
+	height: calc(100% - 10px);
+	width: 2px;
+	background-color: $color-separator;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: calc(#{$card-opts-separator / 2} - 2px);
+	margin-left: calc(#{$card-opts-separator / 2} - 2px);
+	box-sizing: border-box;
 }
 
 .img-canvas {
-	border: 1px solid $color-border-light;
+	border: 1px solid rgba($color-primary-dark, 0.2);
 	padding: 0;
   margin: auto;
   display: block;
 	width: 100%;
-	height: calc(100% - #{$card-load-bar-height} - 20px);
+	height: calc(100% - #{$card-load-bar-height});
 }
 
 .load-text {
 	width: calc(100% - 10px);
 	height: 1.6rem;
-	border: 1px solid $color-border-light;
+	border: 1px solid rgba($color-primary-dark, 0.2);
 	border-radius: 4px;
 	margin-right: 4px;
 	padding-left: 5px;
 	padding-right: 5px;
 }
 
-.btn-big {
-	width: 6rem;
-}
-
 .btn {
-	display: none;
-	height: 2rem;
-	background-color: #2C436B;
-	color: #ffffff;
-	border: none;
-	margin-bottom: 20px;
-	margin-right: 4px;
+	font-size: $btn-font-size;
+	color: $color-text;
+	background: rgba($color-secondary-light, 0.1);
+	height: $btn-height;
+  margin-top: calc((#{$card-top-height} - #{$btn-height}) / 2);
+  border: 2px solid rgba($color-secondary-light, 0.5);
+  box-sizing: border-box;
+	border-radius: 4px;
+	margin-left: $btn-margin-between;
+	// font-size: $btn-font-size;
+	// height: 2rem;
+	// background-color: rgba($color-secondary-light, 0.5);
+	// color: #ffffff;
+	// border: none;
+	// margin-bottom: 20px;
+	// margin-right: 4px;
 }
 
 .btn:hover {
-	border: 2px solid #B5DAEE;
 	cursor: pointer;
 }
 
 .filter-row {
 	height: 30px;
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 .filter {
@@ -376,7 +403,6 @@ h1 {
 }
 
 .error-text {
-  text-transform: capitalize;
 	width: 100%;
 	color: rgba(255, 80, 10, 0.9);
 	font-size: 0.9rem;
