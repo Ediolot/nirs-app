@@ -29,23 +29,23 @@ INCLUDEPATH += "C:\Deps"
 INCLUDEPATH += "C:\Deps\DSPFiltersComplete\shared\DSPFilters\include"
 
 SOURCES += \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Bessel.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Biquad.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Butterworth.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Cascade.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\ChebyshevI.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\ChebyshevII.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Custom.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Design.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Documentation.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Elliptic.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Filter.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Legendre.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\Param.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\PoleFilter.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\RBJ.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\RootFinder.cpp" \
-    "C:\Deps\DSPFiltersComplete\shared\DSPFilters\source\State.cpp"
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Bessel.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Biquad.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Butterworth.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Cascade.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\ChebyshevI.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\ChebyshevII.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Custom.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Design.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Documentation.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Elliptic.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Filter.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Legendre.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Param.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\PoleFilter.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RBJ.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RootFinder.cpp" \
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\State.cpp"
 
 SOURCES += \
     src/experiment.cpp \

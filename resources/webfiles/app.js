@@ -80,145 +80,145 @@ $(document).ready(function() {
 	addCheckboxTrigger('#checkbox-hhb');
 	addCheckboxTrigger('#checkbox-oxhb');
 
-  let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-    let interface = channel.objects.webinterface;
-
-		$('#select-exp-button').click(e => {
-			interface.openFileDialog(filepath => {
-				$('#filepath-exp').val(filepath);
-			});
-		});
-
-    $('#load-exp-button').click(e => {
-			let filepath = $('#filepath-exp').val();
-			if (filepath) {
-				interface.experimentFromFile(filepath);
-			}
-    });
-
-		interface.taskCompleteSignal.connect(tag => {
-			let element = elementFromTag(tag);
-      if (element) {
-  		  element.width('100%');
-			  element.hide();
-      }
-
-			if (tag === 'LOAD') {
-				$('#load-error-text').html('');
-				interface.generateBasal();
-			}
-			if (tag === 'BASAL') {
-				interface.generateSatFrame(0);
-			}
-		});
-
-		interface.taskStartSignal.connect(tag => {
-			let element = elementFromTag(tag);
-      if (element) {
-  		  element.width('0%');
-			  element.show();
-      }
-		});
-
-		interface.taskUpdateSignal.connect((tag, percent) => {
-			let element = elementFromTag(tag);
-      if (element) {
-        element.width(Math.round(100 * percent) + '%');
-      }
-		});
-
-		interface.fileErrorSignal.connect(err => {
-			$('#load-error-text').html(err);
-			$('#load-exp-progress').hide();
-			$('#load-exp-progress').width('0%');
-		});
-
-		$('#generate-basal-button').click(e => {
-			interface.generateBasal();
-		});
-
-		interface.basalFrameSignal.connect((data, width, height) => {
-			canvasData.basal = {
-				width: width,
-				height: height,
-				px: data.splice(2),
-				operation: TRUNCATE,
-				max: 1.0,
-				min: 0.0,
-				id: '#basal-canvas'
-			}
-			fillCanvas(canvasData.basal);
-		});
-
-		//-------------------------------------------
-
-		$('#generate-graph-button').click(e => {
-			interface.calculateAllSatValues();
-		});
-
-		//-------------------------------------------
-
-		$('#navigator-prev').click(e => {
-			if (navigatorId > 0) {
-				interface.generateSatFrame(navigatorId - 1);
-			}
-		});
-
-		$('#navigator-next').click(e => {
-			if (navigatorId + 1 < navigatorMax) {
-				interface.generateSatFrame(navigatorId + 1);
-			}
-		});
-
-		interface.satFrameSignal.connect((data, width, height, index, max) => {
-			canvasData.sat = {
-				width: width,
-				height: height,
-				px: data.splice(2),
-				operation: NORMALIZE,
-				max: 0.06,
-				min: 0.0,
-				id: '#sat-canvas'
-			}
-			fillCanvas(canvasData.sat);
-			$('#nav-number').html(index);
-			$('#nav-number-max').html(max - 1);
-			navigatorId = index;
-			navigatorMax = max;
-		});
-
-		interface.satValues.connect((A, B) => {
-		  let data = [];
-		  for (let i = 0; i < A.length; ++i) {
-		    data.push([i, A[i], B[i]]);
-		  }
-		  g.updateOptions( { 'file': data } );
-		});
-
-		let navNumber = $("#nav-number");
-		navNumber.keypress(function(e) {
-			let number = Number(navNumber.html());
-	    if (isNaN(String.fromCharCode(e.which))) {
-				e.preventDefault();
-			}
-			if (number >= navigatorMax) {
-				number = navigatorMax;
-				navNumber.html(number);
-			}
-			if (number < 0) {
-				number = 0;
-				navNumber.html(number);
-			}
-			if (e.which == 13) {
-				e.preventDefault();
-				interface.generateSatFrame(number);
-			}
-		});
-
-		navNumber.focusout(e => {
-			navNumber.html(navigatorId);
-		});
-	});
+  // let webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+  //   let interface = channel.objects.webinterface;
+	//
+	// 	$('#select-exp-button').click(e => {
+	// 		interface.openFileDialog(filepath => {
+	// 			$('#filepath-exp').val(filepath);
+	// 		});
+	// 	});
+	//
+  //   $('#load-exp-button').click(e => {
+	// 		let filepath = $('#filepath-exp').val();
+	// 		if (filepath) {
+	// 			interface.experimentFromFile(filepath);
+	// 		}
+  //   });
+	//
+	// 	interface.taskCompleteSignal.connect(tag => {
+	// 		let element = elementFromTag(tag);
+  //     if (element) {
+  // 		  element.width('100%');
+	// 		  element.hide();
+  //     }
+	//
+	// 		if (tag === 'LOAD') {
+	// 			$('#load-error-text').html('');
+	// 			interface.generateBasal();
+	// 		}
+	// 		if (tag === 'BASAL') {
+	// 			interface.generateSatFrame(0);
+	// 		}
+	// 	});
+	//
+	// 	interface.taskStartSignal.connect(tag => {
+	// 		let element = elementFromTag(tag);
+  //     if (element) {
+  // 		  element.width('0%');
+	// 		  element.show();
+  //     }
+	// 	});
+	//
+	// 	interface.taskUpdateSignal.connect((tag, percent) => {
+	// 		let element = elementFromTag(tag);
+  //     if (element) {
+  //       element.width(Math.round(100 * percent) + '%');
+  //     }
+	// 	});
+	//
+	// 	interface.fileErrorSignal.connect(err => {
+	// 		$('#load-error-text').html(err);
+	// 		$('#load-exp-progress').hide();
+	// 		$('#load-exp-progress').width('0%');
+	// 	});
+	//
+	// 	$('#generate-basal-button').click(e => {
+	// 		interface.generateBasal();
+	// 	});
+	//
+	// 	interface.basalFrameSignal.connect((data, width, height) => {
+	// 		canvasData.basal = {
+	// 			width: width,
+	// 			height: height,
+	// 			px: data.splice(2),
+	// 			operation: TRUNCATE,
+	// 			max: 1.0,
+	// 			min: 0.0,
+	// 			id: '#basal-canvas'
+	// 		}
+	// 		fillCanvas(canvasData.basal);
+	// 	});
+	//
+	// 	//-------------------------------------------
+	//
+	// 	$('#generate-graph-button').click(e => {
+	// 		interface.calculateAllSatValues();
+	// 	});
+	//
+	// 	//-------------------------------------------
+	//
+	// 	$('#navigator-prev').click(e => {
+	// 		if (navigatorId > 0) {
+	// 			interface.generateSatFrame(navigatorId - 1);
+	// 		}
+	// 	});
+	//
+	// 	$('#navigator-next').click(e => {
+	// 		if (navigatorId + 1 < navigatorMax) {
+	// 			interface.generateSatFrame(navigatorId + 1);
+	// 		}
+	// 	});
+	//
+	// 	interface.satFrameSignal.connect((data, width, height, index, max) => {
+	// 		canvasData.sat = {
+	// 			width: width,
+	// 			height: height,
+	// 			px: data.splice(2),
+	// 			operation: NORMALIZE,
+	// 			max: 0.06,
+	// 			min: 0.0,
+	// 			id: '#sat-canvas'
+	// 		}
+	// 		fillCanvas(canvasData.sat);
+	// 		$('#nav-number').html(index);
+	// 		$('#nav-number-max').html(max - 1);
+	// 		navigatorId = index;
+	// 		navigatorMax = max;
+	// 	});
+	//
+	// 	interface.satValues.connect((A, B) => {
+	// 	  let data = [];
+	// 	  for (let i = 0; i < A.length; ++i) {
+	// 	    data.push([i, A[i], B[i]]);
+	// 	  }
+	// 	  g.updateOptions( { 'file': data } );
+	// 	});
+	//
+	// 	let navNumber = $("#nav-number");
+	// 	navNumber.keypress(function(e) {
+	// 		let number = Number(navNumber.html());
+	//     if (isNaN(String.fromCharCode(e.which))) {
+	// 			e.preventDefault();
+	// 		}
+	// 		if (number >= navigatorMax) {
+	// 			number = navigatorMax;
+	// 			navNumber.html(number);
+	// 		}
+	// 		if (number < 0) {
+	// 			number = 0;
+	// 			navNumber.html(number);
+	// 		}
+	// 		if (e.which == 13) {
+	// 			e.preventDefault();
+	// 			interface.generateSatFrame(number);
+	// 		}
+	// 	});
+	//
+	// 	navNumber.focusout(e => {
+	// 		navNumber.html(navigatorId);
+	// 	});
+	// });
 
 	$(window).on('resize', function() {
 		resizeAllCanvas();

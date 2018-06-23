@@ -1,73 +1,14 @@
 <RCC>
     <qresource prefix="/">
-        <file>webfiles/bootflat/css/bootflat.min.css</file>
-        <file>webfiles/bootflat/img/check_flat/default.png</file>
-        <file>webfiles/bootflat/img/check_flat/default.psd</file>
-        <file>webfiles/bootflat/js/icheck.min.js</file>
-        <file>webfiles/bootflat/js/jquery.fs.selecter.min.js</file>
-        <file>webfiles/bootflat/js/jquery.fs.stepper.min.js</file>
-        <file>webfiles/bootflat/scss/bootflat/_accordion.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_alert.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_breadcrumb.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_button.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_button_group.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_calendar.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_checkbox_radio.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_dropdown.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_footer.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_form.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_global.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_jumbotron.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_label_badge.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_list.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_media_list.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_modal.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_navbar.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_pager.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_pagination.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_panel.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_pill.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_popover.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_pricing.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_progress.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_selecter.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_stepper.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_tab.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_thumbnail.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_timeline.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_toggle.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_tooltip.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_typography.scss</file>
-        <file>webfiles/bootflat/scss/bootflat/_well.scss</file>
-        <file>webfiles/bootflat/scss/.csscomb.json</file>
-        <file>webfiles/bootflat/scss/.csslintrc</file>
-        <file>webfiles/bootflat/scss/bootflat.scss</file>
-        <file>webfiles/bootstrap/css/bootstrap-grid.css</file>
-        <file>webfiles/bootstrap/css/bootstrap-grid.css.map</file>
-        <file>webfiles/bootstrap/css/bootstrap-grid.min.css</file>
-        <file>webfiles/bootstrap/css/bootstrap-grid.min.css.map</file>
-        <file>webfiles/bootstrap/css/bootstrap-reboot.css</file>
-        <file>webfiles/bootstrap/css/bootstrap-reboot.css.map</file>
-        <file>webfiles/bootstrap/css/bootstrap-reboot.min.css</file>
-        <file>webfiles/bootstrap/css/bootstrap-reboot.min.css.map</file>
-        <file>webfiles/bootstrap/css/bootstrap.css</file>
-        <file>webfiles/bootstrap/css/bootstrap.css.map</file>
-        <file>webfiles/bootstrap/css/bootstrap.min.css</file>
-        <file>webfiles/bootstrap/css/bootstrap.min.css.map</file>
-        <file>webfiles/bootstrap/js/bootstrap.bundle.js</file>
-        <file>webfiles/bootstrap/js/bootstrap.bundle.js.map</file>
-        <file>webfiles/bootstrap/js/bootstrap.bundle.min.js</file>
-        <file>webfiles/bootstrap/js/bootstrap.bundle.min.js.map</file>
-        <file>webfiles/bootstrap/js/bootstrap.js</file>
-        <file>webfiles/bootstrap/js/bootstrap.js.map</file>
-        <file>webfiles/bootstrap/js/bootstrap.min.js</file>
-        <file>webfiles/bootstrap/js/bootstrap.min.js.map</file>
         <file>webfiles/app.html</file>
         <file>webfiles/app.js</file>
         <file>webfiles/jquery-3.3.1.min.js</file>
         <file>webfiles/style.css</file>
-        <file>images/test.png</file>
         <file>webfiles/images/ico.png</file>
         <file>webfiles/images/arduino.jpg</file>
+        <file>webfiles/ionicons/ionicons.min.css</file>
+        <file>webfiles/fonts/ionicons.woff2</file>
+        <file>webfiles/dygraph/dygraph.min.css</file>
+        <file>webfiles/dygraph/dygraph.min.js</file>
     </qresource>
 </RCC>

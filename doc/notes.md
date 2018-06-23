@@ -62,7 +62,7 @@
 * ¿No usar Mapper?
 * Frame superclass
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
-* Problema con las fuentes de iconos desde archivo local
+* (DONE) Problema con las fuentes de iconos desde archivo local
 * (DONE) Poder elegir la imagen de saturación con el número
 * (DONE) Tamaño de imágenes dinámico
 * (DONE) Generar basal en una tarea separada
