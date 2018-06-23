@@ -27,25 +27,37 @@
 * Hablar sobre poder hacer debugging en una pestaña de Chrome (localhost:8080)
 * MTuner
 * Color picker
+* https://www.cssmatic.com/es/box-shadow
+* https://github.com/vinniefalco/DSPFiltersDemo
+* http://paletton.com/#uid=35y0H0kyAuFkVCvqBz7AnolGfi+
+* https://ionicons.com/
+* https://www.canva.com/color-palette/
+* http://dygraphs.com/options.html
+* https://www.flaticon.com/free-icon/creativity_908920#term=brain&page=4&position=30
+
+* Mendeley => Gestor de referencias
+* Refworks => Gestor de referencias
+* Google academico => Citas
 
 ## TODOs
 
 * Indicador de color en las imágenes
-* Selector idioma
 * Settings
 * Exportar datos de gráfica
 * Cargar basal de archivo
 * Guardar imágenes
-* Interfaz filtros
-* Smooth function
 * Funcionalidad de las checkbox
 * HP LP BP BS interfaces
 * ¿HSat no se usa en nada para calcular las medias?
-* ¿Cuál es hhb y oxhb?
-* ¿Cuál se puede invertir?
+* ¿Cuál es HbR y HbO?
+* ¿Cuál se puede invertir? HbR
 * ROI
-* DRIFTER
 * Smooth images
+* Hhb => HbR
+* OxHb => HbO
+
+* (NO) Selector idioma
+* (NO) DRIFTER
 
 * ¿No usar Mapper?
 * Frame superclass
