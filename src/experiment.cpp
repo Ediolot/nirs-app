@@ -37,11 +37,12 @@ void Experiment::load(const QString &path)
         gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
+        nframes = 400;
         frames.reserve(nframes);
         for (int i = 0; (i < nframes); ++i) {
             frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
             //     if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else if (bpp <= 16) frames.push_back(Frame<int16_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
+            //else if (bpp <= 16) frames.push_back(Frame<int56_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
             //else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
             //else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
             //else throw FrameBPPTooBig(bpp);

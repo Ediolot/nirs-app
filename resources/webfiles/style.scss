@@ -1,0 +1,394 @@
+$font-stack:    "Avant Garde", "Century Gothic", sans-serif;
+
+$color-secondary-light:  #B5DAEE;
+$color-secondary-medium: #5DA5CC;
+$color-secondary:        #2A8BB9;
+$color-primary:          #2C436B;
+$color-primary-dark:     #1F223F;
+$color-text:             #FFF;
+$color-background:       #FFF;
+$color-card-background:  #FFF;
+$color-border-light:     rgba(#2C436B, 0.2);
+$color-help-icon:        rgba($color-text, 0.5);
+
+$nav-bar-size: 100px;
+$nav-icon-size: 32px;
+$nav-icon-separation: 40px;
+
+$text-padding-section: 40px;
+
+$home-top-height: 50%;
+$home-bot-height: 100% - $home-top-height;
+
+$card-top-height: 45px;
+$card-between-space: 20px;
+$card-top-bot-margins: 10px;
+$card-load-bar-height: 5px;
+$card-content-margin: 10px;
+$card-help-ico-size: 22px;
+$card-help-ico-title-space: 10px;
+$card-title-left-padding: 15px;
+$card-fix-width: 250px;
+$card-fix-height: 130px;
+
+$checkbox-sq-size: 15px;
+$graph-right-margin: 10px;
+$graph-padding-right: 15px;
+$graph-padding-top: 20px;
+$graph-padding-bot: 0px;
+$graph-smooth-opt-height: 25px;
+$graph-smooth-opt-margin-left: 30px;
+$graph-smooth-opt-box-width: 45px;
+$graph-smooth-opt-font-size: 12px;
+
+body, html {
+  background: $color-background;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+  height: 100%;
+	overflow: hidden;
+  font-family: $font-stack;
+}
+
+h1 {
+	color: $color-primary-dark;
+	font-size: 4rem;
+}
+
+.nav-bar {
+	float: left;
+	background-color: #ffffff;
+	width: $nav-bar-size;
+	height: 100%;
+	-webkit-box-shadow:  0px 0px 16px 7px rgba(0,0,0,0.14);
+	-moz-box-shadow:  0px 0px 16px 7px rgba(0,0,0,0.14);
+	box-shadow:  0px 0px 16px 7px rgba(0,0,0,0.14);
+}
+
+.nav-icon {
+	color: $color-secondary-light;
+  font-size: $nav-icon-size;
+	width: 100%;
+	text-align: center;
+	margin-top: $nav-icon-separation;
+	padding: 0;
+	cursor: pointer;
+}
+
+.active {
+	color: $color-primary;
+}
+
+.content {
+  overflow-y: hidden;
+	display: inline-block;
+	width: calc(100% - #{$nav-bar-size});
+	height: 100%;
+}
+
+.content-section {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.padding-section {
+	padding-left: $text-padding-section;
+}
+
+.top-content {
+	width: 100%;
+	height: $home-top-height;
+	overflow: auto;
+}
+
+.bottom-content {
+	width: 100%;
+	height: $home-bot-height;
+}
+
+.card-title {
+	font-weight: 400;
+	font-size: 0.9rem;
+	line-height: $card-top-height;
+	padding-left: $card-title-left-padding;
+	color: #ffffff;
+}
+
+.card-help {
+	display: inline-block;
+	text-align: center;
+	color: $color-help-icon;
+	font-size: $card-help-ico-size;
+	cursor: pointer;
+	margin-right: $card-help-ico-title-space;
+}
+
+.card-help:hover {
+	color: $color-text;
+}
+
+.card-badge {
+	font-weight: 400;
+	font-size: 0.9rem;
+	line-height: $card-top-height;
+	padding-right: 10px;
+	color: #ffffff;
+}
+
+.card-load {
+  display: none;
+  background-color: $color-secondary;
+  width: 0%;
+  height: $card-load-bar-height;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+	width: 100%;
+	height: $card-top-height;
+	background-color: $color-primary;
+}
+
+.card-content {
+	width: 90%;
+	height: calc(100% - #{$card-top-height} - #{$card-content-margin * 2} - #{$card-load-bar-height});
+	margin: auto;
+	margin-top: $card-content-margin;
+	margin-bottom: $card-content-margin;
+}
+
+.card {
+	background-color: $color-card-background;
+	height: calc(100% - #{2 * $card-top-bot-margins});
+	width: 100%;
+	margin: auto;
+  box-shadow:
+		inset 0px 0px 0px 2px $color-border-light,
+		0px 0px 58px -13px rgba(0,0,0,0.31);
+}
+
+.card-top-margin {
+	width: 10px;
+	height: $card-top-bot-margins;
+}
+
+.card-options {
+	color: #fff;
+	font-size: 0.8rem;
+	margin-right: 20px;
+}
+
+.custom-checbox-checked {
+	background-color: $color-secondary-medium;
+}
+
+.custom-checbox-unchecked {
+	background-color: $color-card-background;
+}
+
+.custom-checkbox {
+	height: $card-top-height;
+	float: left;
+	margin-right: 20px;
+	cursor: pointer;
+}
+
+.custom-checkbox-sq {
+	width: $checkbox-sq-size;
+	height: 15px;
+	margin-top: calc(#{($card-top-height - $checkbox-sq-size) / 2});
+	float: left;
+  color: $color-card-background;
+  text-align: center;
+  font-size: $checkbox-sq-size;
+  line-height: $checkbox-sq-size;
+}
+
+.custom-checkbox:hover .custom-checkbox-sq {
+	box-shadow: 0px 0px 0px 3px rgba(0,0,0,0.5);
+}
+
+.custom-checkbox-label {
+	line-height: $card-top-height;
+	margin-left: 8px;
+	float: left;
+}
+
+.logo {
+	width: 80%;
+	margin-left: 10%;
+	margin-top: 10px;
+}
+
+.card-container {
+	float: left;
+	margin-left: $card-between-space;
+	margin-right: 0px;
+}
+
+.card-multiple {
+	float: left;
+	width: $card-fix-width;
+	height: 100%;
+	display: inline-block;
+	margin-left: $card-between-space;
+	.card-container {
+		margin-left: 0px;
+		.card {
+			height: calc(100% - #{$card-top-bot-margins});
+		}
+	}
+}
+
+.card-container-graph {
+	width: calc(100% - #{$card-between-space} * 2);
+	height: 100%;
+}
+
+.card-container-filter {
+	width: $card-fix-width;
+	height: calc(100% - #{$card-fix-height} - #{$card-top-bot-margins});
+}
+
+.card-container-load {
+	width: $card-fix-width;
+	height: $card-fix-height;
+}
+
+.card-container-image {
+	width: calc((100% - #{$card-between-space} * 4 - #{$card-fix-width}) / 2);
+	height: 100%;
+}
+
+.graph-container {
+	width: 100%;
+	height: calc(100% - #{$card-top-height} - #{$graph-smooth-opt-height} - #{$card-load-bar-height});
+	padding-right: $graph-padding-right;
+	padding-bottom: $graph-padding-bot;
+	padding-top: $graph-padding-top;
+	box-sizing: border-box;
+}
+
+.graph-div {
+	width: 100%;
+  height: 100%;
+}
+
+.graph-avg-div {
+  height: $graph-smooth-opt-height;
+  margin-left: $graph-smooth-opt-margin-left;
+	font-size: $graph-smooth-opt-font-size;
+}
+
+.graph-avg-val {
+  width: $graph-smooth-opt-box-width;
+  border: 2px solid $color-border-light;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.graph-avg-text {
+  display: inline-block;
+}
+
+.img-canvas {
+	border: 1px solid $color-border-light;
+	padding: 0;
+  margin: auto;
+  display: block;
+	width: 100%;
+	height: calc(100% - #{$card-load-bar-height} - 20px);
+}
+
+.load-text {
+	width: calc(100% - 10px);
+	height: 1.6rem;
+	border: 1px solid $color-border-light;
+	border-radius: 4px;
+	margin-right: 4px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.btn-big {
+	width: 6rem;
+}
+
+.btn {
+	display: none;
+	height: 2rem;
+	background-color: #2C436B;
+	color: #ffffff;
+	border: none;
+	margin-bottom: 20px;
+	margin-right: 4px;
+}
+
+.btn:hover {
+	border: 2px solid #B5DAEE;
+	cursor: pointer;
+}
+
+.filter-row {
+	height: 30px;
+}
+
+.filter {
+  box-sizing: border-box;
+	width: 23%;
+	margin-left: 1%;
+	margin-right: 1%;
+	height: 100%;
+	float: left;
+	padding-top: 5px;
+	text-align: center;
+	font-weight: 600;
+	color: rgba(31, 34, 63, 0.5);
+	border-bottom: 5px solid #e2f4ff;
+	cursor: pointer;
+}
+
+.filter-active {
+	border-bottom: 5px solid #2A8BB9;
+	color: rgba(31, 34, 63, 1);
+}
+
+.filters-container-parent {
+	width: 100%;
+	height: calc(100% - 30px - 45px);
+	overflow-x: hidden;
+}
+
+.filters-container-child {
+	width: 400%;
+	height: 100%;
+}
+
+.filter-content {
+	height: 100%;
+	width: 25%;
+	padding: 15px;
+  box-sizing: border-box;
+	float: left;
+}
+
+.error-text {
+  text-transform: capitalize;
+	width: 100%;
+	color: rgba(255, 80, 10, 0.9);
+	font-size: 0.9rem;
+	padding: 5px;
+	word-break: break-all;
+	text-overflow: clip;
+}
+
+#arduino-section {
+  background-image: url('images/arduino.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: calc(100% - 15%) calc(100% - 15px);
+	background-size: 30%;
+}
