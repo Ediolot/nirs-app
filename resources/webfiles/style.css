@@ -56,13 +56,13 @@ h1 {
 
 .top-content {
   width: 100%;
-  height: 50%;
+  height: 52%;
   overflow: auto;
 }
 
 .bottom-content {
   width: 100%;
-  height: 50%;
+  height: 48%;
 }
 
 .card-title {
@@ -189,7 +189,7 @@ h1 {
 
 .card-multiple {
   float: left;
-  width: 250px;
+  width: 240px;
   height: 100%;
   display: inline-block;
   margin-left: 20px;
@@ -207,17 +207,17 @@ h1 {
 }
 
 .card-container-filter {
-  width: 250px;
+  width: 240px;
   height: calc(100% - 130px - 10px);
 }
 
 .card-container-load {
-  width: 250px;
+  width: 240px;
   height: 130px;
 }
 
 .card-container-image {
-  width: calc((100% - 20px * 4 - 250px) / 2);
+  width: calc((100% - 20px * 4 - 240px) / 2);
   height: 100%;
 }
 
@@ -276,6 +276,10 @@ h1 {
   height: calc(100% - 5px);
 }
 
+.canvas-spacer {
+	width: 100%;
+}
+
 .load-text {
   width: calc(100% - 10px);
   height: 1.6rem;
@@ -319,13 +323,13 @@ h1 {
   text-align: center;
   font-weight: 600;
   color: rgba(31, 34, 63, 0.5);
-  border-bottom: 5px solid #e2f4ff;
+  border-bottom: 5px solid #B5DAEE;
   cursor: pointer;
 }
 
 .filter-active {
   border-bottom: 5px solid #2A8BB9;
-  color: #1f223f;
+  color: #1F223F;
 }
 
 .filters-container-parent {
@@ -349,7 +353,7 @@ h1 {
 
 .error-text {
   width: 100%;
-  color: rgba(255, 80, 10, 0.9);
+  color: #d8000c;
   font-size: 0.9rem;
   padding: 5px;
   word-break: break-all;

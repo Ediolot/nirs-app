@@ -249,13 +249,14 @@ $(document).ready(function() {
 });
 
 let resizeAllCanvas = function() {
-	resizeCanvas("#basal-canvas", "#basal-canvas-container", canvasData.basal);
-	resizeCanvas("#sat-canvas", "#sat-canvas-container", canvasData.sat);
+	resizeCanvas("#basal-canvas", "#basal-canvas-container", "#basal-canvas-spacer", canvasData.basal);
+	resizeCanvas("#sat-canvas", "#sat-canvas-container", "#sat-canvas-spacer", canvasData.sat);
 }
 
-let resizeCanvas = function(canvasId, canvasContentId, canvasFillData) {
+let resizeCanvas = function(canvasId, canvasContentId, spacerId, canvasFillData) {
   let canvas = $(canvasId);
   let container = $(canvasContentId);
+	let spacer = $(spacerId);
 	let cw = container.width();
 	let ch = container.height();
 	let w  = cw;
@@ -267,6 +268,7 @@ let resizeCanvas = function(canvasId, canvasContentId, canvasFillData) {
 	}
 	w = Math.round(w);
 	h = Math.round(h);
+	spacer.height((ch - h) / 2);
 	canvas.width(w);
 	canvas.height(h);
 	canvas[0].width = w;

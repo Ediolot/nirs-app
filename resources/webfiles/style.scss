@@ -10,6 +10,7 @@ $color-background:       #FFF;
 $color-card-background:  #FFF;
 $color-help-icon:        rgba($color-text, 0.5);
 $color-separator:        rgba($color-text, 0.2);
+$color-error:            #d8000c;
 
 $nav-bar-size: 100px;
 $nav-icon-size: 32px;
@@ -17,18 +18,20 @@ $nav-icon-separation: 40px;
 
 $text-padding-section: 40px;
 
-$home-top-height: 50%;
+$home-top-height: 52%;
 $home-bot-height: 100% - $home-top-height;
 
 $card-top-height: 45px;
 $card-between-space: 20px;
 $card-top-bot-margins: 10px;
 $card-load-bar-height: 5px;
+$card-filter-row-height: 30px;
+$card-filter-content-padding: 15px;
 $card-content-margin: 10px;
 $card-help-ico-size: 22px;
 $card-help-ico-title-space: 10px;
 $card-title-left-padding: 15px;
-$card-fix-width: 250px;
+$card-fix-width: 240px;
 $card-fix-height: 130px;
 $card-opts-separator: 30px;
 
@@ -43,6 +46,8 @@ $graph-smooth-opt-font-size: 12px;
 $btn-font-size: 10px;
 $btn-height: 25px;
 $btn-margin-between: 5px;
+
+$nfilters: 4;
 
 body, html {
   background: $color-background;
@@ -344,13 +349,6 @@ h1 {
   box-sizing: border-box;
 	border-radius: 4px;
 	margin-left: $btn-margin-between;
-	// font-size: $btn-font-size;
-	// height: 2rem;
-	// background-color: rgba($color-secondary-light, 0.5);
-	// color: #ffffff;
-	// border: none;
-	// margin-bottom: 20px;
-	// margin-right: 4px;
 }
 
 .btn:hover {
@@ -358,14 +356,14 @@ h1 {
 }
 
 .filter-row {
-	height: 30px;
+	height: $card-filter-row-height;
 	margin-left: 2px;
 	margin-right: 2px;
 }
 
 .filter {
   box-sizing: border-box;
-	width: 23%;
+	width: 100% / $nfilters - 2%;
 	margin-left: 1%;
 	margin-right: 1%;
 	height: 100%;
@@ -373,38 +371,38 @@ h1 {
 	padding-top: 5px;
 	text-align: center;
 	font-weight: 600;
-	color: rgba(31, 34, 63, 0.5);
-	border-bottom: 5px solid #e2f4ff;
+	color: rgba($color-primary-dark, 0.5);
+	border-bottom: 5px solid $color-secondary-light;
 	cursor: pointer;
 }
 
 .filter-active {
-	border-bottom: 5px solid #2A8BB9;
-	color: rgba(31, 34, 63, 1);
+	border-bottom: 5px solid $color-secondary;
+	color: $color-primary-dark;
 }
 
 .filters-container-parent {
 	width: 100%;
-	height: calc(100% - 30px - 45px);
+	height: calc(100% - #{$card-filter-row-height} - #{$card-top-height});
 	overflow-x: hidden;
 }
 
 .filters-container-child {
-	width: 400%;
+	width: 100% * $nfilters;
 	height: 100%;
 }
 
 .filter-content {
 	height: 100%;
-	width: 25%;
-	padding: 15px;
+	width: 100% / $nfilters;
+	padding: $card-filter-content-padding;
   box-sizing: border-box;
 	float: left;
 }
 
 .error-text {
 	width: 100%;
-	color: rgba(255, 80, 10, 0.9);
+	color: $color-error;
 	font-size: 0.9rem;
 	padding: 5px;
 	word-break: break-all;
