@@ -46,9 +46,7 @@
 * Exportar datos de gráfica
 * Cargar basal de archivo
 * Guardar imágenes
-* Funcionalidad de las checkbox
 * HP LP BP BS interfaces
-* ¿HSat no se usa en nada para calcular las medias?
 * ¿Cuál es HbR y HbO?
 * ¿Cuál se puede invertir? HbR
 * ROI
@@ -62,6 +60,7 @@
 * ¿No usar Mapper?
 * Frame superclass
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
+* (DONE) Funcionalidad de las checkbox
 * (DONE) Indicador de color en las imágenes
 * (DONE) Problema con las fuentes de iconos desde archivo local
 * (DONE) Poder elegir la imagen de saturación con el número

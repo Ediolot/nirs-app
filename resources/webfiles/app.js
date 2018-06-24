@@ -2,6 +2,7 @@ let navigatorId = 0;
 let navigatorMax = 0;
 let lineChart;
 let label = 0;
+let graphData = [];
 
 const CANVAS_COLORMAP_WIDTH_PX = 4;
 const CANVAS_COLORMAP_SPACE_PX = 5;
@@ -42,17 +43,7 @@ let filters = {
 }
 
 let canvasData = {}
-
-let isChecked = function(customCheckboxId) {
-	return $(customCheckboxId + ' > .custom-checkbox-sq').haseClass('custom-checbox-checked');
-}
-
-let addCheckboxTrigger = function(customCheckboxId) {
-	$(customCheckboxId).click(e => {
-		$(customCheckboxId + ' > .custom-checkbox-sq').toggleClass('custom-checbox-checked');
-		$(customCheckboxId + ' > .custom-checkbox-sq').toggleClass('custom-checbox-unchecked');
-	});
-}
+let g = null;
 
 $(document).ready(function() {
 
@@ -81,10 +72,6 @@ $(document).ready(function() {
   filterIcons.lp.click(e => goToFilter(filters.lp));
   filterIcons.bp.click(e => goToFilter(filters.bp));
   filterIcons.bs.click(e => goToFilter(filters.bs));
-
-	addCheckboxTrigger('#checkbox-invert');
-	addCheckboxTrigger('#checkbox-hhb');
-	addCheckboxTrigger('#checkbox-oxhb');
 
 	let graphAvg = $("#graph-avg");
 	graphAvg.keypress(function(e) {
@@ -219,11 +206,12 @@ $(document).ready(function() {
 		});
 
 		interface.satValues.connect((A, B) => {
-		  let data = [];
-		  for (let i = 0; i < A.length; ++i) {
-		    data.push([i, A[i], B[i]]);
+			let mx = A.length;
+		  let data = new Array(mx);
+		  for (let i = 0; i < mx; ++i) {
+		    data[i] = [i, A[i], B[i]];
 		  }
-		  g.updateOptions( { 'file': data } );
+			updateGraph(data);
 		});
 
 		let navNumber = $("#nav-number");
@@ -255,10 +243,10 @@ $(document).ready(function() {
 		redrawAllCanvas();
 	});
 
-  var g = new Dygraph(document.getElementById('graph'), [[0, 0, 0]],
+  g = new Dygraph(document.getElementById('graph'), [[0, 0, 0]],
   {
     showRoller: true,
-    labels: ['', 'Hhb', 'OxHb'],
+    labels: ['', 'HbR', 'HbO'],
 		series: {
 			Hhb: {
 				color: '#2A8BB9',
@@ -276,7 +264,39 @@ $(document).ready(function() {
   });
 
 	redrawAllCanvas();
+
+	addCheckboxTrigger('#checkbox-invert', checked => updateGraph(invertHhR(graphData)));
+	addCheckboxTrigger('#checkbox-hbr',    checked => g.setVisibility(0, checked));
+	addCheckboxTrigger('#checkbox-hbo',    checked => g.setVisibility(1, checked));
 });
+
+let invertHhR = function(data) {
+	let mx = data.length;
+	let inverted = new Array(mx);
+	for (let i = 0; i < mx; ++i) {
+		inverted[i] = data[i];
+		inverted[i][2] = (-1) * inverted[i][2];
+	}
+	return inverted;
+}
+
+let updateGraph = function(data) {
+	graphData = data;
+	g.updateOptions( { 'file': data } );
+}
+
+let addCheckboxTrigger = function(customCheckboxId, onChecked) {
+	$(customCheckboxId).click(e => {
+		let element = $(customCheckboxId + ' > .custom-checkbox-sq');
+		if (element.hasClass('custom-checbox-checked')) {
+			onChecked(false);
+		} else {
+			onChecked(true);
+		}
+		element.toggleClass('custom-checbox-unchecked');
+		element.toggleClass('custom-checbox-checked');
+	});
+}
 
 let redrawAllCanvas = function() {
 	if (canvasData.basal) fillCanvas(canvasData.basal);
