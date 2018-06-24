@@ -47,8 +47,6 @@
 * Cargar basal de archivo
 * Guardar imágenes
 * HP LP BP BS interfaces
-* ¿Cuál es HbR y HbO?
-* ¿Cuál se puede invertir? HbR
 * ROI
 * Smooth images
 * Hhb => HbR
@@ -56,6 +54,8 @@
 
 * (NO) Selector idioma
 * (NO) DRIFTER
+
+* x ¿Cuál es HbR y HbO?
 
 * ¿No usar Mapper?
 * Frame superclass
