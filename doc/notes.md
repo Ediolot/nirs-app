@@ -34,6 +34,7 @@
 * https://www.canva.com/color-palette/
 * http://dygraphs.com/options.html
 * https://www.flaticon.com/free-icon/creativity_908920#term=brain&page=4&position=30
+* https://robertnyman.com/2008/04/11/javascript-loop-performance/
 
 * Mendeley => Gestor de referencias
 * Refworks => Gestor de referencias

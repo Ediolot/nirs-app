@@ -164,7 +164,7 @@ h1 {
 }
 
 .card-content {
-	width: 90%;
+	width: calc(100% - #{$card-content-margin * 2});
 	height: calc(100% - #{$card-top-height} - #{$card-content-margin * 2} - #{$card-load-bar-height});
 	margin: auto;
 	margin-top: $card-content-margin;
@@ -299,6 +299,7 @@ h1 {
   box-sizing: border-box;
   display: inline-block;
 	border-radius: 4px;
+	text-align: center;
 }
 
 .graph-avg-text {
@@ -321,12 +322,11 @@ h1 {
 }
 
 .img-canvas {
-	border: 1px solid rgba($color-primary-dark, 0.2);
-	padding: 0;
-  margin: auto;
-  display: block;
 	width: 100%;
 	height: calc(100% - #{$card-load-bar-height});
+	padding: 0;
+  margin: auto;
+  display: inline-block;
 }
 
 .load-text {
@@ -415,4 +415,8 @@ h1 {
   background-attachment: fixed;
   background-position: calc(100% - 15%) calc(100% - 15px);
 	background-size: 30%;
+}
+
+.dygraph-roller {
+	opacity: 0;
 }
