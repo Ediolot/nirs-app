@@ -42,7 +42,6 @@
 
 ## TODOs
 
-* Indicador de color en las imágenes
 * Settings
 * Exportar datos de gráfica
 * Cargar basal de archivo
@@ -63,6 +62,7 @@
 * ¿No usar Mapper?
 * Frame superclass
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
+* (DONE) Indicador de color en las imágenes
 * (DONE) Problema con las fuentes de iconos desde archivo local
 * (DONE) Poder elegir la imagen de saturación con el número
 * (DONE) Tamaño de imágenes dinámico
