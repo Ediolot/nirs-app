@@ -148,85 +148,65 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
 using namespace std;
 void Experiment::calculateAllSatValues(uint32_t msStart)
 {
-    int sz = frames.size();
-    QAtomicInt *elementsDone = new QAtomicInt(0);
-    QAtomicInt *threads = new QAtomicInt(2);
-    int t1SzStart = 0;
-    int t2SzStart = sz / 2;
-    int t1SzEnd   = sz / 2;
-    int t2SzEnd   = sz;
-//    int t1SzStart = 0;
-//    int t2SzStart = 0;
-//    int t1SzEnd   = sz;
-//    int t2SzEnd   = 0;
+    QAtomicInt * waiting = new QAtomicInt(0);
+    for (int THREADS = 1; THREADS < 9; ++THREADS) {
+        qDebug() << "THREADS: " << THREADS;
+        for (int k = 0; k < 10; ++k) {
+            int first = getFrameAt(msStart);
+            int length = frames.size() - first;
+            QAtomicInt *elementsDone = new QAtomicInt(0);
+            QVector<std::function<void (void)>> tasks;
 
-    A.clear();
-    B.clear();
-    A.reserve(sz);
-    B.reserve(sz);
+            A.clear();
+            B.clear();
+            A.reserve(length);
+            B.reserve(length);
+            for (int i = 0; i < length; ++i) {
+                A.push_back(0);
+                B.push_back(0);
+            }
 
-    for (int i = 0; i < sz; ++i) {
-        A.push_back(0);
-        B.push_back(0);
+            emit taskStart(TAG_PROCESS);
+            chrono::steady_clock::time_point start = chrono::steady_clock::now();
+
+            for (int th = 0; th < THREADS; ++th) {
+                int start = length * th / THREADS;
+                int end   = length * (th + 1) / THREADS;
+
+                tasks.push_back([=](){
+                    Frame<double> aux;
+                    Frame<double> top;
+                    Frame<double> bottom;
+                    for (int i = start; i < end; ++i) {
+                        aux = frames[i].cast<double>();
+                        aux = (aux - dark) * gain;
+                        aux.verticalSplit(height / 2, top, bottom);
+                        maskOperation(top, bottom);
+                        A[i] = top.getData().mean();
+                        B[i] = bottom.getData().mean();
+                        if (Task::execEach(i, 100)) {
+                            (*elementsDone) += 100;
+                            emit taskUpdate(TAG_PROCESS, *elementsDone / double(length));
+                        }
+                    }
+                });
+            }
+
+            *waiting = 1;
+            TaskLauncher::afterAll(tasks, [=](){
+                chrono::steady_clock::time_point bothEnd = chrono::steady_clock::now();
+                emit satValues(A.toQVariantList(), B.toQVariantList());
+                emit taskComplete(TAG_PROCESS);
+                delete elementsDone;
+                qDebug() << chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
+                *waiting = 0;
+            });
+
+            while(*waiting != 0)  {
+                QThread::msleep(100);
+            }
+        }
     }
-
-    // RUN IN TWO THREADS
-    emit taskStart(TAG_PROCESS);
-    chrono::steady_clock::time_point start = chrono::steady_clock::now();
-
-    new std::thread([=](){
-        Frame<double> aux = dark;
-        Frame<double> top;
-        Frame<double> bottom;
-        for (int i = t1SzStart; i < t1SzEnd; ++i) {
-            aux = frames[i].cast<double>();
-            aux = (aux - dark) * gain;
-            aux.verticalSplit(height / 2, top, bottom);
-            maskOperation(top, bottom);
-            A[i] = top.getData().mean();
-            B[i] = bottom.getData().mean();
-            if (i % 100 == 0) {
-                (*elementsDone) += 100;
-                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
-            }
-        }
-        if (--(*threads) == 0) {
-            chrono::steady_clock::time_point bothEnd = chrono::steady_clock::now();
-            emit taskComplete(TAG_PROCESS);
-            emit satValues(A.toQVariantList(), B.toQVariantList());
-            delete elementsDone;
-            delete threads;
-            qDebug() << "Total us:" << chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
-        }
-    });
-
-    new std::thread([=](){
-        Frame<double> aux = dark;
-        Frame<double> top;
-        Frame<double> bottom;
-        for (int i = t2SzStart; i < t2SzEnd; ++i) {
-            aux = frames[i].cast<double>();
-            aux = (aux - dark) * gain;
-            aux.verticalSplit(height / 2, top, bottom);
-            maskOperation(top, bottom);
-            A[i] = top.getData().mean();
-            B[i] = bottom.getData().mean();
-            if (i % 100 == 0) {
-                (*elementsDone) += 100;
-                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
-            }
-        }
-        if (--(*threads) == 0) {
-            chrono::steady_clock::time_point bothEnd = chrono::steady_clock::now();
-            emit taskComplete(TAG_PROCESS);
-            emit satValues(A.toQVariantList(), B.toQVariantList());
-            delete elementsDone;
-            delete threads;
-            qDebug() << "Total us:" << chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
-        }
-    });
-
-
 
 //    static int THREADS = 1;
 //    int first = getFrameAt(msStart);

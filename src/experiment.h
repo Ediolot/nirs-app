@@ -12,6 +12,7 @@
 #include <QThread>
 #include <QVariantList>
 #include "frame.h"
+#include "task.h"
 #include "exceptions/filenotfoundexception.h"
 #include "exceptions/framebpptoobig.h"
 #include "tasklauncher.h"
