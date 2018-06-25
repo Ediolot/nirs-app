@@ -12,10 +12,13 @@
 #include <QThread>
 #include <QVariantList>
 #include "frame.h"
+#include "task.h"
 #include "exceptions/filenotfoundexception.h"
 #include "exceptions/framebpptoobig.h"
 #include "tasklauncher.h"
 #include "signal.h"
+#include <chrono>
+#include <QAtomicInt>
 
 // TODO usar QFile
 // TODO usar QString en las excepciones

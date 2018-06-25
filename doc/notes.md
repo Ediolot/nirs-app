@@ -57,6 +57,7 @@
 - [ ] ~~Which one is HbR / HbO~~
 
 - [x] Select saturation image from number
+- [x] Eigen multithreading
 - [ ] Zoom in images
 - [ ] JSLint
 - [ ] SonarQBox

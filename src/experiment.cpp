@@ -140,38 +140,39 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
 
 void Experiment::calculateAllSatValues(uint32_t msStart)
 {
-    static int THREADS = 2;
+    const int THREADS = 1;
     int first = getFrameAt(msStart);
     int length = frames.size() - first;
     QAtomicInt *elementsDone = new QAtomicInt(0);
     QVector<std::function<void (void)>> tasks;
-    QVector<Signal>* meanListsA = new QVector<Signal>();
-    QVector<Signal>* meanListsB = new QVector<Signal>();
+
+    A.clear();
+    B.clear();
+    A.reserve(length);
+    B.reserve(length);
+    for (int i = 0; i < length; ++i) {
+        A.push_back(0);
+        B.push_back(0);
+    }
 
     emit taskStart(TAG_PROCESS);
-
     for (int th = 0; th < THREADS; ++th) {
-        meanListsA->push_back(Signal());
-        meanListsB->push_back(Signal());
-        meanListsA->back().reserve(length / THREADS);
-        meanListsB->back().reserve(length / THREADS);
+        int start = length * th / THREADS;
+        int end   = length * (th + 1) / THREADS;
 
         tasks.push_back([=](){
             Frame<double> aux;
             Frame<double> top;
             Frame<double> bottom;
-            int start = first + length * th / THREADS;
-            int end   = first + length * (th + 1) / THREADS;
-
             for (int i = start; i < end; ++i) {
                 aux = frames[i].cast<double>();
                 aux = (aux - dark) * gain;
                 aux.verticalSplit(height / 2, top, bottom);
                 maskOperation(top, bottom);
-                (*meanListsA)[th].append(top.getData().mean());
-                (*meanListsB)[th].append(bottom.getData().mean());
-                if (i % 10 == 0) {
-                    (*elementsDone) += 10;
+                A[i] = top.getData().mean();
+                B[i] = bottom.getData().mean();
+                if (Task::execEach(i, 100)) {
+                    (*elementsDone) += 100;
                     emit taskUpdate(TAG_PROCESS, *elementsDone / double(length));
                 }
             }
@@ -179,21 +180,9 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     }
 
     TaskLauncher::afterAll(tasks, [=](){
-        A.clear();
-        B.clear();
-        A.reserve(length);
-        B.reserve(length);
-        for (Signal& signal : *meanListsA) {
-            A.append(signal);
-        }
-        for (Signal& signal : *meanListsB) {
-            B.append(signal);
-        }
         emit satValues(A.toQVariantList(), B.toQVariantList());
         emit taskComplete(TAG_PROCESS);
         delete elementsDone;
-        delete meanListsA;
-        delete meanListsB;
     });
 }
 

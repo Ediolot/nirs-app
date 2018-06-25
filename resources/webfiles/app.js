@@ -252,7 +252,7 @@ $(document).ready(function() {
   {
 		xlabel: 'Frames',
     showRoller: true,
-    errorBars: true,
+		showRangeSelector: false,
     labels: ['', 'HbR', 'HbO'],
 		series: {
 			HbR: {
@@ -272,12 +272,12 @@ $(document).ready(function() {
 
 	redrawAllCanvas();
 
-	addCheckboxTrigger('#checkbox-invert', checked => updateGraph(invertHhR(graphData)));
+	addCheckboxTrigger('#checkbox-invert', checked => updateGraph(invertHhR(checked, graphData)));
 	addCheckboxTrigger('#checkbox-hbr',    checked => g.setVisibility(0, checked));
 	addCheckboxTrigger('#checkbox-hbo',    checked => g.setVisibility(1, checked));
 });
 
-let invertHhR = function(data) {
+let invertHhR = function(abs, data) {
 	let mx = data.length;
 	let inverted = new Array(mx);
 	for (let i = 0; i < mx; ++i) {
@@ -288,8 +288,13 @@ let invertHhR = function(data) {
 }
 
 let updateGraph = function(data) {
-	graphData = data;
-	g.updateOptions( { 'file': data } );
+	if (data.length > 1) {
+		$('.dygraph-rangesel-zoomhandle').css('opacity', '1');
+		graphData = data;
+		g.updateOptions( { 'showRangeSelector': true, 'file': data } );
+	} else {
+		g.updateOptions( { 'showRangeSelector': false } );
+	}
 }
 
 let addCheckboxTrigger = function(customCheckboxId, onChecked) {
