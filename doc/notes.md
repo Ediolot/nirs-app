@@ -49,8 +49,8 @@
 - [ ] HP LP BP BS interfaces
 - [ ] ROI
 - [ ] Smooth images (Gaussian + High pass?)
-- [ ] Hhb => HbR
-- [ ] OxHb => HbO
+- [ ] Hhb -> HbR
+- [ ] OxHb -> HbO
 
 - [ ] ~~Select language~~
 - [ ] ~~DRIFTER~~
