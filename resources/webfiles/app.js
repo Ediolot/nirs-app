@@ -420,13 +420,17 @@ let drawImage = function(ctx, w, h, data) {
 			if (data.operation === NORMALIZE) {
 				val = (val - data.min) / (data.max - data.min);
 			}
-			else if (val > 1.0) val = 1.0
+			if (val > 1.0) val = 1.0
 			else if (val < 0.0) val = 0.0;
 
 			img.data[dst    ] = red(  val * 2 - 1) * 255.0;
 			img.data[dst + 1] = green(val * 2 - 1) * 255.0;
 			img.data[dst + 2] = blue( val * 2 - 1) * 255.0;
 			img.data[dst + 3] = 255;
+
+			if (img.data[dst] < 10 && img.data[dst+1] < 10 && img.data[dst+2] < 10) {
+				console.log(img.data[dst], img.data[dst+1], img.data[dst+2], val);
+			}
 		}
 	}
 	return img;
