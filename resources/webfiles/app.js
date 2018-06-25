@@ -227,6 +227,7 @@ $(document).ready(function() {
 			if (number >= navigatorMax) {
 				number = navigatorMax;
 				navNumber.html(number);
+				e.preventDefault();
 			}
 			if (number < 0) {
 				number = 0;
@@ -249,15 +250,17 @@ $(document).ready(function() {
 
   g = new Dygraph(document.getElementById('graph'), [[0, 0, 0]],
   {
+		xlabel: 'Frames',
     showRoller: true,
+    errorBars: true,
     labels: ['', 'HbR', 'HbO'],
 		series: {
-			Hhb: {
+			HbR: {
 				color: '#2A8BB9',
 				strokeWidth: 2,
 				drawPoints: false
 			},
-			OxHb: {
+			HbO: {
 				color: '#fc0023',
 				strokeWidth: 2,
 				drawPoints: false

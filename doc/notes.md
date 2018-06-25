@@ -56,7 +56,7 @@
 - [ ] ~~DRIFTER~~
 - [ ] ~~Which one is HbR / HbO~~
 
-- [ ] Select saturation image from number
+- [x] Select saturation image from number
 - [ ] Zoom in images
 - [ ] JSLint
 - [ ] SonarQBox

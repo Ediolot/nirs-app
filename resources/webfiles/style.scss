@@ -188,6 +188,9 @@ h1 {
 }
 
 .card-options {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 	color: #fff;
 	font-size: 0.8rem;
 	margin-right: 20px;
@@ -293,30 +296,25 @@ h1 {
 	height: $card-top-height;
 	float: left;
   font-size: $number-edit-font-size;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
-%number-edit-box-shared {
+.number-edit-box {
   width: $number-edit-box-width;
   border: 2px solid rgba($color-secondary-light, 0.5);
   box-sizing: border-box;
   display: inline-block;
 	border-radius: 4px;
 	text-align: center;
-	margin-left: 6px;
-}
-
-.number-edit-box {
-  @extend %number-edit-box-shared;
-}
-
-.number-edit-box-alone {
-  @extend %number-edit-box-shared;
-  margin-top: calc((#{$card-top-height} - #{$number-edit-box-alone-height}) / 2);
-  height: $number-edit-box-alone-height
 }
 
 .number-edit-text {
 	height: 100%;
+	margin-left: 5px;
+	margin-right: 5px;
 	line-height: $card-top-height;
   display: inline-block;
 }
@@ -356,7 +354,6 @@ h1 {
 	color: $color-text;
 	background: rgba($color-secondary-light, 0.1);
 	height: $btn-height;
-  margin-top: calc((#{$card-top-height} - #{$btn-height}) / 2);
   border: 2px solid rgba($color-secondary-light, 0.5);
   box-sizing: border-box;
 	border-radius: 4px;

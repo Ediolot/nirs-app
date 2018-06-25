@@ -134,6 +134,9 @@ h1 {
 }
 
 .card-options {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   color: #fff;
   font-size: 0.8rem;
   margin-right: 20px;
@@ -239,25 +242,25 @@ h1 {
   height: 45px;
   float: left;
   font-size: 12.8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
-.number-edit-box-alone, .number-edit-box {
+.number-edit-box {
   width: 45px;
   border: 2px solid rgba(181, 218, 238, 0.5);
   box-sizing: border-box;
   display: inline-block;
   border-radius: 4px;
   text-align: center;
-  margin-left: 6px;
-}
-
-.number-edit-box-alone {
-  margin-top: calc((45px - 25px) / 2);
-  height: 25px;
 }
 
 .number-edit-text {
   height: 100%;
+  margin-left: 5px;
+  margin-right: 5px;
   line-height: 45px;
   display: inline-block;
 }
@@ -297,7 +300,6 @@ h1 {
   color: #FFF;
   background: rgba(181, 218, 238, 0.1);
   height: 25px;
-  margin-top: calc((45px - 25px) / 2);
   border: 2px solid rgba(181, 218, 238, 0.5);
   box-sizing: border-box;
   border-radius: 4px;
