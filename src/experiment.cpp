@@ -149,18 +149,16 @@ using namespace std;
 void Experiment::calculateAllSatValues(uint32_t msStart)
 {
     int sz = frames.size();
-    int bothTotalTime = 0;
-    int t1TotalTime = 0;
-    int t2TotalTime = 0;
-//    int t1SzStart = 0;
-//    int t2SzStart = sz / 2;
-//    int t1SzEnd   = sz / 2;
-//    int t2SzEnd   = sz;
     QAtomicInt *elementsDone = new QAtomicInt(0);
+    QAtomicInt *threads = new QAtomicInt(2);
     int t1SzStart = 0;
-    int t2SzStart = 0;
-    int t1SzEnd   = sz;
-    int t2SzEnd   = 0;
+    int t2SzStart = sz / 2;
+    int t1SzEnd   = sz / 2;
+    int t2SzEnd   = sz;
+//    int t1SzStart = 0;
+//    int t2SzStart = 0;
+//    int t1SzEnd   = sz;
+//    int t2SzEnd   = 0;
 
     A.clear();
     B.clear();
@@ -174,16 +172,12 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
 
     // RUN IN TWO THREADS
     emit taskStart(TAG_PROCESS);
-    chrono::steady_clock::time_point t1End;
-    chrono::steady_clock::time_point t2End;
-    chrono::steady_clock::time_point bothEnd;
     chrono::steady_clock::time_point start = chrono::steady_clock::now();
 
-    std::thread t1([=, &t1End](){
+    new std::thread([=](){
         Frame<double> aux = dark;
         Frame<double> top;
         Frame<double> bottom;
-        // TASK 2
         for (int i = t1SzStart; i < t1SzEnd; ++i) {
             aux = frames[i].cast<double>();
             aux = (aux - dark) * gain;
@@ -191,15 +185,22 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
             maskOperation(top, bottom);
             A[i] = top.getData().mean();
             B[i] = bottom.getData().mean();
-//            if (i % 100 == 0) {
-//                (*elementsDone) += 100;
-//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
-//            }
+            if (i % 100 == 0) {
+                (*elementsDone) += 100;
+                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
+            }
         }
-        t1End = chrono::steady_clock::now();
+        if (--(*threads) == 0) {
+            chrono::steady_clock::time_point bothEnd = chrono::steady_clock::now();
+            emit taskComplete(TAG_PROCESS);
+            emit satValues(A.toQVariantList(), B.toQVariantList());
+            delete elementsDone;
+            delete threads;
+            qDebug() << "Total us:" << chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
+        }
     });
 
-    std::thread t2([=, &t2End](){
+    new std::thread([=](){
         Frame<double> aux = dark;
         Frame<double> top;
         Frame<double> bottom;
@@ -210,29 +211,21 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
             maskOperation(top, bottom);
             A[i] = top.getData().mean();
             B[i] = bottom.getData().mean();
-//            if (i % 100 == 0) {
-//                (*elementsDone) += 100;
-//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
-//            }
+            if (i % 100 == 0) {
+                (*elementsDone) += 100;
+                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
+            }
         }
-        // TASK1
-        t2End = chrono::steady_clock::now();
+        if (--(*threads) == 0) {
+            chrono::steady_clock::time_point bothEnd = chrono::steady_clock::now();
+            emit taskComplete(TAG_PROCESS);
+            emit satValues(A.toQVariantList(), B.toQVariantList());
+            delete elementsDone;
+            delete threads;
+            qDebug() << "Total us:" << chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
+        }
     });
 
-    t1.join();
-    t2.join();
-    bothEnd = chrono::steady_clock::now();
-    bothTotalTime = chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
-    t1TotalTime   = chrono::duration_cast<chrono::milliseconds>(t1End - start).count();
-    t2TotalTime   = chrono::duration_cast<chrono::milliseconds>(t2End - start).count();
-
-    qDebug() << "Avg total us: " << bothTotalTime;
-    qDebug() << "Sum time us:  " << t1TotalTime + t2TotalTime;
-    qDebug() << "Avg t1 us:    " << t1TotalTime;
-    qDebug() << "Avg t2 us:    " << t2TotalTime;
-    emit taskComplete(TAG_PROCESS);
-    emit satValues(A.toQVariantList(), B.toQVariantList());
-    delete elementsDone;
 
 
 //    static int THREADS = 1;
