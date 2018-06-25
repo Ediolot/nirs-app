@@ -104,6 +104,10 @@ $(document).ready(function() {
 			});
 		});
 
+		$('#graph-export').click(e => {
+			interface.exportCSV(",");
+		});
+
     $('#load-exp-button').click(e => {
 			let filepath = $('#filepath-exp').val();
 			if (filepath) {

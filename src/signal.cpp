@@ -1,23 +1,28 @@
 #include "signal.h"
 
-Signal::Signal()
+Signal::Signal(const QString &name)
     : QVector<double>()
+    , name(name)
 {}
 
 Signal::Signal(const Signal &other)
     : QVector<double>(other)
+    , name(other.name)
 {}
 
 Signal::Signal(const QVector<double> &other)
     : QVector<double>(other)
+    , name("")
 {}
 
 Signal::Signal(Signal &&other)
     : QVector<double>(std::move(other))
+    , name(std::move(other.name)) // TODO Check
 {}
 
 Signal::Signal(QVector<double> &&other)
     : QVector<double>(std::move(other))
+    , name("")
 {}
 
 QVariantList Signal::toQVariantList() const
@@ -82,4 +87,47 @@ Signal Signal::runBandStopFilter(int sampleRate, int centerFreq, int bandWidth, 
     filter.process(copy.size(), channels);
 
     return copy;
+}
+
+QString Signal::getName() const
+{
+    return name;
+}
+
+void Signal::setName(const QString &name)
+{
+    this->name = name;
+}
+
+void Signal::generateCSV(const QString &filepath, const QVector<const Signal*> &args, char separator)
+{
+    QFile file(filepath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        qDebug() << "Cant open file"; // TODO throw
+    }
+
+    QTextStream outStream(&file);
+    bool anySignalActive = true;
+    int i = 0;
+
+    outStream << "frame";
+    for (int j = 0; j < args.size(); ++j) {
+        outStream << separator << args[i]->getName();
+    }
+    outStream << "\n";
+
+    while (anySignalActive) {
+        outStream << QString::number(i + 1);
+        anySignalActive = false;
+        for (int j = 0; j < args.size(); ++j) {
+            outStream << separator;
+            if (args[j]->size() > i) {
+                outStream << QString::number(args[j]->at(i));
+                anySignalActive = true;
+            }
+        }
+        outStream << "\n";
+        i++;
+    }
+    file.close();
 }

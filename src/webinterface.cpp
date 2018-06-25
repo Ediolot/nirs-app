@@ -33,7 +33,7 @@ void WebInterface::experimentFromFile(QString filepath)
 
 QString WebInterface::openFileDialog()
 {
-    return QFileDialog::getOpenFileName();
+    return QFileDialog::getOpenFileName(nullptr, "Open experiment", "", "Experiment (*.exp)");
 }
 
 void WebInterface::generateBasal()
@@ -49,4 +49,9 @@ void WebInterface::generateSatFrame(int index)
 void WebInterface::calculateAllSatValues()
 {
     current->calculateAllSatValues(24000);
+}
+
+void WebInterface::exportCSV(char separator)
+{
+    current->exportSatValuesToCSV(QFileDialog::getSaveFileName(nullptr, "Export graph", "", "Comma separated values (*.csv)"), separator);
 }

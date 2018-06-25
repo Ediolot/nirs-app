@@ -58,6 +58,7 @@ public:
     void maskOperation(Frame<double>& img1, Frame<double>& img2) const;
     void generateSatFrame(int index, uint32_t msStart = 0);
     void calculateAllSatValues(uint32_t msStart = 0);
+    void exportSatValuesToCSV(const QString& path, char separator);
     const Frame<double>& getBasal() const;
 
 signals:

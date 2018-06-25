@@ -43,7 +43,6 @@
 ## TODOs
 
 * Settings
-* Exportar datos de gráfica
 * Cargar basal de archivo
 * Guardar imágenes
 * HP LP BP BS interfaces
@@ -60,6 +59,7 @@
 * ¿No usar Mapper?
 * Frame superclass
 * Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
+* (DONE) Exportar datos de gráfica
 * (DONE) Funcionalidad de las checkbox
 * (DONE) Indicador de color en las imágenes
 * (DONE) Problema con las fuentes de iconos desde archivo local

@@ -197,6 +197,11 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     });
 }
 
+void Experiment::exportSatValuesToCSV(const QString &path, char separator)
+{
+    Signal::generateCSV(path, {&A, &B}, separator);
+}
+
 const Frame<double> &Experiment::getBasal() const
 {
     return basal;

@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void generateBasal();
     Q_INVOKABLE void generateSatFrame(int index);
     Q_INVOKABLE void calculateAllSatValues();
+    Q_INVOKABLE void exportCSV(char separator);
 
 signals:
     void taskUpdateSignal(QString, double);
