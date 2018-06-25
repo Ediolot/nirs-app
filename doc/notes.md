@@ -35,6 +35,7 @@
 * http://dygraphs.com/options.html
 * https://www.flaticon.com/free-icon/creativity_908920#term=brain&page=4&position=30
 * https://robertnyman.com/2008/04/11/javascript-loop-performance/
+* SASS
 
 * Mendeley => Gestor de referencias
 * Refworks => Gestor de referencias
@@ -42,34 +43,54 @@
 
 ## TODOs
 
-* Settings
-* Cargar basal de archivo
-* Guardar imágenes
-* HP LP BP BS interfaces
-* ROI
-* Smooth images
-* Hhb => HbR
-* OxHb => HbO
+- [ ] Settings
+- [ ] Load basal from file
+- [ ] Save images
+- [ ] HP LP BP BS interfaces
+- [ ] ROI
+- [ ] Smooth images (Gaussian + High pass?)
+- [ ] Hhb => HbR
+- [ ] OxHb => HbO
 
-* (NO) Selector idioma
-* (NO) DRIFTER
+- [ ] ~~Select language~~
+- [ ] ~~DRIFTER~~
+- [ ] ~~Which one is HbR / HbO~~
 
-* x ¿Cuál es HbR y HbO?
+- [ ] Select saturation image from number
+- [ ] Zoom in images
+- [ ] JSLint
+- [ ] SonarQBox
+- [ ] Arduino (+ smartphone?)
+- [ ] AngularJS ?
+- [ ] Short menu when there is no space available
+- [ ] Sound while loading
+- [ ] Dont use Mapper ?
+- [ ] Frame superclass
+- [ ] Mutex for the read experiment function (trylock in other functions ?) (or boolean flag?)
+- [x] Export CSV data
+- [x] Checkbox functionality
+- [x] Colormap alongside images
+- [x] Icon fonts from local files
+- [x] Dynamic image size
+- [x] Generate basal in a separate task
+- [x] Colormap, correct ?
+- [x] Animate tab change
+- [x] Use QVariantList instead of base64 to send images
+- [x] Multitask while generating the graph
 
-* ¿No usar Mapper?
-* Frame superclass
-* Mutex para el read experiment (trylock en otras funcoines) (o flag booleana)
-* (DONE) Exportar datos de gráfica
-* (DONE) Funcionalidad de las checkbox
-* (DONE) Indicador de color en las imágenes
-* (DONE) Problema con las fuentes de iconos desde archivo local
-* (DONE) Poder elegir la imagen de saturación con el número
-* (DONE) Tamaño de imágenes dinámico
-* (DONE) Generar basal en una tarea separada
-* (DONE) Mapa de color ¿correcto?
-* (DONE) Animación cambio pestañas
-* (DONE) Enviar datos de imagen con QVariantList en vez de en base64
-* (DONE) Multitask al generar el gráfico
+## Test
+
+* Unit tests
+* Text .exp file
+
+## Settings
+
+* Use seconds or frames
+* Font size
+* Bad alloc while openning wrong file?
+* Max / Min colormap
+* Separador CSV (Export size/range?)
+* Generate PDF?
 
 ## Bibliografía
 * [1] Documentación QT
