@@ -59,6 +59,7 @@
 - [x] Select saturation image from number
 - [x] Eigen multithreading
 - [ ] Zoom in images
+- [ ] PDF
 - [ ] JSLint
 - [ ] SonarQBox
 - [ ] Arduino (+ smartphone?)
@@ -78,8 +79,6 @@
 - [x] Animate tab change
 - [x] Use QVariantList instead of base64 to send images
 - [x] Multitask while generating the graph
-
-- Change class name .graph-avg-val
 
 ## Test
 
