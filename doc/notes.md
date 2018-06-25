@@ -78,6 +78,8 @@
 - [x] Use QVariantList instead of base64 to send images
 - [x] Multitask while generating the graph
 
+- Change class name .graph-avg-val
+
 ## Test
 
 * Unit tests

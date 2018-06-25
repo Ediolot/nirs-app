@@ -389,7 +389,7 @@ let drawLabels = function(ctx, left, top, height, nlabels, data) {
 	for (let i = 0; i < nlabels; ++i) {
 		let adjustY = (i == 0) ? lineHeight : (i == nlabels + 1) ? -lineHeight : 0;
 		let y       = top + i * labelStep + adjustY;
-		let val     = valueMax + i * valueStep;
+		let val     = valueMax - i * valueStep;
 		ctx.fillText(val.toFixed(2), left, y);
 	}
 }

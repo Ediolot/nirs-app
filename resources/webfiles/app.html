@@ -101,7 +101,7 @@
 							<div class="card-options">
 	  						<input id="navigator-prev" class="btn" type="button" value="PREV">
 	  						<input id="navigator-next" class="btn" type="button" value="NEXT">
-	  						<input id="generate-graph-button" class="btn" type="button" value="GRAPH ALL">
+                <div   id="nav-number"     class="number-edit-box-alone" contenteditable="true"></div>
 							</div>
 							<!--<div>
 	              <span id="nav-number" class="card-badge" contenteditable="true">0</span>
@@ -129,11 +129,12 @@
 								<span>GRAPH</span>
 							</div>
 	  					<div class="card-options">
+                <input id="generate-graph-button" class="btn" type="button" value="GENERATE">
 								<input id="graph-export" class="btn" type="button" value="EXPORT">
 								<div class="opts-separator"></div>
-								<div class="graph-avg-div">
-		              <div class="graph-avg-text">Smooth order</div>
-		              <div id="graph-avg" class="graph-avg-val" contenteditable="true"></div>
+								<div class="number-edit-container">
+		              <div class="number-edit-text">Smooth order</div>
+		              <div id="graph-avg" class="number-edit-box" contenteditable="true"></div>
 		            </div>
 								<div class="opts-separator"></div>
 	  						<div id="checkbox-hbr" class="custom-checkbox">

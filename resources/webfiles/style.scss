@@ -40,14 +40,15 @@ $graph-right-margin: 10px;
 $graph-padding-right: 15px;
 $graph-padding-top: 20px;
 $graph-padding-bot: 0px;
-$graph-smooth-opt-box-width: 45px;
-$graph-smooth-opt-font-size: 12px;
 
 $btn-font-size: 10px;
 $btn-height: 25px;
 $btn-margin-between: 5px;
 
 $nfilters: 4;
+$number-edit-font-size: 12.8px;
+$number-edit-box-width: 45px;
+$number-edit-box-alone-height: 25px;
 
 body, html {
   background: $color-background;
@@ -288,25 +289,36 @@ h1 {
   height: 100%;
 }
 
-.graph-avg-div {
+.number-edit-container {
 	height: $card-top-height;
 	float: left;
+  font-size: $number-edit-font-size;
 }
 
-.graph-avg-val {
-  width: $graph-smooth-opt-box-width;
+%number-edit-box-shared {
+  width: $number-edit-box-width;
   border: 2px solid rgba($color-secondary-light, 0.5);
   box-sizing: border-box;
   display: inline-block;
 	border-radius: 4px;
 	text-align: center;
+	margin-left: 6px;
 }
 
-.graph-avg-text {
+.number-edit-box {
+  @extend %number-edit-box-shared;
+}
+
+.number-edit-box-alone {
+  @extend %number-edit-box-shared;
+  margin-top: calc((#{$card-top-height} - #{$number-edit-box-alone-height}) / 2);
+  height: $number-edit-box-alone-height
+}
+
+.number-edit-text {
 	height: 100%;
 	line-height: $card-top-height;
   display: inline-block;
-	margin-right: 6px;
 }
 
 .opts-separator {

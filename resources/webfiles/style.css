@@ -235,25 +235,31 @@ h1 {
   height: 100%;
 }
 
-.graph-avg-div {
+.number-edit-container {
   height: 45px;
   float: left;
+  font-size: 12.8px;
 }
 
-.graph-avg-val {
+.number-edit-box-alone, .number-edit-box {
   width: 45px;
   border: 2px solid rgba(181, 218, 238, 0.5);
   box-sizing: border-box;
   display: inline-block;
   border-radius: 4px;
   text-align: center;
+  margin-left: 6px;
 }
 
-.graph-avg-text {
+.number-edit-box-alone {
+  margin-top: calc((45px - 25px) / 2);
+  height: 25px;
+}
+
+.number-edit-text {
   height: 100%;
   line-height: 45px;
   display: inline-block;
-  margin-right: 6px;
 }
 
 .opts-separator {
