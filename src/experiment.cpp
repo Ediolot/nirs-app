@@ -152,70 +152,87 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
     int bothTotalTime = 0;
     int t1TotalTime = 0;
     int t2TotalTime = 0;
-    int tests = 3;
+//    int t1SzStart = 0;
+//    int t2SzStart = sz / 2;
+//    int t1SzEnd   = sz / 2;
+//    int t2SzEnd   = sz;
+    QAtomicInt *elementsDone = new QAtomicInt(0);
     int t1SzStart = 0;
-    int t2SzStart = sz / 2;
-    int t1SzEnd   = sz / 2;
-    int t2SzEnd   = sz;
+    int t2SzStart = 0;
+    int t1SzEnd   = sz;
+    int t2SzEnd   = 0;
+
+    A.clear();
+    B.clear();
+    A.reserve(sz);
+    B.reserve(sz);
+
+    for (int i = 0; i < sz; ++i) {
+        A.push_back(0);
+        B.push_back(0);
+    }
 
     // RUN IN TWO THREADS
-    for (int i = 0; i < tests; ++i) {
-        chrono::steady_clock::time_point t1End;
-        chrono::steady_clock::time_point t2End;
-        chrono::steady_clock::time_point bothEnd;
-        chrono::steady_clock::time_point start = chrono::steady_clock::now();
+    emit taskStart(TAG_PROCESS);
+    chrono::steady_clock::time_point t1End;
+    chrono::steady_clock::time_point t2End;
+    chrono::steady_clock::time_point bothEnd;
+    chrono::steady_clock::time_point start = chrono::steady_clock::now();
 
-        QVector<double> data;
-        for (int i = 0; i < width * height; ++i) {
-            data.push_back(i);
+    std::thread t1([=, &t1End](){
+        Frame<double> aux = dark;
+        Frame<double> top;
+        Frame<double> bottom;
+        // TASK 2
+        for (int i = t1SzStart; i < t1SzEnd; ++i) {
+            aux = frames[i].cast<double>();
+            aux = (aux - dark) * gain;
+            aux.verticalSplit(height / 2, top, bottom);
+            maskOperation(top, bottom);
+            A[i] = top.getData().mean();
+            B[i] = bottom.getData().mean();
+//            if (i % 100 == 0) {
+//                (*elementsDone) += 100;
+//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
+//            }
         }
+        t1End = chrono::steady_clock::now();
+    });
 
-        Frame<double> dark(data, width, height);
-        Frame<double> gain(data, width, height);
-        std::thread t1([&, dark, gain, t1SzStart, t1SzEnd](){
-            Frame<double> aux = dark;
-            Frame<double> top;
-            Frame<double> bottom;
-            // TASK 2
-            for (int i = t1SzStart; i < t1SzEnd; ++i) {
-                //aux = frames[i].cast<double>();
-                aux = (aux - dark) * gain;
-                //aux.verticalSplit(height / 2, top, bottom);
-                //maskOperation(top, bottom);
-                //top.getData().mean();
-                //bottom.getData().mean();
-            }
-            t1End = chrono::steady_clock::now();
-        });
+    std::thread t2([=, &t2End](){
+        Frame<double> aux = dark;
+        Frame<double> top;
+        Frame<double> bottom;
+        for (int i = t2SzStart; i < t2SzEnd; ++i) {
+            aux = frames[i].cast<double>();
+            aux = (aux - dark) * gain;
+            aux.verticalSplit(height / 2, top, bottom);
+            maskOperation(top, bottom);
+            A[i] = top.getData().mean();
+            B[i] = bottom.getData().mean();
+//            if (i % 100 == 0) {
+//                (*elementsDone) += 100;
+//                emit taskUpdate(TAG_PROCESS, *elementsDone / double(sz));
+//            }
+        }
+        // TASK1
+        t2End = chrono::steady_clock::now();
+    });
 
-        std::thread t2([&, dark, gain, t2SzStart, t2SzEnd](){
-            Frame<double> aux = dark;
-            Frame<double> top;
-            Frame<double> bottom;
-            for (int i = t2SzStart; i < t2SzEnd; ++i) {
-                //aux = frames[i].cast<double>();
-                aux = (aux - dark) * gain;
-                //aux.verticalSplit(height / 2, top, bottom);
-                //maskOperation(top, bottom);
-                //top.getData().mean();
-                //bottom.getData().mean();
-            }
-            // TASK1
-            t2End = chrono::steady_clock::now();
-        });
+    t1.join();
+    t2.join();
+    bothEnd = chrono::steady_clock::now();
+    bothTotalTime = chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
+    t1TotalTime   = chrono::duration_cast<chrono::milliseconds>(t1End - start).count();
+    t2TotalTime   = chrono::duration_cast<chrono::milliseconds>(t2End - start).count();
 
-        t1.join();
-        t2.join();
-        bothEnd = chrono::steady_clock::now();
-        bothTotalTime += chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
-        t1TotalTime   += chrono::duration_cast<chrono::milliseconds>(t1End - start).count();
-        t2TotalTime   += chrono::duration_cast<chrono::milliseconds>(t2End - start).count();
-        std::cout << i << std::endl;
-    }
-    qDebug() << "Avg total us: " << bothTotalTime / double(tests);
-    qDebug() << "Sum time us:  " << t1TotalTime / double(tests) + t2TotalTime / double(tests);
-    qDebug() << "Avg t1 us:    " << t1TotalTime / double(tests);
-    qDebug() << "Avg t2 us:    " << t2TotalTime / double(tests);
+    qDebug() << "Avg total us: " << bothTotalTime;
+    qDebug() << "Sum time us:  " << t1TotalTime + t2TotalTime;
+    qDebug() << "Avg t1 us:    " << t1TotalTime;
+    qDebug() << "Avg t2 us:    " << t2TotalTime;
+    emit taskComplete(TAG_PROCESS);
+    emit satValues(A.toQVariantList(), B.toQVariantList());
+    delete elementsDone;
 
 
 //    static int THREADS = 1;
