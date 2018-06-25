@@ -138,63 +138,183 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
                   bottomMean);
 }
 
+#include <Eigen/Core>
+#include <QDebug>
+#include <chrono>
+#include <thread>
+#include <vector>
+#include <iostream>
+#include "frame.h"
+using namespace std;
 void Experiment::calculateAllSatValues(uint32_t msStart)
 {
-    static int THREADS = 2;
-    int first = getFrameAt(msStart);
-    int length = frames.size() - first;
-    QAtomicInt *elementsDone = new QAtomicInt(0);
-    QVector<std::function<void (void)>> tasks;
-    QVector<Signal>* meanListsA = new QVector<Signal>();
-    QVector<Signal>* meanListsB = new QVector<Signal>();
+    int sz = frames.size();
+    int bothTotalTime = 0;
+    int t1TotalTime = 0;
+    int t2TotalTime = 0;
+    int tests = 3;
+    int t1SzStart = 0;
+    int t2SzStart = sz / 2;
+    int t1SzEnd   = sz / 2;
+    int t2SzEnd   = sz;
 
-    emit taskStart(TAG_PROCESS);
+    // RUN IN TWO THREADS
+    for (int i = 0; i < tests; ++i) {
+        chrono::steady_clock::time_point t1End;
+        chrono::steady_clock::time_point t2End;
+        chrono::steady_clock::time_point bothEnd;
+        chrono::steady_clock::time_point start = chrono::steady_clock::now();
 
-    for (int th = 0; th < THREADS; ++th) {
-        meanListsA->push_back(Signal());
-        meanListsB->push_back(Signal());
-        meanListsA->back().reserve(length / THREADS);
-        meanListsB->back().reserve(length / THREADS);
+        QVector<double> data;
+        for (int i = 0; i < width * height; ++i) {
+            data.push_back(i);
+        }
 
-        tasks.push_back([=](){
-            Frame<double> aux;
+        Frame<double> dark(data, width, height);
+        Frame<double> gain(data, width, height);
+        std::thread t1([&, dark, gain, t1SzStart, t1SzEnd](){
+            Frame<double> aux = dark;
             Frame<double> top;
             Frame<double> bottom;
-            int start = first + length * th / THREADS;
-            int end   = first + length * (th + 1) / THREADS;
-
-            for (int i = start; i < end; ++i) {
-                aux = frames[i].cast<double>();
+            // TASK 2
+            for (int i = t1SzStart; i < t1SzEnd; ++i) {
+                //aux = frames[i].cast<double>();
                 aux = (aux - dark) * gain;
-                aux.verticalSplit(height / 2, top, bottom);
-                maskOperation(top, bottom);
-                (*meanListsA)[th].append(top.getData().mean());
-                (*meanListsB)[th].append(bottom.getData().mean());
-                if (i % 10 == 0) {
-                    (*elementsDone) += 10;
-                    emit taskUpdate(TAG_PROCESS, *elementsDone / double(length));
-                }
+                //aux.verticalSplit(height / 2, top, bottom);
+                //maskOperation(top, bottom);
+                //top.getData().mean();
+                //bottom.getData().mean();
             }
+            t1End = chrono::steady_clock::now();
         });
-    }
 
-    TaskLauncher::afterAll(tasks, [=](){
-        A.clear();
-        B.clear();
-        A.reserve(length);
-        B.reserve(length);
-        for (Signal& signal : *meanListsA) {
-            A.append(signal);
-        }
-        for (Signal& signal : *meanListsB) {
-            B.append(signal);
-        }
-        emit satValues(A.toQVariantList(), B.toQVariantList());
-        emit taskComplete(TAG_PROCESS);
-        delete elementsDone;
-        delete meanListsA;
-        delete meanListsB;
-    });
+        std::thread t2([&, dark, gain, t2SzStart, t2SzEnd](){
+            Frame<double> aux = dark;
+            Frame<double> top;
+            Frame<double> bottom;
+            for (int i = t2SzStart; i < t2SzEnd; ++i) {
+                //aux = frames[i].cast<double>();
+                aux = (aux - dark) * gain;
+                //aux.verticalSplit(height / 2, top, bottom);
+                //maskOperation(top, bottom);
+                //top.getData().mean();
+                //bottom.getData().mean();
+            }
+            // TASK1
+            t2End = chrono::steady_clock::now();
+        });
+
+        t1.join();
+        t2.join();
+        bothEnd = chrono::steady_clock::now();
+        bothTotalTime += chrono::duration_cast<chrono::milliseconds>(bothEnd - start).count();
+        t1TotalTime   += chrono::duration_cast<chrono::milliseconds>(t1End - start).count();
+        t2TotalTime   += chrono::duration_cast<chrono::milliseconds>(t2End - start).count();
+        std::cout << i << std::endl;
+    }
+    qDebug() << "Avg total us: " << bothTotalTime / double(tests);
+    qDebug() << "Sum time us:  " << t1TotalTime / double(tests) + t2TotalTime / double(tests);
+    qDebug() << "Avg t1 us:    " << t1TotalTime / double(tests);
+    qDebug() << "Avg t2 us:    " << t2TotalTime / double(tests);
+
+
+//    static int THREADS = 1;
+//    int first = getFrameAt(msStart);
+//    int length = frames.size() - first;
+//    QAtomicInt *elementsDone = new QAtomicInt(0);
+//    QVector<std::function<void (void)>> tasks;
+//    QVector<Signal>* meanListsA = new QVector<Signal>();
+//    QVector<Signal>* meanListsB = new QVector<Signal>();
+
+//    emit taskStart(TAG_PROCESS);
+
+//    const int max = 7 + 3;
+//    QVector<QVector<double>>* values = new QVector<QVector<double>>();
+//    for (int th = 0; th < THREADS; ++th) {
+//        meanListsA->push_back(Signal());
+//        meanListsB->push_back(Signal());
+//        meanListsA->back().reserve(length / THREADS);
+//        meanListsB->back().reserve(length / THREADS);
+
+//        values->push_back(QVector<double>());
+//        for (int i = 0; i < max; ++i) (*values)[th].push_back(0);
+//        tasks.push_back([=](){
+//            Frame<double> aux;
+//            Frame<double> top;
+//            Frame<double> bottom;
+//            int start = first + length * th / THREADS;
+//            int end   = first + length * (th + 1) / THREADS;
+
+//            QElapsedTimer a;
+//            std::chrono::steady_clock::time_point begin;
+//            double time[7] = {0};
+//            a.start();
+//            int z = 0;
+//            for (int i = start; i < end; ++i) {
+//                begin = std::chrono::steady_clock::now();
+//                aux = frames[i].cast<double>();
+//                time[0] += std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count();
+//                begin = std::chrono::steady_clock::now();
+//                aux = (aux - dark) * gain;
+//                time[1] += std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count();
+//                begin = std::chrono::steady_clock::now();
+//                aux.verticalSplit(height / 2, top, bottom);
+//                time[2] += std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count();
+//                begin = std::chrono::steady_clock::now();
+//                maskOperation(top, bottom);
+//                time[3] += std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count();
+//                begin = std::chrono::steady_clock::now();
+//                (*meanListsA)[th].append(top.getData().mean());
+//                time[4] += std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count();
+//                begin = std::chrono::steady_clock::now();
+//                (*meanListsB)[th].append(bottom.getData().mean());
+//                time[5] += std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count();
+//                begin = std::chrono::steady_clock::now();
+//                if (i % 100 == 0) {
+//                    (*elementsDone) += 100;
+//                    emit taskUpdate(TAG_PROCESS, *elementsDone / double(length));
+//                }
+//                time[6] += std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count();
+//                begin = std::chrono::steady_clock::now();
+//            }
+//            (*values)[th][0] = end - start;
+//            (*values)[th][1] = a.elapsed();
+//            for (int i = 0; i < max; ++i) {
+//                (*values)[th][2 + i] = time[i] / (*values)[th][0];
+//            }
+//            qDebug() << z;
+//        });
+//    }
+
+//    TaskLauncher::afterAll(tasks, [=](){
+//        A.clear();
+//        B.clear();
+//        A.reserve(length);
+//        B.reserve(length);
+//        for (Signal& signal : *meanListsA) {
+//            A.append(signal);
+//        }
+//        for (Signal& signal : *meanListsB) {
+//            B.append(signal);
+//        }
+//        emit satValues(A.toQVariantList(), B.toQVariantList());
+//        emit taskComplete(TAG_PROCESS);
+//        delete elementsDone;
+//        delete meanListsA;
+//        delete meanListsB;
+
+//        QVector<double> avg;
+//        for (int i = 0; i < max; ++i) avg.push_back(0);
+//        for (int i = 0; i < values->size(); ++i) {
+//            for (int j = 0; j < max; ++j) avg[j] += (*values)[i][j];
+//            qDebug() << "Thread" << i << "took" << (*values)[i][1] << "ms with size" << (*values)[i][0];
+//        }
+//        qDebug() << "AVG size:" << (avg[0] / values->size());
+//        qDebug() << "AVG time:" << (avg[1] / values->size());
+//        for (int i = 2; i < max; ++i) {
+//            qDebug() << "AVG:" << (avg[i] / values->size());
+//        }
+//    });
 }
 
 void Experiment::exportSatValuesToCSV(const QString &path, char separator)

@@ -16,6 +16,7 @@
 #include "exceptions/framebpptoobig.h"
 #include "tasklauncher.h"
 #include "signal.h"
+#include <chrono>
 
 // TODO usar QFile
 // TODO usar QString en las excepciones

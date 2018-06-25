@@ -56,6 +56,7 @@
 - [ ] ~~DRIFTER~~
 - [ ] ~~Which one is HbR / HbO~~
 
+- [x] Eigen multithreading
 - [ ] Select saturation image from number
 - [ ] Zoom in images
 - [ ] JSLint
