@@ -79,11 +79,16 @@
 							</div>
 							<div class="card-options">
 	  						<input id="generate-basal-button" class="btn" type="button" value="GENERATE">
+								<div class="opts-separator"></div>
+								<div class="number-edit-container">
+		              <div id="basal-number" class="number-edit-box" contenteditable="true">340</div>
+									<div class="number-edit-text">Frames</div>
+		            </div>
 							</div>
   					</div>
   					<div id="basal-canvas-container" class="card-content">
 							<div class="canvas-spacer" id="basal-canvas-spacer"></div>
-  						<canvas id="basal-canvas" class="img-canvas"></canvas>
+							<div id="basal-viewer" class="image-viewer"></div>
   					</div>
             <div id="basal-progress" class="card-load"></div>
   				</div>
@@ -104,18 +109,13 @@
 								<div class="opts-separator"></div>
 								<div class="number-edit-container">
 		              <div id="nav-number" class="number-edit-box" contenteditable="true">0</div>
-									<div class="number-edit-text">of 0</div>
+									<div id="nav-number-max" class="number-edit-text">of 0</div>
 		            </div>
 							</div>
-							<!--<div>
-	              <span id="nav-number" class="card-badge" contenteditable="true">0</span>
-		            <span class="card-badge">/</span>
-	              <span id="nav-number-max" class="card-badge">0</span>
-							</div>-->
   					</div>
   					<div id="sat-canvas-container" class="card-content">
 							<div class="canvas-spacer" id="sat-canvas-spacer"></div>
-  						<canvas id="sat-canvas" class="img-canvas"></canvas>
+							<div id="sat-viewer" class="image-viewer"></div>
   					</div>
             <div id="saturation-progress" class="card-load"></div>
   				</div>
@@ -138,7 +138,7 @@
 								<div class="opts-separator"></div>
 								<div class="number-edit-container">
 		              <div class="number-edit-text">Smooth order</div>
-		              <div id="graph-avg" class="number-edit-box" contenteditable="true"></div>
+		              <div id="graph-avg" class="number-edit-box" contenteditable="true">0</div>
 		            </div>
 								<div class="opts-separator"></div>
 	  						<div id="checkbox-hbr" class="custom-checkbox">
@@ -187,7 +187,13 @@
   <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
 	<!-- Dygraph -->
 	<script src="dygraph/dygraph.min.js"></script>
+	<!-- Pixi -->
+	<script src="pixi/pixi.min.js"></script>
   <!-- APP -->
-  <script src="app.js"></script>
+	<script src="js/colormap.js"></script>
+	<script src="js/frame.js"></script>
+	<script src="js/imageviewer.js"></script>
+	<script src="js/main.js"></script>
+  <!-- <script src="app.js"></script> -->
 </body>
 </html>

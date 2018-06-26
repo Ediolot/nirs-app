@@ -331,6 +331,14 @@ h1 {
 	box-sizing: border-box;
 }
 
+.image-viewer {
+	width: 100%;
+	height: calc(100% - #{$card-load-bar-height});
+	padding: 0;
+  margin: auto;
+  display: inline-block;
+}
+
 .img-canvas {
 	width: 100%;
 	height: calc(100% - #{$card-load-bar-height});

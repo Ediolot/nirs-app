@@ -10,5 +10,10 @@
         <file>webfiles/fonts/ionicons.woff2</file>
         <file>webfiles/dygraph/dygraph.min.css</file>
         <file>webfiles/dygraph/dygraph.min.js</file>
+        <file>webfiles/pixi/pixi.min.js</file>
+        <file>webfiles/js/main.js</file>
+        <file>webfiles/js/imageviewer.js</file>
+        <file>webfiles/js/frame.js</file>
+        <file>webfiles/js/colormap.js</file>
     </qresource>
 </RCC>
