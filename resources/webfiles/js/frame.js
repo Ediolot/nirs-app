@@ -10,16 +10,18 @@ const MODES = {
 }
 
 const OPS_MARGINS_PX = 5;
-const ZOOM_ZONE_SZ_PX = 80;
-const ZOOM_ZONE_FACTOR = 0.1;
+const ZOOM_ZONE_SZ_PX = 90;
+const ZOOM_ZONE_FACTOR = 0.15;
 const ZOOM_CURSOR_SPACE_PX = 10;
 
 class Frame {
 
 	constructor(width, height, colormap, onEnter, onExit, requestDraw) {
+		this.roi           = null;
 		this.requestDraw   = requestDraw;
 		this.mode          = Frame.MODES.DEFAULT;
-		this.zoom          = new ZoomZone(ZOOM_ZONE_SZ_PX, ZOOM_ZONE_SZ_PX, ZOOM_ZONE_FACTOR, this, ZOOM_CURSOR_SPACE_PX);
+		this.roi           = new ZoomRectangle();
+		this.zoomViewer    = new ZoomZone(ZOOM_ZONE_SZ_PX, ZOOM_ZONE_SZ_PX, ZOOM_ZONE_FACTOR, this, ZOOM_CURSOR_SPACE_PX);
 		this.options       = new OptionsBar(OPS_MARGINS_PX);
 		this.optionsInTop  = false;
 		this.onEnter       = onEnter;
@@ -50,14 +52,28 @@ class Frame {
 			this.updateVisibility(this.visible);
 		};
 		this.sprite.mouseout    = () => {
-			this.zoom.visible = false;
+			this.zoomViewer.visible = false;
 			this.onExit();
 			this.requestDraw();
 		};
+		this.sprite.mousedown   = mouseData => {
+			if (this.mode === Frame.MODES.DEFAULT) {
+				let x = mouseData.data.global.x;
+				let y = mouseData.data.global.y;
+				this.roi.start(x, y);
+			}
+		}
+		this.sprite.mouseup   = () => {
+			this.roi.done();
+		}
 
-		this.options.zoomBtn.action = () => {
+		this.options.zoomViewBtn.action = () => {
 			this.setMode(Frame.MODES.ZOOM);
 		};
+
+		this.options.clearBtn.action = () => {
+			this.roi.clean();
+		}
 
     document.addEventListener('keydown', e => {
 			if (e.key === "Escape") {
@@ -73,32 +89,42 @@ class Frame {
 
 	addTo(component) {
     component.addChild(this.sprite);
-		this.zoom.addTo(component);
 		this.options.addTo(component);
+		this.roi.addTo(component);
+		this.zoomViewer.addTo(component);
+	}
+
+	toOriginalCoord(x, y) {
+		return {
+			x: Math.round((x - this.x) / (this.w / this.canvas.width)),
+			y: Math.round((y - this.y) / (this.h / this.canvas.height))
+		}
 	}
 
 	onMousemove(mouseData) {
 		if (this.data) {
 			let x = mouseData.data.global.x;
 			let y = mouseData.data.global.y;
+			let sx = x - this.x;
+			let sy = y - this.y;
 
-			if ((x - this.x) < this.w && (y - this.y) < this.h)  {
-				let ox  = Math.round((x - this.x) / (this.w / this.canvas.width));
-				let oy  = Math.round((y - this.y) / (this.h / this.canvas.height));
-				let val = this.data[ox + oy * this.canvas.width];
+			if (sx < this.w && sy < this.h)  {
+				let o   = this.toOriginalCoord(x, y);
+				let val = this.data[o.x + o.y * this.canvas.width];
 
 				if (val) this.options.valueIndicator.value = val;
-				this.zoom.setCenter(ox, oy);
+				this.roi.move(x, y);
+				this.zoomViewer.setCenter(o.x, o.y);
 				this.crossX = x;
 				this.crossY = y;
 				this.requestDraw();
 			}
 
 			this.optionsInTop = (this.mode == Frame.MODES.ZOOM)
-			                &&  (((y - this.y) > (this.h - this.options.h - OPS_MARGINS_PX)));
+			                &&  ((sy > (this.h - this.options.h)));
 
 			// TODO THIS IS A TEMPORAL FIX
-			if ((x - this.x) > this.w || (y - this.y) > this.h) {
+			if (sx > this.w || sy > this.h) {
 				this.optionsInTop = false;
 				this.onExit();
 			} else {
@@ -108,13 +134,13 @@ class Frame {
 	}
 
 	setImage(imgWidth, imgHeight, max, min, prefOperation, data) {
-		this.max           = max;
-		this.min           = min;
-		this.prefOperation = prefOperation;
-		this.data          = data;
-		this.canvas.width  = imgWidth;
-	  this.canvas.height = imgHeight;
-		this.normFactor    = 1.0 / (max - min);
+		this.max            = max;
+		this.min            = min;
+		this.prefOperation  = prefOperation;
+		this.data           = data;
+		this.canvas.width   = imgWidth;
+	  this.canvas.height  = imgHeight;
+		this.normFactor     = 1.0 / (max - min);
 	}
 
 	fillCanvas() {
@@ -154,7 +180,8 @@ class Frame {
 		this.options.draw(x, this.optionsInTop ? (y + this.options.h + OPS_MARGINS_PX * 2) : (y + this.h));
 		this.sprite.texture.update();
 		this.sprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-		this.zoom.draw(this.crossX, this.crossY, this.w, this.h);
+		this.zoomViewer.draw(this.crossX, this.crossY, this.w, this.h);
+		this.roi.draw();
 	}
 
 	resize(maxW, maxH, ratio) {
@@ -169,6 +196,7 @@ class Frame {
 		}
 		this.sprite.hitArea.width  = this.w;
 		this.sprite.hitArea.height = this.h;
+		this.roi.clean();
 	}
 
 	get image() {
@@ -186,18 +214,22 @@ class Frame {
 	updateVisibility(value) {
 		this.sprite.visible  = value;
 		if (this.mode == Frame.MODES.DEFAULT) {
-			this.options.zoomBtn.visible        = value;
+			this.roi.disabled = false;
+			this.options.zoomViewBtn.visible    = value;
 			this.options.saveBtn.visible        = value;
+			this.options.clearBtn.visible       = value;
 			this.options.zoomMsg.visible        = false;
 			this.options.valueIndicator.visible = false;
-			this.zoom.visible                   = false;
+			this.zoomViewer.visible             = false;
 		}
 		else { // if (this.mode == Frame.MODES.ZOOM) {
-			this.options.zoomBtn.visible        = false;
+			this.roi.disabled = true;
+			this.options.zoomViewBtn.visible    = false;
 			this.options.saveBtn.visible        = false;
+			this.options.clearBtn.visible       = false;
 			this.options.zoomMsg.visible        = value;
 			this.options.valueIndicator.visible = value;
-			this.zoom.visible                   = value;
+			this.zoomViewer.visible             = value;
 		}
 	}
 }

@@ -31,7 +31,6 @@ let graphData = [];
 let navigatorId = 0;
 let navigatorMax = 0;
 
-
 $(document).ready( () => {
 	loadPixi();
 	let basalViewer   = new ImageViewer('#basal-viewer', 1.0, 0.0);
@@ -76,7 +75,17 @@ $(document).ready( () => {
 		});
 
 		$('#generate-graph-button').click(e => {
-			qtInterface.calculateAllSatValues();
+			let x0 = 0, y0 = 0, x1 = 0, y1 = 0;
+			if (basalViewer.frame.roi.complete) {
+				let roi    = basalViewer.frame.roi;
+				let origin = basalViewer.frame.toOriginalCoord(roi.origin.x, roi.origin.y);
+				let end    = basalViewer.frame.toOriginalCoord(roi.end.x, roi.end.y);
+				x0 = origin.x;
+				y0 = origin.y;
+				x1 = end.x;
+				y1 = end.y;
+			}
+			qtInterface.calculateAllSatValues(x0, y0, x1, y1);
 		});
 
 		$('#graph-export').click(e => {

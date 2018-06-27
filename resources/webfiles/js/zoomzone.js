@@ -1,8 +1,8 @@
 
-const CROSS_BORDER_PX = 1;
+const CROSS_BORDER_PX = 3;
 const CROSS_BORDER_COLOR = 0xFFFFFF;
-const CROSS_ALPHA = 0.9;
-const CROSS_SZ = 0.4;
+const CROSS_ALPHA = 0.5;
+const CROSS_SZ = 0.7;
 
 class ZoomZone {
   constructor(zoneW, zoneH, scaleFactor, frame, margin) {
@@ -23,7 +23,6 @@ class ZoomZone {
 		this.sprite        = new PIXI.Sprite(PIXI.Texture.fromCanvas(this.canvas));
     this.cross         = new PIXI.Graphics();
     this.sprite.addChild(this.cross);
-    this.cross.lineStyle(CROSS_BORDER_PX, CROSS_BORDER_COLOR, CROSS_ALPHA);
   }
 
 	addTo(component) {
@@ -44,8 +43,8 @@ class ZoomZone {
 			let h      = this.canvas.height;
       let frame  = this.frame;
 			let img    = this.ctx.createImageData(w, h);
-      let minRow = this.zoomY - (this.h * this.scaleFactor) / 2;
-      let minCol = this.zoomX - (this.w * this.scaleFactor) / 2;
+      let minRow = Math.round(this.zoomY - (this.h * this.scaleFactor) / 2);
+      let minCol = Math.round(this.zoomX - (this.w * this.scaleFactor) / 2);
 
       for (let row = 0; row < w; ++row) {
         for (let col = 0; col < h; ++col) {
@@ -82,6 +81,8 @@ class ZoomZone {
   drawCross() {
     let w = this.w * CROSS_SZ;
     let h = this.h * CROSS_SZ;
+		this.cross.clear();
+		this.cross.lineStyle(CROSS_BORDER_PX, CROSS_BORDER_COLOR, CROSS_ALPHA);
     this.cross.moveTo(this.w / 2, this.h - h);
     this.cross.lineTo(this.w / 2, h);
     this.cross.moveTo(this.w - w, this.h / 2);

@@ -19,6 +19,7 @@
 #include "signal.h"
 #include <chrono>
 #include <QAtomicInt>
+#include <algorithm>
 
 // TODO usar QFile
 // TODO usar QString en las excepciones
@@ -60,7 +61,7 @@ public:
     void generateBasalFrame(uint32_t msStart, uint32_t msEnd);
     void maskOperation(Frame<double>& img1, Frame<double>& img2) const;
     void generateSatFrame(int index, uint32_t msStart = 0);
-    void calculateAllSatValues(uint32_t msStart = 0);
+    void calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, uint32_t msStart = 0);
     void exportSatValuesToCSV(const QString& path, char separator);
     const Frame<double>& getBasal() const;
 

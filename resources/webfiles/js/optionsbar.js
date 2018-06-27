@@ -4,13 +4,17 @@ const BTN_MIN_WIDTH = 40;
 
 class OptionsBar {
   constructor(margins) {
-		this.margins = margins;
 		this.valueIndicator = new ValueIndicator();
-		this.h = this.valueIndicator.h;
-    this.zoomBtn = new Button("Zoom view");
-		this.saveBtn = new Button("Save");
-    this.zoomMsg = new Message("Esc to exit mode");
-		this.buttons = [this.valueIndicator, this.zoomBtn, this.zoomMsg, this.saveBtn];
+    this.zoomViewBtn    = new Button("Zoom view");
+		this.saveBtn        = new Button("Save");
+		this.clearBtn       = new Button("Clear ROI");
+    this.zoomMsg        = new Message("Esc to exit mode");
+		this.margins        = margins;
+		this.h              = this.valueIndicator.h;
+		this.buttons = [
+			this.valueIndicator, this.zoomViewBtn, this.zoomMsg, this.saveBtn,
+			this.clearBtn
+		];
   }
 
   updateButtonsWidth() {

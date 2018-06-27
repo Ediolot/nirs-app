@@ -117,6 +117,14 @@ public:
     Frame<U> cast();
 
     /*!
+     * \brief Create a copy of a block of this frame whose values are transformed to
+     * an specific frame type using static cast.
+     * \return The new frame.
+     */
+    template<class U>
+    Frame<U> castBlock(int x0, int y0, int x1, int y1);
+
+    /*!
      * \return
      */
     QVariantList toQVariantList(int major) const;
@@ -161,9 +169,19 @@ public:
     const DataMatrix& getData() const;
 
     /*!
-     * \return The timestamp since 01/01/1997 in milliseconds.
+     * \param data Frame raw data in the form of an Eigen matrix.
+     */
+    void setData(const DataMatrix& data);
+
+    /*!
+     * \return The timestamp since 01/01/1997 in nanoseconds.
      */
     TimestampData getTimestamp() const;
+
+    /*!
+     * \param timestamp The timestamp since 01/01/1997 in nanoseconds.
+     */
+    void setTimestamp(const TimestampData& timestamp);
 
     /*!
      * \return Frame width (number of columns).
@@ -343,6 +361,19 @@ Frame<U> Frame<T>::cast() {
 }
 
 template<class T>
+template<class U>
+Frame<U> Frame<T>::castBlock(int x0, int y0, int x1, int y1) {
+    Frame<U> result = Frame<U>();
+    result.setTimestamp(timestamp);
+    if (x0 == x1 || y0 == y1) {
+        result.setData(data.cast<U>());
+    } else {
+        result.setData(data.block(y0, x0, (y1 - y0), (x1 - x0)).cast<U>());
+    }
+    return result;
+}
+
+template<class T>
 QVariantList Frame<T>::toQVariantList(int major) const { // TODO, this is only for double images
     QVariantList result;
     int row = 0;
@@ -408,8 +439,18 @@ uint32_t Frame<T>::getBPP() const {
 }
 
 template<class T>
+void Frame<T>::setData(const DataMatrix& data) {
+    this->data = data;
+}
+
+template<class T>
 const typename Frame<T>::DataMatrix& Frame<T>::getData() const {
     return data;
+}
+
+template<class T>
+void Frame<T>::setTimestamp(const TimestampData& timestamp) {
+    this->timestamp = timestamp;
 }
 
 template<class T>

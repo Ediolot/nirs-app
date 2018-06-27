@@ -26,7 +26,7 @@ public:
     Q_INVOKABLE QString openFileDialog();
     Q_INVOKABLE void generateBasal();
     Q_INVOKABLE void generateSatFrame(int index);
-    Q_INVOKABLE void calculateAllSatValues();
+    Q_INVOKABLE void calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1);
     Q_INVOKABLE void exportCSV(char separator);
 
 signals:

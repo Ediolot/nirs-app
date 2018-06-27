@@ -37,7 +37,6 @@ void Experiment::load(const QString &path)
         gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
 
         int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
-        nframes = 400;
         frames.reserve(nframes);
         for (int i = 0; (i < nframes); ++i) {
             frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
@@ -139,7 +138,7 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
                   bottomMean);
 }
 
-void Experiment::calculateAllSatValues(uint32_t msStart)
+void Experiment::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, uint32_t msStart)
 {
     const int THREADS = 1;
     int first = getFrameAt(msStart);
@@ -156,6 +155,11 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
         B.push_back(0);
     }
 
+    int x0 = std::min(roiX0, roiX1);
+    int y0 = std::min(roiY0, roiY1);
+    int x1 = std::max(roiX0, roiX1);
+    int y1 = std::max(roiY0, roiY1);
+
     emit taskStart(TAG_PROCESS);
     for (int th = 0; th < THREADS; ++th) {
         int start = length * th / THREADS;
@@ -170,8 +174,8 @@ void Experiment::calculateAllSatValues(uint32_t msStart)
                 aux = (aux - dark) * gain;
                 aux.verticalSplit(height / 2, top, bottom);
                 maskOperation(top, bottom);
-                A[i] = top.getData().mean();
-                B[i] = bottom.getData().mean();
+                A[i] = (x0 == x1 || y0 == y1) ? top.getData().mean() : top.getData().block(y0, x0, (y1 - y0), (x1 - x0)).mean();
+                B[i] = (x0 == x1 || y0 == y1) ? bottom.getData().mean() : bottom.getData().block(y0, x0, (y1 - y0), (x1 - x0)).mean();
                 if (Task::execEach(i, 100)) {
                     (*elementsDone) += 100;
                     emit taskUpdate(TAG_PROCESS, *elementsDone / double(length));

@@ -46,9 +46,9 @@ void WebInterface::generateSatFrame(int index)
     current->generateSatFrame(index, 24000);
 }
 
-void WebInterface::calculateAllSatValues()
+void WebInterface::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1)
 {
-    current->calculateAllSatValues(24000);
+    current->calculateAllSatValues(roiX0, roiY0, roiX1, roiY1, 24000);
 }
 
 void WebInterface::exportCSV(char separator)

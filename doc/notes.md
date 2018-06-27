@@ -47,7 +47,7 @@
 - [ ] Load basal from file
 - [ ] Save images
 - [ ] HP LP BP BS interfaces
-- [ ] ROI
+- [x] ROI
 - [ ] Smooth images (Gaussian + High pass?)
 - [ ] Hhb -> HbR
 - [ ] OxHb -> HbO
@@ -56,6 +56,7 @@
 - [ ] ~~DRIFTER~~
 - [ ] ~~Which one is HbR / HbO~~
 
+- [ ] Enable ROI in both images
 - [ ] T-student en una página distinta, con varias imágenes a la vez
 - [x] Select saturation image from number
 - [x] Eigen multithreading
