@@ -7,9 +7,10 @@ class OptionsBar {
 		this.margins = margins;
 		this.valueIndicator = new ValueIndicator();
 		this.h = this.valueIndicator.h;
-    this.zoomBtn = new Toggle("Zoom view");
-    this.zoomMsg = new Button("Esc to exit mode");
-		this.buttons = [this.valueIndicator, this.zoomBtn, this.zoomMsg];
+    this.zoomBtn = new Button("Zoom view");
+		this.saveBtn = new Button("Save");
+    this.zoomMsg = new Message("Esc to exit mode");
+		this.buttons = [this.valueIndicator, this.zoomBtn, this.zoomMsg, this.saveBtn];
   }
 
   updateButtonsWidth() {
@@ -32,13 +33,6 @@ class OptionsBar {
 				x += btn.w + this.margins;
 			}
 		}
-  }
-}
-
-class Toggle extends Button {
-  constructor(text) {
-    super(text);
-    this.enabled = false;
   }
 }
 

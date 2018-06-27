@@ -45,11 +45,25 @@ class Frame {
 		this.sprite.interactive = true;
 		this.sprite.hitArea     = new PIXI.Rectangle(0, 0, this.w, this.h);
 		this.sprite.mousemove   = mouseData => { this.onMousemove(mouseData); };
-		this.sprite.mouseover   = () => { this.onEnter(); };
-		this.sprite.mouseout    = () => {
-			this.optionsInTop = false;
-			this.onExit();
+		this.sprite.mouseover   = () => {
+			this.onEnter();
+			this.updateVisibility(this.visible);
 		};
+		this.sprite.mouseout    = () => {
+			this.zoom.visible = false;
+			this.onExit();
+			this.requestDraw();
+		};
+
+		this.options.zoomBtn.action = () => {
+			this.setMode(Frame.MODES.ZOOM);
+		};
+
+    document.addEventListener('keydown', e => {
+			if (e.key === "Escape") {
+				this.setMode(Frame.MODES.DEFAULT);
+			}
+		});
 	}
 
 	setMode(mode) {
@@ -173,12 +187,14 @@ class Frame {
 		this.sprite.visible  = value;
 		if (this.mode == Frame.MODES.DEFAULT) {
 			this.options.zoomBtn.visible        = value;
+			this.options.saveBtn.visible        = value;
 			this.options.zoomMsg.visible        = false;
 			this.options.valueIndicator.visible = false;
 			this.zoom.visible                   = false;
 		}
 		else { // if (this.mode == Frame.MODES.ZOOM) {
 			this.options.zoomBtn.visible        = false;
+			this.options.saveBtn.visible        = false;
 			this.options.zoomMsg.visible        = value;
 			this.options.valueIndicator.visible = value;
 			this.zoom.visible                   = value;
