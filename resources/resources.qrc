@@ -17,7 +17,6 @@
         <file>webfiles/js/button.js</file>
         <file>webfiles/jquery/jquery-3.3.1.min.js</file>
         <file>webfiles/css/style.css</file>
-        <file>webfiles/css/style.css.map</file>
         <file>webfiles/css/style.scss</file>
     </qresource>
 </RCC>

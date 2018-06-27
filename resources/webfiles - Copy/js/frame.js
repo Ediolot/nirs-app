@@ -4,28 +4,16 @@ const OPS = {
 	TRUNCATE: 2
 }
 
-const MODES = {
-	DEFAULT: 1,
-	ZOOMVIEW: 2
-}
-
 const OPS_MARGINS_PX = 5;
-const ZOOM_ZONE_SZ_PX = 80;
-const ZOOM_ZONE_FACTOR = 0.1;
-const ZOOM_CURSOR_SPACE_PX = 10;
 
 class Frame {
 
-	constructor(width, height, colormap, onEnter, onExit, requestDraw) {
-		this.requestDraw   = requestDraw;
-		this.mode          = Frame.MODES.DEFAULT;
-		this.zoom          = new ZoomZone(ZOOM_ZONE_SZ_PX, ZOOM_ZONE_SZ_PX, ZOOM_ZONE_FACTOR, this, ZOOM_CURSOR_SPACE_PX);
-		this.options       = new OptionsBar(OPS_MARGINS_PX);
+	constructor(width, height, colormap, onPxHover, onEnter, onExit, onOpsModeChange) {
+		this.options       = new OptionsBar(OPS_MARGINS_PX, onOpsModeChange);
 		this.optionsInTop  = false;
 		this.onEnter       = onEnter;
 		this.onExit        = onExit;
-		this.crossX        = 0;
-		this.crossY        = 0;
+		this.onPxHover     = onPxHover;
 		this.x             = 0;
 		this.y             = 0;
 		this.colormap      = colormap;
@@ -52,15 +40,9 @@ class Frame {
 		};
 	}
 
-	setMode(mode) {
-		this.mode = mode;
-		this.updateVisibility(this.visible);
-	}
-
-	addTo(component) {
-    component.addChild(this.sprite);
-		this.zoom.addTo(component);
-		this.options.addTo(component);
+	addToStage(stage) {
+    stage.addChild(this.sprite);
+		this.options.addToStage(stage);
 	}
 
 	onMousemove(mouseData) {
@@ -72,16 +54,12 @@ class Frame {
 				let ox  = Math.round((x - this.x) / (this.w / this.canvas.width));
 				let oy  = Math.round((y - this.y) / (this.h / this.canvas.height));
 				let val = this.data[ox + oy * this.canvas.width];
-
-				if (val) this.options.valueIndicator.value = val;
-				this.zoom.setCenter(ox, oy);
-				this.crossX = x;
-				this.crossY = y;
-				this.requestDraw();
+				if (!val) val = this.lastVal;
+				this.onPxHover(x, y, ox, oy, val);
+				this.lastVal = val;
 			}
 
-			this.optionsInTop = (this.mode == Frame.MODES.ZOOM)
-			                &&  (((y - this.y) > (this.h - this.options.h - OPS_MARGINS_PX)));
+			this.optionsInTop = this.options.zoomMode && ((y - this.y) > (this.h - this.options.h - OPS_MARGINS_PX));
 
 			// TODO THIS IS A TEMPORAL FIX
 			if ((x - this.x) > this.w || (y - this.y) > this.h) {
@@ -140,7 +118,6 @@ class Frame {
 		this.options.draw(x, this.optionsInTop ? (y + this.options.h + OPS_MARGINS_PX * 2) : (y + this.h));
 		this.sprite.texture.update();
 		this.sprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-		this.zoom.draw(this.crossX, this.crossY, this.w, this.h);
 	}
 
 	resize(maxW, maxH, ratio) {
@@ -161,30 +138,10 @@ class Frame {
 		return this.sprite;
 	}
 
-	get visible() {
-		return this.sprite.visible;
-	}
-
-	set visible(value) {
-		this.updateVisibility(value);
-	}
-
-	updateVisibility(value) {
-		this.sprite.visible  = value;
-		if (this.mode == Frame.MODES.DEFAULT) {
-			this.options.zoomBtn.visible        = value;
-			this.options.zoomMsg.visible        = false;
-			this.options.valueIndicator.visible = false;
-			this.zoom.visible                   = false;
-		}
-		else { // if (this.mode == Frame.MODES.ZOOM) {
-			this.options.zoomBtn.visible        = false;
-			this.options.zoomMsg.visible        = value;
-			this.options.valueIndicator.visible = value;
-			this.zoom.visible                   = value;
-		}
+	set hide(value) {
+		this.sprite.visible = !value;
+		this.options.hide = !value;
 	}
 }
 
 Frame.OPS = OPS;
-Frame.MODES = MODES;

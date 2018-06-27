@@ -1,36 +1,38 @@
 
-const MARGINS_PX = 5;
 const BTN_DECIMALS = 3;
 const BTN_MIN_WIDTH = 40;
 
 class OptionsBar {
-  constructor() {
-    this.valueIndicator = new ValueIndicator();
-    this.zoomView = new Toggle("Zoom view");
-    this.h = this.valueIndicator.h;
+  constructor(margins) {
+		this.margins = margins;
+		this.valueIndicator = new ValueIndicator();
+		this.h = this.valueIndicator.h;
+    this.zoomBtn = new Toggle("Zoom view");
+    this.zoomMsg = new Button("Esc to exit mode");
+		this.buttons = [this.valueIndicator, this.zoomBtn, this.zoomMsg];
   }
 
   updateButtonsWidth() {
-    this.valueIndicator.updateWidth();
-    this.zoomView.updateWidth();
+		for (let i = 0; i < this.buttons.length; ++i)
+			this.buttons[i].updateWidth();
   }
 
-  addToStage(stage) {
-    stage.addChild(this.valueIndicator);
-    stage.addChild(this.zoomView);
+  addTo(component) {
+		for (let i = 0; i < this.buttons.length; ++i)
+			component.addChild(this.buttons[i]);
   }
 
   draw(x, y) {
-    x += MARGINS_PX;
-    y -= MARGINS_PX;
-    this.valueIndicator.draw(x, y - this.valueIndicator.h);
-    this.zoomView.draw(x + this.valueIndicator.w + MARGINS_PX, y - this.zoomView.h);
+    x += this.margins;
+    y -= this.margins;
+		for (let i = 0; i < this.buttons.length; ++i) {
+			let btn = this.buttons[i];
+			if (btn.visible) {
+				btn.draw(x, y - btn.h);
+				x += btn.w + this.margins;
+			}
+		}
   }
-
-	set hide(value) {
-		this.valueIndicator.visible = !value;
-    this.zoomView.visible = !value;
-	}
 }
 
 class Toggle extends Button {
@@ -40,7 +42,7 @@ class Toggle extends Button {
   }
 }
 
-class ValueIndicator extends Button {
+class ValueIndicator extends Message {
   constructor() {
     super("0", BTN_MIN_WIDTH);
   }

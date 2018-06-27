@@ -119,9 +119,9 @@ class Colormap {
 		this.updateLabelsText();
 	}
 
-	set visible(value) {
-		this.sprite.visible = value;
+	set hide(value) {
+		this.sprite.visible = !value;
 		for (let i = 0; i < this.steps; ++i)
-			this.labels[i].visible = value;
+			this.labels[i].visible = !value;
 	}
 }

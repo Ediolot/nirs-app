@@ -9,7 +9,7 @@ const BTN_ROUND_PX = 4;
 const BTN_TEXT_PADDING = 5;
 const TEXT_STYLE = {fontSize: 12, fill: 0xFFFFFF};
 
-class Message extends PIXI.Graphics {
+class Button extends PIXI.Graphics {
   constructor(text, minW) {
     super();
     this.minW = minW;
@@ -47,12 +47,5 @@ class Message extends PIXI.Graphics {
 
   get text() {
     return this.font.text;
-  }
-}
-
-class Button extends Message {
-  constructor(text, minW) {
-    super(text, minW);
-		this.buttonMode = true;
   }
 }

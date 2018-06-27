@@ -26,10 +26,6 @@ class ZoomZone {
     this.cross.lineStyle(CROSS_BORDER_PX, CROSS_BORDER_COLOR, CROSS_ALPHA);
   }
 
-	addTo(component) {
-		component.addChild(this.sprite);
-	}
-
   setCenter(x, y) {
     this.zoomX = x;
     this.zoomY = y;
@@ -100,7 +96,10 @@ class ZoomZone {
 		return this.sprite;
 	}
 
-	set visible(value) {
-		this.sprite.visible = value;
+	set hide(value) {
+		if (!value) {
+			asdasD();
+		}
+		this.sprite.visible = !value;
 	}
 }
