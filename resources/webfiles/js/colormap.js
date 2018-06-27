@@ -34,7 +34,7 @@ class Colormap {
 	genLabels() {
 		this.labels = [];
 		for (let i = 0; i < this.steps; ++i) {
-			let label = new PIXI.Text('', {fontSize: 12});
+			let label = new PIXI.Text('', {fontSize: this.fontSize});
 			this.setLabelAnchor(label, i);
 			this.labels.push(label);
 		}
@@ -62,7 +62,7 @@ class Colormap {
 
 		for (let i = 0; i < CANVAS_HEIGHT_PX; ++i) { // Width = 1
 			let dst = i * 4;
-			let val = i / CANVAS_HEIGHT_PX;
+			let val = (1.0 - i / CANVAS_HEIGHT_PX);
 			img.data[dst    ] = this.r(val) * 255.0;
 			img.data[dst + 1] = this.g(val) * 255.0;
 			img.data[dst + 2] = this.b(val) * 255.0;

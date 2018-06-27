@@ -15,5 +15,8 @@
         <file>webfiles/js/imageviewer.js</file>
         <file>webfiles/js/frame.js</file>
         <file>webfiles/js/colormap.js</file>
+        <file>webfiles/js/optionsbar.js</file>
+        <file>webfiles/js/zoomzone.js</file>
+        <file>webfiles/js/button.js</file>
     </qresource>
 </RCC>
