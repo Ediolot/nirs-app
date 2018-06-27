@@ -1,9 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>webfiles/app.html</file>
-        <file>webfiles/app.js</file>
-        <file>webfiles/jquery-3.3.1.min.js</file>
-        <file>webfiles/style.css</file>
         <file>webfiles/images/ico.png</file>
         <file>webfiles/images/arduino.jpg</file>
         <file>webfiles/ionicons/ionicons.min.css</file>
@@ -18,5 +15,9 @@
         <file>webfiles/js/optionsbar.js</file>
         <file>webfiles/js/zoomzone.js</file>
         <file>webfiles/js/button.js</file>
+        <file>webfiles/jquery/jquery-3.3.1.min.js</file>
+        <file>webfiles/css/style.css</file>
+        <file>webfiles/css/style.css.map</file>
+        <file>webfiles/css/style.scss</file>
     </qresource>
 </RCC>
