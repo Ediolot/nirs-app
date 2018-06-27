@@ -6,6 +6,7 @@ let icons = {
   settings: null,
   arduino:  null,
   about:    null,
+	tests:    null,
   hp:       null,
   lp:       null,
   bp:       null,
@@ -16,7 +17,8 @@ let sections = {
   home:     null,
   settings: null,
   arduino:  null,
-  about:    null
+  about:    null,
+	tests:    null
 }
 
 let filters = {
@@ -39,6 +41,7 @@ $(document).ready( () => {
   icons.settings    = $('#go-settings');
   icons.about       = $('#go-about');
   icons.arduino     = $('#go-arduino');
+	icons.tests       = $('#go-tests');
 	icons.hp          = $('#filter-hp-icon');
 	icons.lp          = $('#filter-lp-icon');
 	icons.bp          = $('#filter-bp-icon');
@@ -47,6 +50,7 @@ $(document).ready( () => {
   sections.settings = $('#settings-section');
   sections.about    = $('#about-section');
   sections.arduino  = $('#arduino-section');
+	sections.tests    = $('#tests-section');
 	filters.hp        = $('#filter-hp');
 	filters.lp        = $('#filter-lp');
 	filters.bp        = $('#filter-bp');
@@ -205,6 +209,7 @@ let goToSection = function(section) {
     if (section !== sections.settings) icons.settings.removeClass('active'); else icons.settings.addClass('active');
     if (section !== sections.about   ) icons.about   .removeClass('active'); else icons.about   .addClass('active');
     if (section !== sections.arduino ) icons.arduino .removeClass('active'); else icons.arduino .addClass('active');
+    if (section !== sections.tests   ) icons.tests   .removeClass('active'); else icons.tests   .addClass('active');
 
 		let container = $('#body-content');
 		container.stop();
@@ -264,6 +269,7 @@ let addIconListeners = function() {
   icons.settings.click(e => goToSection(sections.settings));
   icons.about   .click(e => goToSection(sections.about));
   icons.arduino .click(e => goToSection(sections.arduino));
+  icons.tests   .click(e => goToSection(sections.tests));
   icons.hp      .click(e => goToFilter(filters.hp));
   icons.lp      .click(e => goToFilter(filters.lp));
   icons.bp      .click(e => goToFilter(filters.bp));

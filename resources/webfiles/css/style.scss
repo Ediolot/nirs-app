@@ -49,6 +49,10 @@ $nfilters: 4;
 $number-edit-font-size: 12.8px;
 $number-edit-box-width: 45px;
 $number-edit-box-alone-height: 25px;
+$card-images-options-height: 40px;
+$card-image-info-height: 20px;
+$card-image-font-sz: 10px;
+$card-image-margin: 25px;
 
 body, html {
   background: $color-background;
@@ -63,6 +67,51 @@ body, html {
 h1 {
 	color: $color-primary-dark;
 	font-size: 4rem;
+}
+
+.options-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.btn {
+		background-color: rgba($color-primary, 0.9);
+	  border-color: rgba($color-secondary-light, 0.9);
+	}
+	.opts-separator {
+		background-color: rgba($color-primary, 0.9);
+	}
+	.number-edit-box {
+		border-color: rgba($color-secondary-light, 0.9);
+	}
+}
+
+.card-images-container {
+	overflow-y: scroll;
+	height: calc(100% - #{$card-images-options-height});
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.card-image-info {
+	width: 100%;
+	height: $card-image-info-height;
+	font-size: $card-image-font-sz;
+	text-align: center;
+}
+
+.options-container {
+	height: $card-images-options-height;
+	width: 100%;
+}
+
+.card-image {
+	display: table;
+	margin: $card-image-margin;
+  box-shadow:
+		inset 0px 0px 0px 2px rgba($color-primary-dark, 0.2),
+		0px 0px 58px -13px rgba(0,0,0,0.31);
 }
 
 .nav-bar {

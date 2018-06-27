@@ -9,6 +9,7 @@
 	<div class="nav-bar">
 		<img class="logo" src="images/ico.png" alt="logo">
 		<div id="go-home" class="nav-icon active"><i class="icon ion-md-home"></i></div>
+		<div id="go-tests" class="nav-icon"><i class="icon ion-md-apps"></i></div>
 		<div id="go-arduino" class="nav-icon"><i class="icon ion-md-flash"></i></div>
 		<div id="go-settings" class="nav-icon"><i class="icon ion-md-settings"></i></div>
 		<div id="go-about" class="nav-icon"><i class="icon ion-md-information-circle"></i></div>
@@ -163,6 +164,35 @@
 	  			<!-- /Card -->
 				</div>
   		</div>
+    </div>
+    <div id="tests-section" class="content-section">
+      <div class="card-images-container">
+				<div class="card-image">
+					<canvas width="260" height="172"></canvas>
+					<div class="card-image-info">Frame 2000 - Frame 4000 (Average)</div>
+				</div>
+				<div class="card-image">
+					<div class="card-image-canvas"></div>
+					<div class="card-image-info"></div>
+				</div>
+				<div class="card-image">
+					<div class="card-image-canvas"></div>
+					<div class="card-image-info"></div>
+				</div>
+			</div>
+			<div class="options-container">
+				<input class="btn" type="button" value="RUN TEST">
+				<div class="opts-separator"></div>
+				<input class="btn" type="button" value="EXPORT">
+				<div class="opts-separator"></div>
+				<div class="number-edit-container">
+					<div class="number-edit-box" contenteditable="true">0</div>
+					<div class="number-edit-text">Grouping frames</div>
+				</div>
+				<div class="opts-separator"></div>
+				<input class="btn" type="button" value="GENERATE ALL">
+				<input class="btn" type="button" value="GENERATE NEXT">
+			</div>
     </div>
     <div id="arduino-section" class="content-section text-section">
       <div class="padding-section">
