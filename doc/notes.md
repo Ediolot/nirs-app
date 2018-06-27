@@ -56,10 +56,11 @@
 - [ ] ~~DRIFTER~~
 - [ ] ~~Which one is HbR / HbO~~
 
+- [ ] T-student en una página distinta, con varias imágenes a la vez
 - [x] Select saturation image from number
 - [x] Eigen multithreading
 - [ ] Zoom in images
-- [ ] PDF
+- [ ] PDF report
 - [ ] JSLint
 - [ ] SonarQBox
 - [ ] Arduino (+ smartphone?)
