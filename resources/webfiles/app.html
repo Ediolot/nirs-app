@@ -48,8 +48,11 @@
 							<div class="card-top">
 								<div class="card-title">
 									<span class="card-title-help"><i class="icon ion-md-help-circle"></i></span>
-									<span>FILTERS</span>
+									<span class="card-title-text">FILTERS</span>
 								</div>
+		  					<div class="card-options">
+		  						<input class="btn" id="apply-filter-button" type="button" value="APPLY">
+		  					</div>
 							</div>
 							<div class="filter-row">
 								<div id="filter-hp-icon" class="filter filter-active" title="High pass filter">HP</div>
@@ -59,10 +62,182 @@
 							</div>
 							<div id="filters-scroll" class="filters-container-parent">
 								<div class="filters-container-child">
-									<div id="filter-hp" class="filter-content">High pass filter</div>
-									<div id="filter-lp" class="filter-content">Low pass filter</div>
-									<div id="filter-bp" class="filter-content">Band pass filter</div>
-									<div id="filter-bs" class="filter-content">Band stop filter</div>
+									<div id="filter-hp" class="filter-content">
+										<table class="options-table">
+											<tr>
+												<td>Type</td>
+												<td colspan="2">
+													<select id="filter-type-hp">
+														<option value="BUTTER">Butterworth</option>
+														<option value="CHEBYSHEV_I">Chebyshev I</option>
+														<option value="CHEBYSHEV_II">Chebyshev II</option>
+														<option value="LEGENDRE">Legendre</option>
+														<option value="BESSEL">Bessel</option>
+														<option value="RBJ_BIQUAD">RBJ Biquad</option>
+														<option value="ELLIPTIC">Elliptic</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td>Order</td>
+					              <td colspan="2"><div id="filter-order-hp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Fc (Hz)</td>
+					              <td colspan="2"><div id="filter-fc-hp" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td>Fs (Hz)</td>
+												<td>
+						  						<div id="filter-fs-checkauto-hp" class="custom-checkbox">
+														<div class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
+														<div class="custom-checkbox-label">Auto</div>
+													</div>
+												</td>
+					              <td><div id="filter-fs-hp" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td id="filter-fs-wildcard-hp-name">W</td>
+					              <td colspan="2"><div id="filter-wildcard-hp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Ripple (dB)</td>
+					              <td colspan="2"><div id="filter-ripple-hp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+										</table>
+									</div>
+									<div id="filter-lp" class="filter-content">
+										<table class="options-table">
+											<tr>
+												<td>Type</td>
+												<td colspan="2">
+													<select id="filter-type-lp">
+														<option value="BUTTER">Butterworth</option>
+														<option value="CHEBYSHEV_I">Chebyshev I</option>
+														<option value="CHEBYSHEV_II">Chebyshev II</option>
+														<option value="LEGENDRE">Legendre</option>
+														<option value="BESSEL">Bessel</option>
+														<option value="RBJ_BIQUAD">RBJ Biquad</option>
+														<option value="ELLIPTIC">Elliptic</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td>Order</td>
+					              <td colspan="2"><div id="filter-order-lp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Fc (Hz)</td>
+					              <td colspan="2"><div id="filter-fc-lp" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td>Fs (Hz)</td>
+												<td>
+						  						<div class="custom-checkbox">
+														<div id="filter-fs-checkauto-lp" class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
+														<div class="custom-checkbox-label">Auto</div>
+													</div>
+												</td>
+					              <td><div id="filter-fs-lp" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td id="filter-fs-wildcard-lp-name">W</td>
+					              <td colspan="2"><div id="filter-wildcard-lp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Ripple (dB)</td>
+					              <td colspan="2"><div id="filter-ripple-lp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+										</table>
+									</div>
+									<div id="filter-bp" class="filter-content">
+										<table class="options-table">
+											<tr>
+												<td>Type</td>
+												<td colspan="2">
+													<select id="filter-type-bp">
+														<option value="BUTTER">Butterworth</option>
+														<option value="CHEBYSHEV_I">Chebyshev I</option>
+														<option value="CHEBYSHEV_II">Chebyshev II</option>
+														<option value="LEGENDRE">Legendre</option>
+														<option value="BESSEL">Bessel</option>
+														<option value="RBJ_BIQUAD">RBJ Biquad</option>
+														<option value="ELLIPTIC">Elliptic</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td>Order</td>
+					              <td colspan="2"><div id="filter-order-bp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Fc (Hz)</td>
+					              <td colspan="2"><div id="filter-fc-bp" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td>Fs (Hz)</td>
+												<td>
+						  						<div class="custom-checkbox">
+														<div id="filter-fs-checkauto-bp" class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
+														<div class="custom-checkbox-label">Auto</div>
+													</div>
+												</td>
+					              <td><div id="filter-fs-bp" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td id="filter-fs-wildcard-bp-name">W</td>
+					              <td colspan="2"><div id="filter-wildcard-bp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Ripple (dB)</td>
+					              <td colspan="2"><div id="filter-ripple-bp" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+										</table>
+									</div>
+									<div id="filter-bs" class="filter-content">
+										<table class="options-table">
+											<tr>
+												<td>Type</td>
+												<td colspan="2">
+													<select id="filter-type-b">
+														<option value="BUTTER">Butterworth</option>
+														<option value="CHEBYSHEV_I">Chebyshev I</option>
+														<option value="CHEBYSHEV_II">Chebyshev II</option>
+														<option value="LEGENDRE">Legendre</option>
+														<option value="BESSEL">Bessel</option>
+														<option value="RBJ_BIQUAD">RBJ Biquad</option>
+														<option value="ELLIPTIC">Elliptic</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td>Order</td>
+					              <td colspan="2"><div id="filter-order-b" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Fc (Hz)</td>
+					              <td colspan="2"><div id="filter-fc-b" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td>Fs (Hz)</td>
+												<td>
+						  						<div class="custom-checkbox">
+														<div id="filter-fs-checkauto-b" class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
+														<div class="custom-checkbox-label">Auto</div>
+													</div>
+												</td>
+					              <td><div id="filter-fs-b" class="number-edit-box" contenteditable="true">14</div></td>
+											</tr>
+											<tr>
+												<td id="filter-fs-wildcard-b-name">W</td>
+					              <td colspan="2"><div id="filter-wildcard-b" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Ripple (dB)</td>
+					              <td colspan="2"><div id="filter-ripple-b" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+										</table>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -226,6 +401,7 @@
 	<!-- Pixi -->
 	<script src="pixi/pixi.min.js"></script>
   <!-- APP -->
+	<script src="js/filtercontroller.js"></script>
 	<script src="js/zoomRectangle.js"></script>
 	<script src="js/button.js"></script>
 	<script src="js/zoomzone.js"></script>

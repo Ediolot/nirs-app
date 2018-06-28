@@ -43,7 +43,7 @@ Signal Signal::runLowPassFilter(int sampleRate, int cutFreq, int rippleDB) const
     double* channels[1];
     channels[0] = copy.data();
 
-    Dsp::SimpleFilter <Dsp::ChebyshevI::HighPass<ORDER>, 1> filter;
+    Dsp::SimpleFilter <Dsp::ChebyshevI::LowPass<ORDER>, 1> filter;
     filter.setup(ORDER, sampleRate, cutFreq, rippleDB);
     filter.process(copy.size(), channels);
 

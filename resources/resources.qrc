@@ -21,5 +21,6 @@
         <file>webfiles/js/zoomRectangle.js</file>
         <file>webfiles/audio/error.wav</file>
         <file>webfiles/audio/ok.wav</file>
+        <file>webfiles/js/filtercontroller.js</file>
     </qresource>
 </RCC>

@@ -40,6 +40,7 @@ private:
     static const constexpr double MASK_VALUE   = 0.9;
     static const uint32_t MAX_DIMENSION   = 5000;
     static const int      UPDATE_INTERVAL = 10;
+    static const int      UPDATE_INTERVAL_LONG = 100;
     static const int      SAT_THREADS     = 2;
     static const int      MS_TO_NS        = 1e6;
 
@@ -75,8 +76,6 @@ public:
     uint64_t msToFrame(uint64_t ms) const;
     qint64 maxFrame() const;
     qint64 maxMs() const;
-    void saveBasal();
-    void saveFrame(int pos, QString type);
 
 signals:
     void taskUpdate(QString, double);

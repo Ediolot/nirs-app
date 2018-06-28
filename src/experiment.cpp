@@ -187,8 +187,8 @@ void Experiment::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY
                 maskOperation(top, bottom);
                 A[i] = (x0 == x1 || y0 == y1) ? top.getData().mean() : top.getData().block(y0, x0, (y1 - y0), (x1 - x0)).mean();
                 B[i] = (x0 == x1 || y0 == y1) ? bottom.getData().mean() : bottom.getData().block(y0, x0, (y1 - y0), (x1 - x0)).mean();
-                if (Task::execEach(i, 100)) {
-                    (*elementsDone) += 100;
+                if (Task::execEach(i, UPDATE_INTERVAL_LONG)) {
+                    (*elementsDone) += UPDATE_INTERVAL_LONG;
                     emit taskUpdate(TAG_PROCESS, *elementsDone / double(length));
                 }
             }
@@ -240,16 +240,6 @@ qint64 Experiment::maxFrame() const
 qint64 Experiment::maxMs() const
 {
     return getExperimentDurationMS();
-}
-
-void Experiment::saveBasal()
-{
-
-}
-
-void Experiment::saveFrame(int pos, QString type)
-{
-
 }
 
 int Experiment::getStandardBpp(int bpp)

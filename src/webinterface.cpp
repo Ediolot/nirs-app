@@ -53,7 +53,10 @@ void WebInterface::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int ro
 
 void WebInterface::exportCSV(char separator)
 {
-    current->exportSatValuesToCSV(QFileDialog::getSaveFileName(nullptr, "Export graph", "", "Comma separated values (*.csv)"), separator);
+    QString filename = QFileDialog::getSaveFileName(nullptr, "Export graph", "", "Comma separated values (*.csv)");
+    if (filename.isEmpty()) {
+        current->exportSatValuesToCSV(filename, separator);
+    }
 }
 
 qint64 WebInterface::frameToMs(qint64 frame)

@@ -72,8 +72,9 @@ $(document).ready( () => {
 	setQTInterface(qtInterface => {
 		setupNavframeListener(qtInterface);
 		changeUnitsType($('#unit-type').val(), qtInterface);
-		let basalViewer   = new ImageViewer('#basal-viewer', qtInterface);
-		let satViewer     = new ImageViewer('#sat-viewer', qtInterface);
+		let basalViewer      = new ImageViewer('#basal-viewer', qtInterface);
+		let satViewer        = new ImageViewer('#sat-viewer', qtInterface);
+		let filterController = new FilterController(qtInterface, addCheckboxTrigger);
 
 		$('#unit-type').change(() => {
 			changeUnitsType($('#unit-type').val(), qtInterface);
@@ -304,6 +305,7 @@ let addCheckboxTrigger = function(customCheckboxId, onChecked) {
 		} else {
 			onChecked(true);
 		}
+		console.log(element);
 		element.toggleClass('custom-checbox-unchecked');
 		element.toggleClass('custom-checbox-checked');
 	});

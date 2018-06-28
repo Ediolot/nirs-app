@@ -21,18 +21,18 @@ $text-padding-section: 40px;
 $home-top-height: 52%;
 $home-bot-height: 100% - $home-top-height;
 
-$card-top-height: 45px;
+$card-top-height: 40px;
 $card-between-space: 20px;
-$card-top-bot-margins: 10px;
+$card-top-bot-margins: 7px;
 $card-load-bar-height: 5px;
 $card-filter-row-height: 30px;
-$card-filter-content-padding: 15px;
+$card-filter-content-padding: 8px;
 $card-content-margin: 10px;
 $card-help-ico-size: 22px;
 $card-help-ico-title-space: 10px;
 $card-title-left-padding: 15px;
 $card-fix-width: 240px;
-$card-fix-height: 130px;
+$card-fix-height: 120px;
 $card-opts-separator: 30px;
 
 $checkbox-sq-size: 15px;
@@ -53,6 +53,7 @@ $card-images-options-height: 40px;
 $card-image-info-height: 20px;
 $card-image-font-sz: 12px;
 $card-image-margin: 25px;
+$filter-table-font-size: 12px;
 
 body, html {
   background: $color-background;
@@ -339,6 +340,38 @@ h1 {
 .graph-div {
 	width: 100%;
   height: 100%;
+}
+
+.options-table {
+	color: $color-primary-dark;
+	font-size: $filter-table-font-size;
+	margin-left: 5%;
+	width: 90%;
+	td:nth-child(2) {
+		text-align: right;
+	}
+	.number-edit-box {
+		float: right;
+	}
+	.custom-checkbox {
+		height: auto;
+		margin: auto;
+		div {
+			margin: 0;
+			margin-left: 5px;
+			display: inline-block;
+		}
+		.custom-checkbox-label {
+			line-height: normal;
+		}
+	}
+}
+
+.row-disabled {
+	color: rgba($color-primary-dark, 0.3);
+	.custom-checkbox { // Dont apply to the checkbox
+		color: $color-primary-dark;
+	}
 }
 
 .number-edit-container {
