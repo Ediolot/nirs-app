@@ -38,6 +38,7 @@ let navigatorPrev = 0;
 let navigatorNext = 0;
 let basalEnd = BASAL_MILLIS;
 let unitsType = "MILLIS";
+let volume = 0.3;
 
 $(document).ready( () => {
 	loadPixi();
@@ -139,6 +140,7 @@ $(document).ready( () => {
 			$('#load-error-text').prop('title', err);
 			$('#load-exp-progress').hide();
 			$('#load-exp-progress').width('0%');
+			play('audio/error.wav', volume);
 		});
 
 		qtInterface.basalFrameSignal.connect((data, width, height) => {
@@ -168,6 +170,10 @@ $(document).ready( () => {
 			if (tag === 'LOAD') {
 				$('#load-error-text').html('');
 				qtInterface.generateBasal(basalEnd, unitsType);
+				play('audio/ok.wav', volume);
+			}
+			if (tag === 'PROCESS') {
+				play('audio/ok.wav', volume);
 			}
 			if (tag === 'BASAL') {
 				qtInterface.generateSatFrame(basalEnd, unitsType);
@@ -192,6 +198,12 @@ $(document).ready( () => {
 });
 
 // ----------------------------------------------------------------------------
+
+let play = function(file, volume) {
+	let audio = new Audio(file);
+	audio.volume = volume;
+	audio.play();
+}
 
 let changeUnitsType = function(unit, qtInterface) {
 	unitsType = unit;

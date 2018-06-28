@@ -67,7 +67,7 @@
 - [ ] SonarQBox
 - [ ] Arduino (+ smartphone?)
 - [ ] Short menu when there is no space available
-- [ ] Sound while loading
+- [x] Sound FX
 - [ ] Dont use Mapper ?
 - [x] Frame superclass
 - [ ] Mutex for the read experiment function (trylock in other functions ?) (or boolean flag?)

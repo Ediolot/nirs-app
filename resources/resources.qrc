@@ -19,5 +19,7 @@
         <file>webfiles/css/style.css</file>
         <file>webfiles/css/style.scss</file>
         <file>webfiles/js/zoomRectangle.js</file>
+        <file>webfiles/audio/error.wav</file>
+        <file>webfiles/audio/ok.wav</file>
     </qresource>
 </RCC>
