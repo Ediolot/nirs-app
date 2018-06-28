@@ -28,12 +28,12 @@ class Experiment : public QObject
 {
     Q_OBJECT // For QDebug
 private:
-    const QString TAG_LOAD = "LOAD";
-    const QString TAG_PROCESS = "PROCESS";
-    const QString TAG_BASALGEN = "BASAL";
-    const uint32_t MAX_DIMENSION = 5000;
-    const int UPDATE_INTERVAL = 10;
-    const double MASK_VALUE = 0.9;
+    static const constexpr char*  TAG_LOAD     = "LOAD";
+    static const constexpr char*  TAG_PROCESS  = "PROCESS";
+    static const constexpr char*  TAG_BASALGEN = "BASAL";
+    static const constexpr double MASK_VALUE   = 0.9;
+    static const uint32_t MAX_DIMENSION   = 5000;
+    static const int      UPDATE_INTERVAL = 10;
 
     uint32_t width;  // Full frame width
     uint32_t height; // Full frame height (2x subframes)

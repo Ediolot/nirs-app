@@ -12,8 +12,8 @@ class WebEngine : public QWebEngineView
     Q_OBJECT
 
 private:
-    const QString HTML_RESOURCE = "qrc:/webfiles/app.html";
-    const QString WEB_INTERFACE_ID = "webinterface";
+    static const constexpr char* HTML_RESOURCE = "qrc:/webfiles/app.html";
+    static const constexpr char* WEB_INTERFACE_ID = "webinterface";
 
     WebInterface *interface;
     QWebChannel *channel;
