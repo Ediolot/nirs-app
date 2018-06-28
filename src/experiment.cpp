@@ -68,7 +68,7 @@ void Experiment::load(const QString &path)
     });
 }
 
-void Experiment::generateBasalFrame(uint32_t msStart, uint32_t msEnd)
+void Experiment::generateBasalFrame(uint32_t start, uint32_t end, Type type)
 {
     if (frames.isEmpty()) {
         basal = Frame<double>();
@@ -76,8 +76,8 @@ void Experiment::generateBasalFrame(uint32_t msStart, uint32_t msEnd)
     }
     emit taskStart(TAG_BASALGEN);
     TaskLauncher::create([=](){
-        int firstIndex = getFrameAt(msStart);
-        int lastIndex  = getFrameAt(msEnd);
+        int firstIndex = (type == MILLIS) ? getFrameAt(start) : start;
+        int lastIndex  = (type == MILLIS) ? getFrameAt(end)   : end;
         int sz = lastIndex - firstIndex;
         Frame<double> top;
         Frame<double> bottom;
@@ -116,16 +116,16 @@ void Experiment::maskOperation(Frame<double> &img1, Frame<double> &img2) const
     }
 }
 
-void Experiment::generateSatFrame(int index, uint32_t msStart)
+void Experiment::generateSatFrame(uint32_t pos, Type type)
 {
-    int indexStart = getFrameAt(msStart);
+    int index = (type == MILLIS) ? getFrameAt(pos) : pos;
     Frame<double> aux;
     Frame<double> top;
     Frame<double> bottom;
     double topMean;
     double bottomMean;
 
-    aux = frames[indexStart + index].cast<double>();
+    aux = frames[index].cast<double>();
     aux = (aux - dark) * gain;
     aux.verticalSplit(height / 2, top, bottom);
     maskOperation(top, bottom);
@@ -135,19 +135,24 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
     aux = hSaturation(top, bottom);
     aux -= basal;
 
+    int max  = frames.size() - 1;
+    int prev = (index > 0) ? index - 1 : 0;
+    int next = (index < max) ? index + 1 : max;
+
     emit satFrame(aux.toQVariantList(Superframe::COL_MAJOR),
                   aux.getWidth(),
                   aux.getHeight(),
-                  index,
-                  frames.size() - indexStart,
+                  (type == MILLIS) ? getFrameRelativeTimeMS(prev) - 1 : prev, // The substraction of one unit allows for it to
+                  (type == MILLIS) ? getFrameRelativeTimeMS(next) - 1 : next, // select the correct frame if rounding errors ocurr. (getFrameAt() selects the very next frame if the value is not exact)
+                  (type == MILLIS) ? getFrameRelativeTimeMS(index) : index,
+                  (type == MILLIS) ? getExperimentDurationMS() : frames.size(),
                   topMean,
                   bottomMean);
 }
 
-void Experiment::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, uint32_t msStart)
+void Experiment::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, uint32_t start, Type type)
 {
-    const int THREADS = 1;
-    int first = getFrameAt(msStart);
+    int first = (type == MILLIS) ? getFrameAt(start) : start;
     int length = frames.size() - first;
     QAtomicInt *elementsDone = new QAtomicInt(0);
     QVector<std::function<void (void)>> tasks;
@@ -167,15 +172,15 @@ void Experiment::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY
     int y1 = std::max(roiY0, roiY1);
 
     emit taskStart(TAG_PROCESS);
-    for (int th = 0; th < THREADS; ++th) {
-        int start = length * th / THREADS;
-        int end   = length * (th + 1) / THREADS;
+    for (int th = 0; th < SAT_THREADS; ++th) {
+        int indexStart = length * th / SAT_THREADS;
+        int indexEnd   = length * (th + 1) / SAT_THREADS;
 
         tasks.push_back([=](){
             Frame<double> aux;
             Frame<double> top;
             Frame<double> bottom;
-            for (int i = start; i < end; ++i) {
+            for (int i = indexStart; i < indexEnd; ++i) {
                 aux = frames[i].cast<double>();
                 aux = (aux - dark) * gain;
                 aux.verticalSplit(height / 2, top, bottom);
@@ -202,9 +207,39 @@ void Experiment::exportSatValuesToCSV(const QString &path, char separator)
     Signal::generateCSV(path, {&A, &B}, separator);
 }
 
+uint64_t Experiment::getFrameRelativeTimeMS(int index) const
+{
+    return (frames[index].getTimestamp() - frames.front().getTimestamp()) / MS_TO_NS;
+}
+
+uint64_t Experiment::getExperimentDurationMS() const
+{
+    return (frames.back().getTimestamp() - frames.front().getTimestamp()) / MS_TO_NS;
+}
+
 const Frame<double> &Experiment::getBasal() const
 {
     return basal;
+}
+
+uint64_t Experiment::frameToMs(uint64_t frame) const
+{
+    return (frames[frame].getTimestamp() - frames.front().getTimestamp()) / MS_TO_NS;
+}
+
+uint64_t Experiment::msToFrame(uint64_t ms) const
+{
+    return getFrameAt(ms);
+}
+
+qint64 Experiment::maxFrame() const
+{
+    return frames.size() - 1;
+}
+
+qint64 Experiment::maxMs() const
+{
+    return getExperimentDurationMS();
 }
 
 int Experiment::getStandardBpp(int bpp)
@@ -216,10 +251,13 @@ int Experiment::getStandardBpp(int bpp)
     else                throw FrameBPPTooBig(bpp);
 }
 
-int Experiment::getFrameAt(uint32_t ms) const
+uint64_t Experiment::getFrameAt(uint64_t ms) const
 {
     if (ms == 0) {
         return 0;
+    }
+    if (ms >= getExperimentDurationMS()) {
+        return frames.size() - 1;
     }
 
     uint64_t ns = uint64_t(ms) * 1000000UL;

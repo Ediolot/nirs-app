@@ -83,7 +83,7 @@
 								<div class="opts-separator"></div>
 								<div class="number-edit-container">
 		              <div id="basal-number" class="number-edit-box" contenteditable="true">340</div>
-									<div class="number-edit-text">Frames</div>
+									<div id="basal-number-unit" class="number-edit-text">Fr.</div>
 		            </div>
 							</div>
   					</div>
@@ -110,7 +110,7 @@
 								<div class="opts-separator"></div>
 								<div class="number-edit-container">
 		              <div id="nav-number" class="number-edit-box" contenteditable="true">0</div>
-									<div id="nav-number-max" class="number-edit-text">of 0</div>
+									<div id="nav-number-max" class="number-edit-text">of 0 Fr.</div>
 		            </div>
 							</div>
   					</div>
@@ -169,7 +169,8 @@
       <div class="card-images-container">
 				<div class="card-image">
 					<canvas width="260" height="172"></canvas>
-					<div class="card-image-info">Frames 2000 to 4000 (Mean)</div>
+					<div class="card-image-info">
+						 2000 to 4000 (Mean)</div>
 				</div>
 				<div class="card-image">
 					<div class="card-image-canvas"></div>
@@ -203,6 +204,10 @@
     <div id="settings-section" class="content-section text-section">
       <div class="padding-section">
 				<h1>Settings</h1>
+				<select id="unit-type">
+					<option value="FRAMES">Frames</option>
+					<option value="MILLIS">Milliseconds</option>
+				</select>
 			</div>
     </div>
     <div id="about-section" class="content-section text-section">

@@ -56,7 +56,9 @@
 - [ ] ~~DRIFTER~~
 - [ ] ~~Which one is HbR / HbO~~
 
-- [x] Completar las excepciones
+- [x] Enable the use of milliseconds or frames as unit
+- [x] Can change basal value
+- [x] Complete exceptions
 - [ ] Enable ROI in both images
 - [ ] T-student en una página distinta, con varias imágenes a la vez
 - [x] Select saturation image from number

@@ -47,7 +47,7 @@ $btn-margin-between: 5px;
 
 $nfilters: 4;
 $number-edit-font-size: 12.8px;
-$number-edit-box-width: 45px;
+$number-edit-box-width: 55px;
 $number-edit-box-alone-height: 25px;
 $card-images-options-height: 40px;
 $card-image-info-height: 20px;
@@ -361,6 +361,7 @@ h1 {
 }
 
 .number-edit-text {
+	white-space: nowrap;
 	height: 100%;
 	margin-left: 5px;
 	margin-right: 5px;

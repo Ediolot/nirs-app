@@ -40,7 +40,7 @@ public:
      * \brief Construct an empty frame. (All data is set to 0).
      * \param width Frame width (number of columns).
      * \param height Frame height (number of rows).
-     * \param timestamp Timestamp in milliseconds.
+     * \param timestamp Timestamp in nanoseconds.
      */
     Frame(size_t width, size_t height, TimestampData timestamp = 0);
 
@@ -49,7 +49,7 @@ public:
      * \param vdata Vector containing the frame raw data.
      * \param width Frame width (number of columns).
      * \param height Frame height (number of rows).
-     * \param timestamp Timestamp in milliseconds.
+     * \param timestamp Timestamp in nanoseconds.
      */
     Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0);
 

@@ -28,10 +28,16 @@ let filters = {
 	bs: null
 }
 
+const BASAL_MILLIS = 24000;
+const BASAL_FRAMES = 340;
 let graph = null;
 let graphData = [];
 let navigatorId = 0;
 let navigatorMax = 0;
+let navigatorPrev = 0;
+let navigatorNext = 0;
+let basalEnd = BASAL_MILLIS;
+let unitsType = "MILLIS";
 
 $(document).ready( () => {
 	loadPixi();
@@ -57,6 +63,7 @@ $(document).ready( () => {
 	filters.bs        = $('#filter-bs');
 
 	setupGraphSmoothListener();
+	setupBasalNumListener();
 	createGraph();
 	addIconListeners();
 	addCheckboxTrigger('#checkbox-invert', checked => updateGraph(invertHhR(checked, graphData)));
@@ -65,16 +72,21 @@ $(document).ready( () => {
 
 	setQTInterface(qtInterface => {
 		setupNavframeListener(qtInterface);
+		changeUnitsType($('#unit-type').val(), qtInterface);
+
+		$('#unit-type').change(() => {
+			changeUnitsType($('#unit-type').val(), qtInterface);
+		});
 
 		$('#navigator-prev').click(e => {
 			if (navigatorId > 0) {
-				qtInterface.generateSatFrame(navigatorId - 1);
+				qtInterface.generateSatFrame(navigatorPrev, unitsType);
 			}
 		});
 
 		$('#navigator-next').click(e => {
 			if (navigatorId + 1 < navigatorMax) {
-				qtInterface.generateSatFrame(navigatorId + 1);
+				qtInterface.generateSatFrame(navigatorNext, unitsType);
 			}
 		});
 
@@ -89,7 +101,7 @@ $(document).ready( () => {
 				x1 = end.x;
 				y1 = end.y;
 			}
-			qtInterface.calculateAllSatValues(x0, y0, x1, y1);
+			qtInterface.calculateAllSatValues(x0, y0, x1, y1, basalEnd, unitsType);
 		});
 
 		$('#graph-export').click(e => {
@@ -110,7 +122,7 @@ $(document).ready( () => {
 		});
 
 		$('#generate-basal-button').click(e => {
-			qtInterface.generateBasal();
+			qtInterface.generateBasal(basalEnd, unitsType);
 		});
 
 		qtInterface.satValues.connect((A, B) => {
@@ -133,12 +145,16 @@ $(document).ready( () => {
 			basalViewer.setImage(width, height, 1.0, 0.0, Frame.OPS.TRUNCATE, data.splice(2));
 		});
 
-		qtInterface.satFrameSignal.connect((data, width, height, index, max) => {
+		qtInterface.satFrameSignal.connect((data, width, height, prev, next, index) => {
 			satViewer.setImage(width, height, 0.06, 0.0, Frame.OPS.NORMALIZE, data.splice(2));
-			$('#nav-number').html(index);
-			$('#nav-number-max').html("of " + (max - 1));
-			navigatorId = index;
-			navigatorMax = max;
+			navigatorId   = index;
+			navigatorPrev = prev;
+			navigatorNext = next;
+			if (unitsType == "FRAMES") {
+				qtInterface.maxFrame(val => { navigatorMax = val; updateInterfaceValues(); });
+			} else {
+				qtInterface.maxMs(val => { navigatorMax = val; updateInterfaceValues(); });
+			}
 		});
 
 		// TASKS
@@ -151,10 +167,10 @@ $(document).ready( () => {
 
 			if (tag === 'LOAD') {
 				$('#load-error-text').html('');
-				qtInterface.generateBasal();
+				qtInterface.generateBasal(basalEnd, unitsType);
 			}
 			if (tag === 'BASAL') {
-				qtInterface.generateSatFrame(0);
+				qtInterface.generateSatFrame(basalEnd, unitsType);
 			}
 		});
 
@@ -177,6 +193,43 @@ $(document).ready( () => {
 
 // ----------------------------------------------------------------------------
 
+let changeUnitsType = function(unit, qtInterface) {
+	unitsType = unit;
+
+	qtInterface.isExperimentLoaded(loaded => {
+		if (loaded) {
+			basalEnd = Number($('#basal-number').html());
+			if (unitsType == "FRAMES") {
+				qtInterface.msToFrame(basalEnd,      val => { basalEnd      = val; updateInterfaceValues() });
+				qtInterface.msToFrame(navigatorId,   val => { navigatorId   = val; updateInterfaceValues() });
+				qtInterface.msToFrame(navigatorPrev, val => { navigatorPrev = val; updateInterfaceValues() });
+				qtInterface.msToFrame(navigatorNext, val => { navigatorNext = val; updateInterfaceValues() });
+				qtInterface.maxFrame(                val => { navigatorMax  = val; updateInterfaceValues(); });
+			} else {
+				qtInterface.frameToMs(basalEnd,      val => { basalEnd      = val; updateInterfaceValues() });
+				qtInterface.frameToMs(navigatorId,   val => { navigatorId   = val; updateInterfaceValues() });
+				qtInterface.frameToMs(navigatorPrev, val => { navigatorPrev = val; updateInterfaceValues() });
+				qtInterface.frameToMs(navigatorNext, val => { navigatorNext = val; updateInterfaceValues() });
+				qtInterface.maxMs(                   val => { navigatorMax  = val; updateInterfaceValues(); });
+			}
+		} else {
+			basalEnd = (unitsType == "MILLIS") ? BASAL_MILLIS : BASAL_FRAMES;
+			updateInterfaceValues();
+		}
+	});
+}
+
+let updateInterfaceValues = function() {
+	$('#basal-number').html(basalEnd);
+	$('#basal-number-unit').html(unitsTypeAcronym());
+	$('#nav-number').html(navigatorId);
+	$('#nav-number-max').html("of " + navigatorMax + " " + unitsTypeAcronym());
+}
+
+let unitsTypeAcronym = function() {
+	return (unitsType == "MILLIS") ? "ms" : "Frames";
+}
+
 let setupNavframeListener = function(qtInterface) {
 	let navNumber = $("#nav-number");
 	navNumber.keypress(function(e) {
@@ -195,7 +248,7 @@ let setupNavframeListener = function(qtInterface) {
 		}
 		if (e.which == 13) {
 			e.preventDefault();
-			qtInterface.generateSatFrame(number);
+			qtInterface.generateSatFrame(number, unitsType);
 		}
 	});
 
@@ -297,6 +350,28 @@ let createGraph = function() {
 		},
 		legend: 'always',
 		gridLineColor: '#ddd'
+	});
+}
+
+let setupBasalNumListener = function() {
+	let basalNum = $("#basal-number");
+	basalNum.keypress(function(e) {
+		let number = Number(basalNum.html());
+		if (isNaN(String.fromCharCode(e.which))) {
+			e.preventDefault();
+		}
+		if (number < 1) {
+			number = 1;
+			basalNum.html(number);
+		}
+		if (e.which == 13) {
+			e.preventDefault();
+			basalEnd = number;
+		}
+	});
+
+	basalNum.focusout(e => {
+		basalNum.html(basalEnd);
 	});
 }
 
