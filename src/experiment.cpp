@@ -242,6 +242,16 @@ qint64 Experiment::maxMs() const
     return getExperimentDurationMS();
 }
 
+void Experiment::saveBasal()
+{
+
+}
+
+void Experiment::saveFrame(int pos, QString type)
+{
+
+}
+
 int Experiment::getStandardBpp(int bpp)
 {
          if (bpp <=  8) return 8;

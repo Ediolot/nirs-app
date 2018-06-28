@@ -7,7 +7,7 @@ const SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
 
 class ImageViewer {
 
-	constructor(id) {
+	constructor(id, qtInterface) {
 		PIXI.settings.SCALE_MODE = SCALE_MODE;
 		PIXI.settings.PRECISION_FRAGMENT = 'highp';
 
@@ -21,7 +21,7 @@ class ImageViewer {
 		this.pixi     = new PIXI.Application({width: this.w, height: this.h, transparent: true, autoStart: false});
 		this.grp      = new PIXI.Graphics();
 		this.colormap = new Colormap(CMAP_WIDTH_BAR_PX, this.h, CMAP_FSIZE_PX, CMAP_STEPS, 1.0, 0.0);
-		this.frame    = new Frame(this.w, this.h, this.colormap,
+		this.frame    = new Frame(this.w, this.h, this.colormap, qtInterface,
 															() => { this.el.css('cursor', 'crosshair'); },
 															() => { this.el.css('cursor', 'default');   },
 														  () => { this.draw() });

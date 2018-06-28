@@ -33,6 +33,7 @@ public:
     Q_INVOKABLE qint64 maxMs();
     Q_INVOKABLE qint64 maxFrame();
     Q_INVOKABLE bool isExperimentLoaded();
+    Q_INVOKABLE void saveImageRGBA(QVariantList rgba, int width, int height);
 
 signals:
     void taskUpdateSignal(QString, double);

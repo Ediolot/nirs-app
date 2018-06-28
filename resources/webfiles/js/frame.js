@@ -16,7 +16,8 @@ const ZOOM_CURSOR_SPACE_PX = 10;
 
 class Frame {
 
-	constructor(width, height, colormap, onEnter, onExit, requestDraw) {
+	constructor(width, height, colormap, qtInterface, onEnter, onExit, requestDraw) {
+		this.qtInterface   = qtInterface;
 		this.roi           = null;
 		this.requestDraw   = requestDraw;
 		this.mode          = Frame.MODES.DEFAULT;
@@ -62,19 +63,20 @@ class Frame {
 				let y = mouseData.data.global.y;
 				this.roi.start(x, y);
 			}
-		}
+		};
 		this.sprite.mouseup   = () => {
 			this.roi.done();
-		}
-
+		};
 		this.options.zoomViewBtn.action = () => {
 			this.setMode(Frame.MODES.ZOOM);
 		};
-
 		this.options.clearBtn.action = () => {
 			this.roi.clean();
-		}
-
+		};
+		this.options.saveBtn.action = () => {
+			let imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+			this.qtInterface.saveImageRGBA(Array.from(imgData.data), imgData.width, imgData.height);
+		};
     document.addEventListener('keydown', e => {
 			if (e.key === "Escape") {
 				this.setMode(Frame.MODES.DEFAULT);

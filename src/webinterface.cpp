@@ -81,6 +81,21 @@ bool WebInterface::isExperimentLoaded()
     return current != nullptr;
 }
 
+void WebInterface::saveImageRGBA(QVariantList rgba, int width, int height)
+{
+    assert(width * height * 4 == rgba.size());
+    QString filepath = QFileDialog::getSaveFileName(nullptr, "Export image", "", "Image (*.png)");
+    QVector<uchar> pxData;
+    QImage image;
+
+    pxData.reserve(width * height * 4);
+    for (const QVariant& value : rgba) {
+        pxData.push_back(value.toInt());
+    }
+    image = QImage(pxData.data(), width, height, QImage::Format_RGBA8888);
+    image.save(filepath);
+}
+
 Experiment::Type WebInterface::QStringToType(const QString &str) const
 {
     return (str == "MILLIS") ? Experiment::MILLIS : Experiment::FRAMES;

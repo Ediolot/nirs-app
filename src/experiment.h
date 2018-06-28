@@ -75,6 +75,8 @@ public:
     uint64_t msToFrame(uint64_t ms) const;
     qint64 maxFrame() const;
     qint64 maxMs() const;
+    void saveBasal();
+    void saveFrame(int pos, QString type);
 
 signals:
     void taskUpdate(QString, double);

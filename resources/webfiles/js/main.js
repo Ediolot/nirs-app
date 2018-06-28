@@ -41,8 +41,6 @@ let unitsType = "MILLIS";
 
 $(document).ready( () => {
 	loadPixi();
-	let basalViewer   = new ImageViewer('#basal-viewer', 1.0, 0.0);
-	let satViewer     = new ImageViewer('#sat-viewer', 0.06, 0.0);
   icons.home        = $('#go-home');
   icons.settings    = $('#go-settings');
   icons.about       = $('#go-about');
@@ -73,6 +71,8 @@ $(document).ready( () => {
 	setQTInterface(qtInterface => {
 		setupNavframeListener(qtInterface);
 		changeUnitsType($('#unit-type').val(), qtInterface);
+		let basalViewer   = new ImageViewer('#basal-viewer', qtInterface);
+		let satViewer     = new ImageViewer('#sat-viewer', qtInterface);
 
 		$('#unit-type').change(() => {
 			changeUnitsType($('#unit-type').val(), qtInterface);
