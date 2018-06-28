@@ -56,6 +56,7 @@
 - [ ] ~~DRIFTER~~
 - [ ] ~~Which one is HbR / HbO~~
 
+- [ ] Completar las excepciones
 - [ ] Enable ROI in both images
 - [ ] T-student en una página distinta, con varias imágenes a la vez
 - [x] Select saturation image from number
