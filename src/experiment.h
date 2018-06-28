@@ -43,11 +43,7 @@ private:
     int task;
     int msStart;
 
-    // TODO algo mejor ?
-    // QVector<Frame<int8_t>>  frames8;
-    QVector<Frame<int16_t>> frames;
-    // QVector<Frame<int32_t>> frames32;
-    // QVector<Frame<int64_t>> frames64;
+    QVector<Frame<double>> frames;
 
     Signal A;
     Signal B;

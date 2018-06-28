@@ -10,13 +10,7 @@
 #include <QByteArray>
 #include <QBuffer>
 #include "exceptions/filereaderrorexception.h"
-
-namespace FrameConstants {
-    const bool HAS_TIMESTAMP = true;
-    const bool NO_TIMESTAMP = false;
-    const int ROW_MAJOR = 0;
-    const int COLUM_MAJOR = 1;
-}
+#include "superframe.h"
 
 /*!
  * \brief The frame class is a template class that manipulates frames.
@@ -26,16 +20,14 @@ namespace FrameConstants {
  * which includes casting from one frame type to another.
  */
 template<class T>
-class Frame
+class Frame : public Superframe
 {
 public:
-    using TimestampData = uint64_t;                                                          /*! Type of value for the timestamp.                  */
-    using DataMatrix    = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>; /*! Type of value for the raw data Eigen matrix.      */
-    using Mapper        = Eigen::Map<const DataMatrix>;                                      /*! Mapper type to build Eigen matrices from vectors. */
+    using DataMatrix = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>; /*! Type of value for the raw data Eigen matrix.      */
+    using Mapper     = Eigen::Map<const DataMatrix>;                                      /*! Mapper type to build Eigen matrices from vectors. */
 
 private:
-    TimestampData timestamp; /*! Timestamp in nanoseconds (Since 01/01/1970). */ // TODO since 1997 ?
-    DataMatrix data;         /*! Raw frame data. Saved in an Eigen matrix.    */
+    DataMatrix data;  /*! Raw frame data. Saved in an Eigen matrix.    */
 
 public:
 
@@ -62,14 +54,14 @@ public:
     Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp = 0);
 
     /*!
-     * \brief Construct a frame from an array a file. Subsequent data in the file form columns.
+     * \brief Construct a frame from an array in a file. Subsequent data in the file form columns.
      * \param file File containing the raw data. The file must be opened before calling this function.
      * \param width Frame width (number of columns).
      * \param height Frame height (number of rows).
      * \param hasTimestamp Indicates if the raw data contains information about the timestamp or not.
      * \param pos Position in which the frame is located within the file. If pos is -1, the frame is assumed to be in the current position.
      */
-    Frame(QFile& file, uint32_t width, uint32_t height, bool hasTimestamp, int64_t pos = -1);
+    Frame(QFile& file, uint32_t width, uint32_t height, Superframe::Tstamp enableTimestamp, int64_t pos = Superframe::CURRENT);
 
     /*!
      * \brief Construct a copy of another frame.
@@ -117,14 +109,6 @@ public:
     Frame<U> cast();
 
     /*!
-     * \brief Create a copy of a block of this frame whose values are transformed to
-     * an specific frame type using static cast.
-     * \return The new frame.
-     */
-    template<class U>
-    Frame<U> castBlock(int x0, int y0, int x1, int y1);
-
-    /*!
      * \return
      */
     QVariantList toQVariantList(int major) const;
@@ -132,7 +116,7 @@ public:
     /*!
      * \return
      */
-    void set(uint32_t row, uint32_t colum, T val);
+    void set(uint32_t row, uint32_t colum, const T& val);
 
     /*!
      * \brief Get value at position.
@@ -159,11 +143,6 @@ public:
     void verticalSplit(uint32_t row, Frame& top, Frame& bottom) const;
 
     /*!
-     * \return Bits per pixel used by the frame.
-     */
-    uint32_t getBPP() const;
-
-    /*!
      * \return Frame raw data in the form of an Eigen matrix.
      */
     const DataMatrix& getData() const;
@@ -172,16 +151,6 @@ public:
      * \param data Frame raw data in the form of an Eigen matrix.
      */
     void setData(const DataMatrix& data);
-
-    /*!
-     * \return The timestamp since 01/01/1997 in nanoseconds.
-     */
-    TimestampData getTimestamp() const;
-
-    /*!
-     * \param timestamp The timestamp since 01/01/1997 in nanoseconds.
-     */
-    void setTimestamp(const TimestampData& timestamp);
 
     /*!
      * \return Frame width (number of columns).
@@ -273,32 +242,32 @@ public:
 /*==================================== TEMPLATE FUNCTIONS ====================================*/
 template<class T>
 Frame<T>::Frame()
-    : timestamp(0)
+    : Superframe(sizeof(T) * 8, 0)
     , data()
 {}
 
 template<class T>
 Frame<T>::Frame(const QVector<T>& vdata, size_t width, size_t height, TimestampData timestamp)
-    : timestamp(timestamp)
+    : Superframe(sizeof(T) * 8, timestamp)
     , data(Mapper(vdata.data(), height, width))
 {}
 
 template<class T>
 Frame<T>::Frame(size_t width, size_t height, TimestampData timestamp)
-    : timestamp(timestamp)
+    : Superframe(sizeof(T) * 8, timestamp)
     , data(DataMatrix::Zero(height, width))
 {}
 
 template<class T>
-Frame<T>::Frame(QFile& file, uint32_t width, uint32_t height, bool hasTimestamp, int64_t pos)
+Frame<T>::Frame(QFile& file, uint32_t width, uint32_t height, Superframe::Tstamp enableTimestamp, int64_t pos)
     : Frame()
 {
     QVector<T> vdata(width * height);
 
-    if (pos >= 0) {
+    if (pos != Superframe::CURRENT) {
         file.seek(pos);
     }
-    if (hasTimestamp) {
+    if (enableTimestamp == Superframe::ENABLED) {
         if (file.read(reinterpret_cast<char*>(&timestamp), sizeof(TimestampData)) < 0) {
             throw FileReadErrorException(file.fileName());
         }
@@ -312,20 +281,20 @@ Frame<T>::Frame(QFile& file, uint32_t width, uint32_t height, bool hasTimestamp,
 
 template<class T>
 Frame<T>::Frame(const Frame& other)
-    : timestamp(other.timestamp)
+    : Superframe(sizeof(T) * 8, other.timestamp)
     , data(other.data)
 {}
 
 template<class T>
 template<class U>
 Frame<T>::Frame(const Frame<U>& other)
-    : timestamp(other.getTimestamp())
+    : Superframe(sizeof(T) * 8, other.getTimestamp())
     , data(other.getData().template cast<T>())
 {}
 
 template<class T>
 Frame<T>::Frame(Frame&& other)
-    : timestamp(std::move(other.timestamp))
+    : Superframe(sizeof(T) * 8, std::move(other.timestamp))
     , data(std::move(other.data))
 {}
 
@@ -333,7 +302,7 @@ template<class T>
 Frame<T>& Frame<T>::operator=(const Frame& other)
 {
     timestamp = other.timestamp;
-    data = other.data; // Check copy constructor
+    data = other.data;
     return *this;
 }
 
@@ -361,20 +330,7 @@ Frame<U> Frame<T>::cast() {
 }
 
 template<class T>
-template<class U>
-Frame<U> Frame<T>::castBlock(int x0, int y0, int x1, int y1) {
-    Frame<U> result = Frame<U>();
-    result.setTimestamp(timestamp);
-    if (x0 == x1 || y0 == y1) {
-        result.setData(data.cast<U>());
-    } else {
-        result.setData(data.block(y0, x0, (y1 - y0), (x1 - x0)).cast<U>());
-    }
-    return result;
-}
-
-template<class T>
-QVariantList Frame<T>::toQVariantList(int major) const { // TODO, this is only for double images
+QVariantList Frame<T>::toQVariantList(int major) const {
     QVariantList result;
     int row = 0;
     int col = 0;
@@ -387,25 +343,25 @@ QVariantList Frame<T>::toQVariantList(int major) const { // TODO, this is only f
     for (int i = 0; i < sz; ++i) {
         const T aux = data(row, col);
         result.push_back(aux);
-        if (major == FrameConstants::ROW_MAJOR) {
+        if (major == Superframe::ROW_MAJOR) {
             if (++row >= data.rows()) {
                 col++;
                 row = 0;
             }
         }
-        else if (major == FrameConstants::COLUM_MAJOR) {
+        else if (major == Superframe::COL_MAJOR) {
             if (++col >= data.cols()) {
                 row++;
                 col = 0;
             }
         }
     }
-    return result; // No debería ser necesario
+    return result;
 }
 
 template<class T>
-void Frame<T>::set(uint32_t row, uint32_t colum, T val) {
-    data(row, colum) = std::move(val);
+void Frame<T>::set(uint32_t row, uint32_t colum, const T& val) {
+    data(row, colum) = val;
 }
 
 template<class T>
@@ -434,11 +390,6 @@ void Frame<T>::verticalSplit(uint32_t row, Frame& top, Frame& bottom) const {
 }
 
 template<class T>
-uint32_t Frame<T>::getBPP() const {
-    return sizeof(T) * 8; // In bits
-}
-
-template<class T>
 void Frame<T>::setData(const DataMatrix& data) {
     this->data = data;
 }
@@ -446,16 +397,6 @@ void Frame<T>::setData(const DataMatrix& data) {
 template<class T>
 const typename Frame<T>::DataMatrix& Frame<T>::getData() const {
     return data;
-}
-
-template<class T>
-void Frame<T>::setTimestamp(const TimestampData& timestamp) {
-    this->timestamp = timestamp;
-}
-
-template<class T>
-typename Frame<T>::TimestampData Frame<T>::getTimestamp() const {
-    return timestamp;
 }
 
 template<class T>

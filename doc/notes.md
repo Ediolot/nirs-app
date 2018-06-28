@@ -70,7 +70,7 @@
 - [ ] Short menu when there is no space available
 - [ ] Sound while loading
 - [ ] Dont use Mapper ?
-- [ ] Frame superclass
+- [x] Frame superclass
 - [ ] Mutex for the read experiment function (trylock in other functions ?) (or boolean flag?)
 - [x] Export CSV data
 - [x] Checkbox functionality

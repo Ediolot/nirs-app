@@ -47,7 +47,8 @@ SOURCES += \
     "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\PoleFilter.cpp" \
     "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RBJ.cpp" \
     "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RootFinder.cpp" \
-    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\State.cpp"
+    "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\State.cpp" \
+    src/superframe.cpp
 
 SOURCES += \
     src/experiment.cpp \
@@ -74,7 +75,8 @@ HEADERS +=\
     src/exceptions/framebpptoobig.h \
     src/tasklauncher.h \
     src/task.h \
-    src/signal.h
+    src/signal.h \
+    src/superframe.h
 
 FORMS += \
     forms/mainwindow.ui

@@ -33,18 +33,17 @@ void Experiment::load(const QString &path)
         bpp = getStandardBpp(bpp);
 
         // Frames
-        dark = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
-        gain = Frame<float>(*file, width, height, FrameConstants::NO_TIMESTAMP).cast<double>();
+        dark = Frame<float>(*file, width, height, Superframe::Tstamp::DISABLED).cast<double>();
+        gain = Frame<float>(*file, width, height, Superframe::Tstamp::DISABLED).cast<double>();
 
         int nframes = (file->size() - file->pos()) / (width * height * bpp / 8);
         frames.reserve(nframes);
         for (int i = 0; (i < nframes); ++i) {
-            frames.push_back(Frame<int16_t>(*file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //     if (bpp <=  8) frames.push_back(Frame< int8_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else if (bpp <= 16) frames.push_back(Frame<int56_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else if (bpp <= 32) frames.push_back(Frame<int32_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else if (bpp <= 64) frames.push_back(Frame<int64_t>(file, width, height, FrameConstants::HAS_TIMESTAMP));
-            //else throw FrameBPPTooBig(bpp);
+                 if (bpp <=  8) frames.push_back(Frame< int8_t>(*file, width, height, Superframe::Tstamp::ENABLED).cast<double>());
+            else if (bpp <= 16) frames.push_back(Frame<int16_t>(*file, width, height, Superframe::Tstamp::ENABLED).cast<double>());
+            else if (bpp <= 32) frames.push_back(Frame<int32_t>(*file, width, height, Superframe::Tstamp::ENABLED).cast<double>());
+            else if (bpp <= 64) frames.push_back(Frame<int64_t>(*file, width, height, Superframe::Tstamp::ENABLED).cast<double>());
+            else throw FrameBPPTooBig(bpp);
 
             if (i % 10 == 0) { // TODO constant (Hay más)
                 emit taskUpdate(TAG_LOAD, (i + 1.0f) / nframes);
@@ -78,7 +77,7 @@ void Experiment::generateBasalFrame(uint32_t msStart, uint32_t msEnd)
         Frame<double> aux = Frame<double>(width, height);
 
         for (int i = 0; i < sz; ++i) {
-            aux += this->frames[i + firstIndex].cast<double>();
+            aux += this->frames[i + firstIndex];
 
             if (i % 10 == 0) { // TODO constant (Hay más)
                 emit taskUpdate(TAG_BASALGEN, (i + 1.0f) / sz);
@@ -88,7 +87,7 @@ void Experiment::generateBasalFrame(uint32_t msStart, uint32_t msEnd)
         aux = (aux - this->dark) * this->gain;
         aux.verticalSplit(height / 2, top, bottom);
         this->basal = hSaturation(top, bottom);
-        emit basalFrame(this->basal.toQVariantList(FrameConstants::COLUM_MAJOR),
+        emit basalFrame(this->basal.toQVariantList(Superframe::COL_MAJOR),
                         this->basal.getWidth(),
                         this->basal.getHeight());
         emit taskComplete(TAG_BASALGEN);
@@ -129,7 +128,7 @@ void Experiment::generateSatFrame(int index, uint32_t msStart)
     aux = hSaturation(top, bottom);
     aux -= basal;
 
-    emit satFrame(aux.toQVariantList(FrameConstants::COLUM_MAJOR),
+    emit satFrame(aux.toQVariantList(Superframe::COL_MAJOR),
                   aux.getWidth(),
                   aux.getHeight(),
                   index,
