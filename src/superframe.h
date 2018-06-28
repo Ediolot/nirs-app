@@ -20,7 +20,7 @@ public:
 
 protected:
     int bpp;
-    uint64_t timestamp; /*! Timestamp in nanoseconds (Since 01/01/1970). */ // TODO since 1997 ?
+    uint64_t timestamp; /*! Timestamp in nanoseconds (Since 01/01/1970). */
 
 public:
     Superframe();

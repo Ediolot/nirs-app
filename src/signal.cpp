@@ -103,7 +103,7 @@ void Signal::generateCSV(const QString &filepath, const QVector<const Signal*> &
 {
     QFile file(filepath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qDebug() << "Cant open file"; // TODO throw
+        throw CantWriteFileException(filepath);
     }
 
     QTextStream outStream(&file);

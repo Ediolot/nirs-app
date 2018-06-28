@@ -48,7 +48,11 @@ SOURCES += \
     "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RBJ.cpp" \
     "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\RootFinder.cpp" \
     "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\State.cpp" \
-    src/superframe.cpp
+    src/superframe.cpp \
+    src/exceptions/frametoobigexception.cpp \
+    src/exceptions/badindexforframeexception.cpp \
+    src/exceptions/sizeframemissmatch.cpp \
+    src/exceptions/cantwritefileexception.cpp
 
 SOURCES += \
     src/experiment.cpp \
@@ -76,7 +80,11 @@ HEADERS +=\
     src/tasklauncher.h \
     src/task.h \
     src/signal.h \
-    src/superframe.h
+    src/superframe.h \
+    src/exceptions/frametoobigexception.h \
+    src/exceptions/badindexforframeexception.h \
+    src/exceptions/sizeframemissmatch.h \
+    src/exceptions/cantwritefileexception.h
 
 FORMS += \
     forms/mainwindow.ui

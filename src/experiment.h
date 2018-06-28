@@ -15,15 +15,14 @@
 #include "task.h"
 #include "exceptions/filenotfoundexception.h"
 #include "exceptions/framebpptoobig.h"
+#include "exceptions/frametoobigexception.h"
+#include "exceptions/badindexforframeexception.h"
+#include "exceptions/sizeframemissmatch.h"
 #include "tasklauncher.h"
 #include "signal.h"
 #include <chrono>
 #include <QAtomicInt>
 #include <algorithm>
-
-// TODO usar QFile
-// TODO usar QString en las excepciones
-// TODO file.read devuelve un código de error que hay que leer
 
 class Experiment : public QObject
 {
@@ -32,6 +31,9 @@ private:
     const QString TAG_LOAD = "LOAD";
     const QString TAG_PROCESS = "PROCESS";
     const QString TAG_BASALGEN = "BASAL";
+    const uint32_t MAX_DIMENSION = 5000;
+    const int UPDATE_INTERVAL = 10;
+    const double MASK_VALUE = 0.9;
 
     uint32_t width;  // Full frame width
     uint32_t height; // Full frame height (2x subframes)

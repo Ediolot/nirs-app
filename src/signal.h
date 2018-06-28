@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <utility>
+#include "exceptions/cantwritefileexception.h"
 
 class Signal : public QVector<double>
 {

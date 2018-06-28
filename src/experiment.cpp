@@ -3,19 +3,22 @@
 Experiment::Experiment()
     : QObject()
     , path("")
-{}
+{
+    assert(sizeof(float ) == 4); // 32 bit Float
+    assert(sizeof(double) == 8); // 64 bit Double
+}
 
 Experiment::Experiment(const QString &path)
     : QObject()
     , path("")
 {
+    assert(sizeof(float ) == 4); // 32 bit Float
+    assert(sizeof(double) == 8); // 64 bit Double
     load(path);
 }
 
 void Experiment::load(const QString &path)
 {
-    assert(sizeof(float ) == 4); // 32 bit Float  // TODO que ambos sean por configuración
-    assert(sizeof(double) == 8); // 64 bit Double
     this->path = path;
 
     emit taskStart(TAG_LOAD);
@@ -32,6 +35,10 @@ void Experiment::load(const QString &path)
         if (file->read(reinterpret_cast<char*>(&bpp),    sizeof(uint32_t)) < 0) throw FileReadErrorException(path);
         bpp = getStandardBpp(bpp);
 
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+            throw FrameTooBigException(width, height);
+        }
+
         // Frames
         dark = Frame<float>(*file, width, height, Superframe::Tstamp::DISABLED).cast<double>();
         gain = Frame<float>(*file, width, height, Superframe::Tstamp::DISABLED).cast<double>();
@@ -45,7 +52,7 @@ void Experiment::load(const QString &path)
             else if (bpp <= 64) frames.push_back(Frame<int64_t>(*file, width, height, Superframe::Tstamp::ENABLED).cast<double>());
             else throw FrameBPPTooBig(bpp);
 
-            if (i % 10 == 0) { // TODO constant (Hay más)
+            if (Task::execEach(i, UPDATE_INTERVAL)) {
                 emit taskUpdate(TAG_LOAD, (i + 1.0f) / nframes);
             }
         }
@@ -79,7 +86,7 @@ void Experiment::generateBasalFrame(uint32_t msStart, uint32_t msEnd)
         for (int i = 0; i < sz; ++i) {
             aux += this->frames[i + firstIndex];
 
-            if (i % 10 == 0) { // TODO constant (Hay más)
+            if (Task::execEach(i, UPDATE_INTERVAL)) {
                 emit taskUpdate(TAG_BASALGEN, (i + 1.0f) / sz);
             }
         }
@@ -101,7 +108,7 @@ void Experiment::maskOperation(Frame<double> &img1, Frame<double> &img2) const
 
     for (int row = 0; row < m1.rows(); ++row) {
         for (int col = 0; col < m1.cols(); ++col) {
-            if (m1(row, col) > 0.9 || m2(row, col) > 0.9) {// TODO constant
+            if (m1(row, col) > MASK_VALUE || m2(row, col) > MASK_VALUE) {
                 img1.set(row, col, 0);
                 img2.set(row, col, 0);
             }
@@ -206,7 +213,7 @@ int Experiment::getStandardBpp(int bpp)
     else if (bpp <= 16) return 16;
     else if (bpp <= 32) return 32;
     else if (bpp <= 64) return 64;
-    else                return bpp;
+    else                throw FrameBPPTooBig(bpp);
 }
 
 int Experiment::getFrameAt(uint32_t ms) const
@@ -222,7 +229,7 @@ int Experiment::getFrameAt(uint32_t ms) const
 
     while (currentNs < ns) {
         if (++index >= frames.size())
-            qDebug() << "Error size"; // TODO exception
+            throw BadIndexForFrameException(index, frames.size() - 1);
 
         currentNs = frames[index].getTimestamp() - firstTimestamp;
     }
@@ -232,7 +239,7 @@ int Experiment::getFrameAt(uint32_t ms) const
 Frame<double> Experiment::hSaturation(Frame<double> img1, Frame<double> img2) const
 {
     if ((img1.getWidth() != img2.getWidth()) || (img1.getHeight() != img2.getHeight()))
-        qDebug() << "size mismatch"; // TODO exception
+        throw SizeFrameMissmatch(img1.getWidth(), img1.getHeight(), img2.getWidth(), img2.getHeight());
 
     // LAMBDA1 = 852;
     const double CEM_HBO2_LAMBDA1 = 1062;

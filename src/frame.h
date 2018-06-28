@@ -429,13 +429,13 @@ Frame<T>& Frame<T>::operator-=(const Frame& other) {
 
 template<class T>
 Frame<T>& Frame<T>::operator+=(const T& scalar) {
-    data = data.array() + scalar; // TODO This should be data -= scalar
+    data = data.array() + scalar;
     return *this;
 }
 
 template<class T>
 Frame<T>& Frame<T>::operator-=(const T& scalar) {
-    data = data.array() - scalar; // TODO This should be data -= scalar
+    data = data.array() - scalar;
     return *this;
 }
 

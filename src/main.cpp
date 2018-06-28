@@ -2,13 +2,14 @@
 #include <QApplication>
 #include <iostream>
 
+const int EIGEN_THREADS = 1;
+
 int main(int argc, char *argv[])
 {
     Eigen::initParallel();
-    Eigen::setNbThreads(1);
-    qDebug() << "EIGEN THREADS" << Eigen::nbThreads();
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling); // TODO ?
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps); // TODO ?
+    Eigen::setNbThreads(EIGEN_THREADS);
+    qDebug() << "Eigen, using" << Eigen::nbThreads() << "threads";
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
