@@ -133,8 +133,8 @@
 											<tr>
 												<td>Fs (Hz)</td>
 												<td>
-						  						<div class="custom-checkbox">
-														<div id="filter-fs-checkauto-lp" class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
+						  						<div id="filter-fs-checkauto-lp" class="custom-checkbox">
+														<div class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
 														<div class="custom-checkbox-label">Auto</div>
 													</div>
 												</td>
@@ -177,8 +177,8 @@
 											<tr>
 												<td>Fs (Hz)</td>
 												<td>
-						  						<div class="custom-checkbox">
-														<div id="filter-fs-checkauto-bp" class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
+						  						<div id="filter-fs-checkauto-bp" class="custom-checkbox">
+														<div class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
 														<div class="custom-checkbox-label">Auto</div>
 													</div>
 												</td>
@@ -192,6 +192,10 @@
 												<td>Ripple (dB)</td>
 					              <td colspan="2"><div id="filter-ripple-bp" class="number-edit-box" contenteditable="true">3</div></td>
 											</tr>
+											<tr>
+												<td>Bandwidth (Hz)</td>
+					              <td colspan="2"><div id="filter-bandwidth-bp" class="number-edit-box" contenteditable="true">2</div></td>
+											</tr>
 										</table>
 									</div>
 									<div id="filter-bs" class="filter-content">
@@ -199,7 +203,7 @@
 											<tr>
 												<td>Type</td>
 												<td colspan="2">
-													<select id="filter-type-b">
+													<select id="filter-type-bs">
 														<option value="BUTTER">Butterworth</option>
 														<option value="CHEBYSHEV_I">Chebyshev I</option>
 														<option value="CHEBYSHEV_II">Chebyshev II</option>
@@ -212,29 +216,33 @@
 											</tr>
 											<tr>
 												<td>Order</td>
-					              <td colspan="2"><div id="filter-order-b" class="number-edit-box" contenteditable="true">3</div></td>
+					              <td colspan="2"><div id="filter-order-bs" class="number-edit-box" contenteditable="true">3</div></td>
 											</tr>
 											<tr>
 												<td>Fc (Hz)</td>
-					              <td colspan="2"><div id="filter-fc-b" class="number-edit-box" contenteditable="true">14</div></td>
+					              <td colspan="2"><div id="filter-fc-bs" class="number-edit-box" contenteditable="true">14</div></td>
 											</tr>
 											<tr>
 												<td>Fs (Hz)</td>
 												<td>
-						  						<div class="custom-checkbox">
-														<div id="filter-fs-checkauto-b" class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
+						  						<div id="filter-fs-checkauto-bs" class="custom-checkbox">
+														<div class="custom-checkbox-sq custom-checbox-checked"><i class="icon ion-md-checkmark"></i></div>
 														<div class="custom-checkbox-label">Auto</div>
 													</div>
 												</td>
-					              <td><div id="filter-fs-b" class="number-edit-box" contenteditable="true">14</div></td>
+					              <td><div id="filter-fs-bs" class="number-edit-box" contenteditable="true">14</div></td>
 											</tr>
 											<tr>
-												<td id="filter-fs-wildcard-b-name">W</td>
-					              <td colspan="2"><div id="filter-wildcard-b" class="number-edit-box" contenteditable="true">3</div></td>
+												<td id="filter-fs-wildcard-bs-name">W</td>
+					              <td colspan="2"><div id="filter-wildcard-bs" class="number-edit-box" contenteditable="true">3</div></td>
 											</tr>
 											<tr>
 												<td>Ripple (dB)</td>
-					              <td colspan="2"><div id="filter-ripple-b" class="number-edit-box" contenteditable="true">3</div></td>
+					              <td colspan="2"><div id="filter-ripple-bs" class="number-edit-box" contenteditable="true">3</div></td>
+											</tr>
+											<tr>
+												<td>Bandwidth (Hz)</td>
+					              <td colspan="2"><div id="filter-bandwidth-bp" class="number-edit-box" contenteditable="true">2</div></td>
 											</tr>
 										</table>
 									</div>
@@ -309,6 +317,7 @@
 								<span>GRAPH</span>
 							</div>
 	  					<div class="card-options">
+                <input id="reset-graph-button" class="btn" type="button" value="RESET">
                 <input id="generate-graph-button" class="btn" type="button" value="GENERATE">
 								<input id="graph-export" class="btn" type="button" value="EXPORT">
 								<div class="opts-separator"></div>

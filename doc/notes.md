@@ -46,7 +46,7 @@
 - [ ] Settings
 - [ ] Load basal from file
 - [x] Save images
-- [ ] HP LP BP BS interfaces
+- [x] HP LP BP BS interfaces
 - [x] ROI
 - [ ] Smooth images (Gaussian + High pass?)
 - [ ] Hhb -> HbR

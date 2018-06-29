@@ -39,6 +39,7 @@ let navigatorNext = 0;
 let basalEnd = BASAL_MILLIS;
 let unitsType = "MILLIS";
 let volume = 0.3;
+let currentFilter;
 
 $(document).ready( () => {
 	loadPixi();
@@ -60,6 +61,7 @@ $(document).ready( () => {
 	filters.lp        = $('#filter-lp');
 	filters.bp        = $('#filter-bp');
 	filters.bs        = $('#filter-bs');
+	currentFilter = filters.hp;
 
 	setupGraphSmoothListener();
 	setupBasalNumListener();
@@ -76,6 +78,13 @@ $(document).ready( () => {
 		let satViewer        = new ImageViewer('#sat-viewer', qtInterface);
 		let filterController = new FilterController(qtInterface, addCheckboxTrigger);
 
+		$('#apply-filter-button').click(e => {
+			let filter = (currentFilter === filters.hp) ? filterController.hp
+		             : (currentFilter === filters.lp) ? filterController.lp
+				 	  	   : (currentFilter === filters.bp) ? filterController.bp : filterController.bs;
+			qtInterface.applySatFilter(filter.name, filterController.getFilterData(filter));
+		});
+
 		$('#unit-type').change(() => {
 			changeUnitsType($('#unit-type').val(), qtInterface);
 		});
@@ -90,6 +99,10 @@ $(document).ready( () => {
 			if (navigatorId + 1 < navigatorMax) {
 				qtInterface.generateSatFrame(navigatorNext, unitsType);
 			}
+		});
+
+		$('#reset-graph-button').click(e => {
+			qtInterface.resetAllSatValues();
 		});
 
 		$('#generate-graph-button').click(e => {
@@ -290,6 +303,7 @@ let goToFilter = function(filter) {
 	if (filter !== filters.bp) icons.bp.removeClass('filter-active'); else icons.bp.addClass('filter-active');
 	if (filter !== filters.bs) icons.bs.removeClass('filter-active'); else icons.bs.addClass('filter-active');
 
+	currentFilter = filter;
 	let container = $('#filters-scroll');
 	container.stop();
   container.animate({
@@ -305,7 +319,6 @@ let addCheckboxTrigger = function(customCheckboxId, onChecked) {
 		} else {
 			onChecked(true);
 		}
-		console.log(element);
 		element.toggleClass('custom-checbox-unchecked');
 		element.toggleClass('custom-checbox-checked');
 	});

@@ -57,6 +57,8 @@ private:
 
     Signal A;
     Signal B;
+    Signal originalA;
+    Signal originalB;
     double sampleFreq;
 
 public:
@@ -68,6 +70,7 @@ public:
     void maskOperation(Frame<double>& img1, Frame<double>& img2) const;
     void generateSatFrame(uint32_t pos, Type type = MILLIS);
     void calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, uint32_t start = 0, Type type = MILLIS);
+    void resetAllSatValues();
     void exportSatValuesToCSV(const QString& path, char separator);
     uint64_t getFrameRelativeTimeMS(int index) const;
     uint64_t getExperimentDurationMS() const;
@@ -76,6 +79,8 @@ public:
     uint64_t msToFrame(uint64_t ms) const;
     qint64 maxFrame() const;
     qint64 maxMs() const;
+    void applySatFilter(QString name, QVariantList values);
+    double getSampleFreq() const;
 
 signals:
     void taskUpdate(QString, double);

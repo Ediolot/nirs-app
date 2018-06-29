@@ -17,7 +17,7 @@ Signal::Signal(const QVector<double> &other)
 
 Signal::Signal(Signal &&other)
     : QVector<double>(std::move(other))
-    , name(std::move(other.name)) // TODO Check
+    , name(std::move(other.name))
 {}
 
 Signal::Signal(QVector<double> &&other)
@@ -37,54 +37,24 @@ QVariantList Signal::toQVariantList() const
     return copy;
 }
 
-Signal Signal::runLowPassFilter(int sampleRate, int cutFreq, int rippleDB) const
+Signal Signal::applyFilter(const QString &name, const QVariantList &params) const
 {
     Signal copy(*this);
     double* channels[1];
     channels[0] = copy.data();
 
-    Dsp::SimpleFilter <Dsp::ChebyshevI::LowPass<ORDER>, 1> filter;
-    filter.setup(ORDER, sampleRate, cutFreq, rippleDB);
-    filter.process(copy.size(), channels);
+    Dsp::Filter* filter = nullptr;
+    QString type     = params[Params::TYPE].toString();
+    int order        = params[Params::ORDER].toInt();
 
-    return copy;
-}
-
-Signal Signal::runHighPassFilter(int sampleRate, int cutFreq, int rippleDB) const
-{
-    Signal copy(*this);
-    double* channels[1];
-    channels[0] = copy.data();
-
-    Dsp::SimpleFilter <Dsp::ChebyshevI::HighPass<ORDER>, 1> filter;
-    filter.setup(ORDER, sampleRate, cutFreq, rippleDB);
-    filter.process(copy.size(), channels);
-
-    return copy;
-}
-
-Signal Signal::runBandPassFilter(int sampleRate, int centerFreq, int bandWidth, int rippleDB) const
-{
-    Signal copy(*this);
-    double* channels[1];
-    channels[0] = copy.data();
-
-    Dsp::SimpleFilter <Dsp::ChebyshevI::BandPass<ORDER>, 1> filter;
-    filter.setup(ORDER, sampleRate, centerFreq, bandWidth, rippleDB);
-    filter.process(copy.size(), channels);
-
-    return copy;
-}
-
-Signal Signal::runBandStopFilter(int sampleRate, int centerFreq, int bandWidth, int rippleDB) const
-{
-    Signal copy(*this);
-    double* channels[1];
-    channels[0] = copy.data();
-
-    Dsp::SimpleFilter <Dsp::ChebyshevI::BandStop<ORDER>, 1> filter;
-    filter.setup(ORDER, sampleRate, centerFreq, bandWidth, rippleDB);
-    filter.process(copy.size(), channels);
+    try {
+        filter = resolveFilter(name, type, order);
+        filter->setParams(setupParams(name, type, params));
+        filter->process(copy.size(), channels);
+    } catch (std::exception e) {
+        // TODO this is temporal. An emergent window is required
+        qDebug() << QString::fromUtf8(e.what());
+    }
 
     return copy;
 }
@@ -130,4 +100,76 @@ void Signal::generateCSV(const QString &filepath, const QVector<const Signal*> &
         i++;
     }
     file.close();
+}
+
+Signal &Signal::operator=(Signal &&other)
+{
+    QVector::operator =(std::move(other));
+    name = std::move(other.name);
+    return *this;
+}
+
+Signal &Signal::operator=(const Signal &other)
+{
+    QVector::operator =(other);
+    name = other.name;
+    return *this;
+}
+
+Dsp::Params Signal::setupParams(const QString &name, const QString &type, const QVariantList &params) const
+{
+   Dsp::Params p;
+   int order     = params[Params::ORDER].toInt();
+   int fc        = params[Params::FC].toDouble();
+   int fs        = params[Params::FS].toDouble();
+   int ripple    = params[Params::RIPPLE].toDouble();
+   int wildcard  = params[Params::WILDCARD].toDouble();
+   int bandwidth = params[Params::BANDWIDTH].toDouble();
+
+       if (name == "hp" && type == "BUTTER")       { p[0] = fs; p[1] = order; p[2] = fc; }
+  else if (name == "lp" && type == "BUTTER")       { p[0] = fs; p[1] = order; p[2] = fc; }
+  else if (name == "bp" && type == "BUTTER")       { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; }
+  else if (name == "bs" && type == "BUTTER")       { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; }
+  else if (name == "hp" && type == "CHEBYSHEV_I")  { p[0] = fs; p[1] = order; p[2] = fc; p[3] = ripple; }
+  else if (name == "lp" && type == "CHEBYSHEV_I")  { p[0] = fs; p[1] = order; p[2] = fc; p[3] = ripple; }
+  else if (name == "bp" && type == "CHEBYSHEV_I")  { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; p[4] = ripple; }
+  else if (name == "bs" && type == "CHEBYSHEV_I")  { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; p[4] = ripple; }
+  else if (name == "hp" && type == "CHEBYSHEV_II") { p[0] = fs; p[1] = order; p[2] = fc; p[3] = wildcard; }
+  else if (name == "lp" && type == "CHEBYSHEV_II") { p[0] = fs; p[1] = order; p[2] = fc; p[3] = wildcard; }
+  else if (name == "bp" && type == "CHEBYSHEV_II") { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; p[3] = wildcard; }
+  else if (name == "bs" && type == "CHEBYSHEV_II") { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; p[3] = wildcard; }
+  else if (name == "hp" && type == "LEGENDRE")     { p[0] = fs; p[1] = order; p[2] = fc; }
+  else if (name == "lp" && type == "LEGENDRE")     { p[0] = fs; p[1] = order; p[2] = fc; }
+  else if (name == "bp" && type == "LEGENDRE")     { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; }
+  else if (name == "bs" && type == "LEGENDRE")     { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; }
+  else if (name == "hp" && type == "BESSEL")       { p[0] = fs; p[1] = order; p[2] = fc; }
+  else if (name == "lp" && type == "BESSEL")       { p[0] = fs; p[1] = order; p[2] = fc; }
+  else if (name == "bp" && type == "BESSEL")       { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; }
+  else if (name == "bs" && type == "BESSEL")       { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; }
+  else if (name == "hp" && type == "ELLIPTIC")     { p[0] = fs; p[1] = order; p[2] = fc; p[3] = ripple; p[4] = wildcard; }
+  else if (name == "lp" && type == "ELLIPTIC")     { p[0] = fs; p[1] = order; p[2] = fc; p[3] = ripple; p[4] = wildcard; }
+  else if (name == "bp" && type == "ELLIPTIC")     { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; p[4] = ripple; p[5] = wildcard; }
+  else if (name == "bs" && type == "ELLIPTIC")     { p[0] = fs; p[1] = order; p[2] = fc; p[3] = bandwidth; p[4] = ripple; p[5] = wildcard; }
+  else if (name == "hp" && type == "RBJ_BIQUAD")   { p[0] = fs; p[1] = fc; p[2] = wildcard; }
+  else if (name == "lp" && type == "RBJ_BIQUAD")   { p[0] = fs; p[1] = fc; p[2] = wildcard; }
+  else if (name == "bp" && type == "RBJ_BIQUAD")   { p[0] = fs; p[1] = fc; p[2] = bandwidth; }
+  else if (name == "bs" && type == "RBJ_BIQUAD")   { p[0] = fs; p[1] = fc; p[2] = bandwidth; }
+       return p;
+}
+
+Dsp::Filter *Signal::resolveFilter(const QString &name, const QString &type, int order) const
+{
+   switch (order) {
+   default: return nullptr;
+   case  1: return resolveFilterOrder< 1>(name, type);
+   case  2: return resolveFilterOrder< 2>(name, type);
+   case  3: return resolveFilterOrder< 3>(name, type);
+   case  4: return resolveFilterOrder< 4>(name, type);
+   case  5: return resolveFilterOrder< 5>(name, type);
+   case  6: return resolveFilterOrder< 6>(name, type);
+   case  7: return resolveFilterOrder< 7>(name, type);
+   case  8: return resolveFilterOrder< 8>(name, type);
+   case  9: return resolveFilterOrder< 9>(name, type);
+   case 10: return resolveFilterOrder<10>(name, type);
+   }
 }

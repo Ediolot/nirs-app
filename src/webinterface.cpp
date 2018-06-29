@@ -51,10 +51,17 @@ void WebInterface::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int ro
     current->calculateAllSatValues(roiX0, roiY0, roiX1, roiY1, start, QStringToType(type));
 }
 
+void WebInterface::resetAllSatValues()
+{
+    current->resetAllSatValues();
+}
+
 void WebInterface::exportCSV(char separator)
 {
     QString filename = QFileDialog::getSaveFileName(nullptr, "Export graph", "", "Comma separated values (*.csv)");
+    qDebug () << filename.isEmpty();
     if (filename.isEmpty()) {
+        qDebug() << "Exec";
         current->exportSatValuesToCSV(filename, separator);
     }
 }
@@ -97,6 +104,16 @@ void WebInterface::saveImageRGBA(QVariantList rgba, int width, int height)
     }
     image = QImage(pxData.data(), width, height, QImage::Format_RGBA8888);
     image.save(filepath);
+}
+
+void WebInterface::applySatFilter(QString name, QVariantList values)
+{
+    current->applySatFilter(name, values);
+}
+
+double WebInterface::requestSampleFreq()
+{
+    return current->getSampleFreq();
 }
 
 Experiment::Type WebInterface::QStringToType(const QString &str) const

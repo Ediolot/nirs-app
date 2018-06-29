@@ -196,10 +196,19 @@ void Experiment::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY
     }
 
     TaskLauncher::afterAll(tasks, [=](){
+        originalA = A;
+        originalB = B;
         emit satValues(A.toQVariantList(), B.toQVariantList());
         emit taskComplete(TAG_PROCESS);
         delete elementsDone;
     });
+}
+
+void Experiment::resetAllSatValues()
+{
+    A = originalA;
+    B = originalB;
+    emit satValues(A.toQVariantList(), B.toQVariantList());
 }
 
 void Experiment::exportSatValuesToCSV(const QString &path, char separator)
@@ -240,6 +249,23 @@ qint64 Experiment::maxFrame() const
 qint64 Experiment::maxMs() const
 {
     return getExperimentDurationMS();
+}
+
+void Experiment::applySatFilter(QString name, QVariantList values)
+{
+    if (values[Signal::Params::AUTOFS].toBool()) {
+        values[Signal::Params::FS] = QVariant(sampleFreq);
+    }
+
+    A = std::move(A.applyFilter(name, values));
+    B = std::move(B.applyFilter(name, values));
+
+    emit satValues(A.toQVariantList(), B.toQVariantList());
+}
+
+double Experiment::getSampleFreq() const
+{
+    return sampleFreq;
 }
 
 int Experiment::getStandardBpp(int bpp)

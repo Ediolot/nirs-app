@@ -4,7 +4,7 @@ const FILTERS = {
 	CHEBYSHEV_I:	"CHEBYSHEV_I",
 	CHEBYSHEV_II: "CHEBYSHEV_II",
 	LEGENDRE:			"LEGENDRE",
-	BESSE:				"BESSE",
+	BESSEL:				"BESSEL",
 	RBJ_BIQUAD:		"RBJ_BIQUAD",
 	ELLIPTIC:			"ELLIPTIC"
 }
@@ -23,7 +23,7 @@ class FilterController {
 	}
 
 	initFilter(element, name, addCheckboxTriggerFunc) {
-		element              = {};
+		element.name         = name;
 		element.type         = $('#filter-type-' + name);
 		element.order        = $('#filter-order-' + name);
 		element.fc           = $('#filter-fc-' + name);
@@ -31,12 +31,13 @@ class FilterController {
 		element.wildcardname = $('#filter-fs-wildcard-' + name + '-name');
 		element.wildcard     = $('#filter-wildcard-' + name);
 		element.ripple       = $('#filter-ripple-' + name);
+		element.bwidth       = $('#filter-bandwidth-' + name);
 		element.autoFs       = true;
 
 		this.setupContenteditable(element.order, 1, 10, false);
-		this.setupContenteditable(element.fc, 1, 99999, true);
-		this.setupContenteditable(element.fs, 1, 99999, true);
-		this.setupContenteditable(element.ripple, 0.1, 12, true);
+		this.setupContenteditable(element.fc, 0, 99999, true);
+		this.setupContenteditable(element.fs, 0, 99999, true);
+		this.setupContenteditable(element.ripple, 0, 12, true);
 
 		this.disable(element.fs);
 		this.updateFilter(element);
@@ -44,6 +45,7 @@ class FilterController {
 		addCheckboxTriggerFunc('#filter-fs-checkauto-' + name, checked => {
 			element.autoFs = checked;
 			if (checked) {
+				this.qtInterface.requestSampleFreq(val => { element.fs.html(val.toFixed(2)) });
 				this.disable(element.fs);
 			} else {
 				this.enable(element.fs);
@@ -51,17 +53,28 @@ class FilterController {
 		});
 	}
 
-	setupContenteditable(element, max, min, decimal) {
+	getFilterData(filter) {
+		let type = filter.type.val();
+		if (type === FILTERS.BUTTER)       return [type, filter.autoFs, Number(filter.order.html()), Number(filter.fc.html()), Number(filter.fs.html()),                            0,                             0 , Number(filter.bwidth.html())];
+		if (type === FILTERS.CHEBYSHEV_I)  return [type, filter.autoFs, Number(filter.order.html()), Number(filter.fc.html()), Number(filter.fs.html()), Number(filter.ripple.html()),                             0 , Number(filter.bwidth.html())];
+		if (type === FILTERS.CHEBYSHEV_II) return [type, filter.autoFs, Number(filter.order.html()), Number(filter.fc.html()), Number(filter.fs.html()),                            0, Number(filter.wildcard.html()), Number(filter.bwidth.html())];
+		if (type === FILTERS.LEGENDRE)     return [type, filter.autoFs, Number(filter.order.html()), Number(filter.fc.html()), Number(filter.fs.html()),                            0,                             0 , Number(filter.bwidth.html())];
+		if (type === FILTERS.BESSEL)       return [type, filter.autoFs, Number(filter.order.html()), Number(filter.fc.html()), Number(filter.fs.html()),                            0,                             0 , Number(filter.bwidth.html())];
+		if (type === FILTERS.ELLIPTIC)     return [type, filter.autoFs, Number(filter.order.html()), Number(filter.fc.html()), Number(filter.fs.html()), Number(filter.ripple.html()), Number(filter.wildcard.html()), Number(filter.bwidth.html())];
+		if (type === FILTERS.RBJ_BIQUAD)   return [type, filter.autoFs,                           0, Number(filter.fc.html()), Number(filter.fs.html()),                            0, Number(filter.wildcard.html()), Number(filter.bwidth.html())];
+	}
+
+	setupContenteditable(element, min, max, decimal) {
 		element.keypress(function(e) {
 			let number = Number(element.html());
 			let char   = String.fromCharCode(e.which);
-			if (isNaN(char) && !(char === '.' && decimal)) {
+			if (isNaN(char) && !(char === '.' && decimal) && !(char === '-')) {
 				e.preventDefault();
 			}
-			if (number < min) {
+			else if (number < min) {
 				element.html(min);
 			}
-			if (number > max) {
+			else if (number > max) {
 				element.html(max);
 			}
 		});
@@ -108,7 +121,7 @@ class FilterController {
 		else if (selected === FILTERS.RBJ_BIQUAD) {
 			this.enable(filter.wildcard);
 			this.disable(filter.ripple);
-			this.setupContenteditable(filter.wildcard, 0.06, 16, true);
+			this.setupContenteditable(filter.wildcard, 0, 16, true);
 			filter.wildcardname.html("Q");
 		}
 		else if (selected === FILTERS.ELLIPTIC) {

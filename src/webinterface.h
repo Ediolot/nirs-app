@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void generateBasal(int end, QString type);
     Q_INVOKABLE void generateSatFrame(int pos, QString type);
     Q_INVOKABLE void calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, int start, QString type);
+    Q_INVOKABLE void resetAllSatValues();
     Q_INVOKABLE void exportCSV(char separator);
     Q_INVOKABLE qint64 frameToMs(qint64 frame);
     Q_INVOKABLE qint64 msToFrame(qint64 ms);
@@ -34,6 +35,8 @@ public:
     Q_INVOKABLE qint64 maxFrame();
     Q_INVOKABLE bool isExperimentLoaded();
     Q_INVOKABLE void saveImageRGBA(QVariantList rgba, int width, int height);
+    Q_INVOKABLE void applySatFilter(QString name, QVariantList values);
+    Q_INVOKABLE double requestSampleFreq();
 
 signals:
     void taskUpdateSignal(QString, double);
