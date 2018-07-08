@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="base-libraries-directories.props" />
+    <Import Project="opencv_2_1_0-release.props" />
+    <Import Project="freeglut_2_8_0_x86-release.props" />
+    <Import Project="boost_1_44.props" />
+    <Import Project="tbb41_20121003oss-release.props" />
+    <Import Project="fox_toolkit_1_6_45-release.props" />
+    <Import Project="sensicam.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup />
+  <ItemGroup />
+</Project>

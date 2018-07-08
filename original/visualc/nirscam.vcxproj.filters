@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\FXGLCanvasHelper.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\FXGLImageDraw.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\FXGLPseudoColorDraw.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mainwindow.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\stdafx.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SensiCam.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CalWindow.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SensiOptionsWindow.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\FileCam.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\MasterThread.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ProcessQueueThread.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\FXGLCanvasHelper.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\FXGLImageDraw.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mainwindow.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\stdafx.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\targetver.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\load.hpp">
+      <Filter>CPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\store.hpp">
+      <Filter>CPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\SensiCam.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Cam.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\CalWindow.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\SensiOptionsWindow.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\FileCam.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\MasterThread.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ProcessQueueThread.h">
+      <Filter>Cabeceras</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Cabeceras">
+      <UniqueIdentifier>{65f3d872-e46d-483c-bdbb-d6ddb66067a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CPP">
+      <UniqueIdentifier>{b9fc7fca-0b63-4cb2-bba0-36b307dd5bd3}</UniqueIdentifier>
+      <Extensions>*.cpp</Extensions>
+    </Filter>
+  </ItemGroup>
+</Project>

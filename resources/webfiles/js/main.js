@@ -158,7 +158,7 @@ $(document).ready( () => {
 		});
 
 		qtInterface.basalFrameSignal.connect((data, width, height) => {
-			basalViewer.setImage(width, height, 1.0, 0.0, Frame.OPS.TRUNCATE, data.splice(2));
+			basalViewer.setImage(width, height, 1.0, 0.0, Frame.OPS.NORMALIZE, data.splice(2));
 		});
 
 		qtInterface.satFrameSignal.connect((data, width, height, prev, next, index) => {
@@ -184,13 +184,13 @@ $(document).ready( () => {
 			if (tag === 'LOAD') {
 				$('#load-error-text').html('');
 				qtInterface.generateBasal(basalEnd, unitsType);
-				play('audio/ok.wav', volume);
 			}
 			if (tag === 'PROCESS') {
 				play('audio/ok.wav', volume);
 			}
 			if (tag === 'BASAL') {
 				qtInterface.generateSatFrame(basalEnd, unitsType);
+				play('audio/ok.wav', volume);
 			}
 		});
 
@@ -212,6 +212,11 @@ $(document).ready( () => {
 });
 
 // ----------------------------------------------------------------------------
+
+let showHelpOnClick = function(element) {
+	element.click(e => {
+	});
+}
 
 let play = function(file, volume) {
 	let audio = new Audio(file);

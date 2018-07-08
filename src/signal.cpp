@@ -119,12 +119,12 @@ Signal &Signal::operator=(const Signal &other)
 Dsp::Params Signal::setupParams(const QString &name, const QString &type, const QVariantList &params) const
 {
    Dsp::Params p;
-   int order     = params[Params::ORDER].toInt();
-   int fc        = params[Params::FC].toDouble();
-   int fs        = params[Params::FS].toDouble();
-   int ripple    = params[Params::RIPPLE].toDouble();
-   int wildcard  = params[Params::WILDCARD].toDouble();
-   int bandwidth = params[Params::BANDWIDTH].toDouble();
+   int order        = params[Params::ORDER].toInt();
+   double fc        = params[Params::FC].toDouble();
+   double fs        = params[Params::FS].toDouble();
+   double ripple    = params[Params::RIPPLE].toDouble();
+   double wildcard  = params[Params::WILDCARD].toDouble();
+   double bandwidth = params[Params::BANDWIDTH].toDouble();
 
        if (name == "hp" && type == "BUTTER")       { p[0] = fs; p[1] = order; p[2] = fc; }
   else if (name == "lp" && type == "BUTTER")       { p[0] = fs; p[1] = order; p[2] = fc; }

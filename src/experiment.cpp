@@ -103,12 +103,12 @@ void Experiment::generateBasalFrame(uint32_t start, uint32_t end, Type type)
 
 void Experiment::maskOperation(Frame<double> &img1, Frame<double> &img2) const
 {
-    auto m1 = img1.getData();
-    auto m2 = img2.getData();
+    auto matrix1 = img1.getData();
+    auto matrix2 = img2.getData();
 
-    for (int row = 0; row < m1.rows(); ++row) {
-        for (int col = 0; col < m1.cols(); ++col) {
-            if (m1(row, col) > MASK_VALUE || m2(row, col) > MASK_VALUE) {
+    for (int row = 0; row < matrix1.rows(); ++row) {
+        for (int col = 0; col < matrix1.cols(); ++col) {
+            if (matrix1(row, col) > MASK_VALUE || matrix2(row, col) > MASK_VALUE) {
                 img1.set(row, col, 0);
                 img2.set(row, col, 0);
             }

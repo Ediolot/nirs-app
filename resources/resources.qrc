@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>webfiles/app.html</file>
         <file>webfiles/images/ico.png</file>
-        <file>webfiles/images/arduino.jpg</file>
         <file>webfiles/ionicons/ionicons.min.css</file>
         <file>webfiles/fonts/ionicons.woff2</file>
         <file>webfiles/dygraph/dygraph.min.css</file>
@@ -22,5 +21,6 @@
         <file>webfiles/audio/error.wav</file>
         <file>webfiles/audio/ok.wav</file>
         <file>webfiles/js/filtercontroller.js</file>
+        <file>webfiles/images/ull.jpg</file>
     </qresource>
 </RCC>
