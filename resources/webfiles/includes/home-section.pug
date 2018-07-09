@@ -1,0 +1,151 @@
+div.content-section#home-section
+	div.top-content
+		div.card-multiple
+			// LOAD CARD
+			div.card-container.card-container-load
+				div.card-top-margin
+				div.card 
+					div.card-top
+						div.card-title
+							span.card-title-help
+								i.icon.ion-md-help-circle
+							span.card-title-text LOAD
+						div.card-options
+							input.btn#select-exp-button(type='button', value='SELECT')
+							input.btn#load-exp-button(type='button', value='LOAD')
+					div.card-content
+						input.load-text#filepath-exp(type='text', placeholder='Select file...')
+						div.error-text#load-error-text
+					div.card-load#load-exp-progress
+			// LOAD FILTERS
+			div.card-container.card-container-load
+				div.card-top-margin
+				div.card 
+					div.card-top
+						div.card-title
+							span.card-title-help
+								i.icon.ion-md-help-circle
+							span.card-title-text FILTERS
+						div.card-options
+							input.btn#apply-filter-button(type='button', value='APPLY')
+					div.filter-row
+						div.filter.filter-active#filter-hp-icon(title='High pass filter') HP
+						div.filter#filter-lp-icon(title='Low pass filter') LP
+						div.filter#filter-bp-icon(title='Band pass filter') BP
+						div.filter#filter-bs-icon(title='Band stop filter') BS
+					div.filters-container-parent#filters-scroll
+						div.filters-container-child
+							for filter in ['hp', 'lp', 'bp', 'bs']
+								div.filter-content(id='filter-' + filter)
+									table.options-table
+										tr
+											td Type
+											td(colspan='2')
+												selection(id='filter-type-' + filter)
+													option(value='BUTTER') Butterworth
+													option(value='CHEBYSHEV_I') Chebyshev I
+													option(value='CHEBYSHEV_II') Chebyshev II
+													option(value='LEGENDRE') Legendre
+													option(value='BESSEL') Bessel
+													option(value='RBJ_BIQUAD') RBJ Biquad
+													option(value='ELLIPTIC') Elliptic
+										tr
+											td Order
+											td(colspan='2')
+												div.number-edit-box(id='filter-order-' + filter, contenteditable='true') 3
+										tr
+											td Fc (Hz)
+											td(colspan='2')
+												div.number-edit-box(id='filter-order-' + filter, contenteditable='true') 14
+										tr
+											td Fs (Hz)
+											td
+												div.custom-checkbox(id='filter-fs-checkauto-' + filter)
+													div.custom-checkbox-sq.custom-checkbox-checked
+														i.icon.ion-md-checkmark
+													div.custom-checkbox-label Auto
+											td
+												div.number-edit-box(id='filter-fs-' + filter, contenteditable='true') 14
+										tr
+											td(id='filter-fs-wildcard-' + filter + '-name') W
+											td(colspan='2')
+												div.number-edit-box(id='filter-fs-' + filter, contenteditable='true') 3
+										tr
+											td Ripple (dB)
+											td(colspan='2')
+												div.number-edit-box(id='filter-ripple-' + filter, contenteditable='true') 3
+										if filter == 'bp' || filter == 'bs'
+											tr
+												td Bandwidth (Hz)
+												td(colspan='2')
+													div.number-edit-box(id='filter-bandwidth-' + filter, contenteditable='true') 2
+		// BASAL IMAGE
+		div.card-container.card-container-image
+			div.card-top-margin
+			div.card
+				div.card-top
+					div.card-title
+						span.card-title-help
+							i.icon.ion-md-help-circle
+						span BASAL
+					div.card-options
+						input.btn#generate-basal-button(type='button', value='GENERATE')
+						div.opts-separator
+						div.number-edit-container
+							div.number-edit-box#basal-number(contenteditable='true') 340
+							div.number-edit-text#basal-number-unit Fr.
+				div.card-content#basal-canvas-container
+					div.canvas-spacer#basal-canvas-spacer
+					div.image-viewer#basal-viewer
+				div.card-load#basal-progress
+							
+		// SATURATION IMAGE
+		div.card-container.card-container-image
+			div.card-top-margin
+			div.card
+				div.card-top
+					div.card-title
+						span.card-title-help
+							i.icon.ion-md-help-circle
+						span SATURATION
+					div.card-options
+						input.btn#navigator-prev(type='button', value='PREV')
+						input.btn#navigator-next(type='button', value='NEXT')
+						div.opts-separator
+						div.number-edit-container
+							div.number-edit-box#nav-number(contenteditable='true') 0
+							div.number-edit-box#nav-number-max of 0 Fr.
+				div.card-content#sat-canvas-container
+					div.canvas-spacer#sat-canvas-spacer
+					div.image-viewer#sat-viewer
+				div.card-load#saturation-progress
+		
+	div.bottom-content
+		
+		// GRAPH
+		div.card-container.card-container-image
+			div.card-top-margin
+			div.card
+				div.card-top
+					div.card-title
+						span.card-title-help
+							i.icon.ion-md-help-circle
+						span GRAPH
+					div.card-options
+						input.btn#reset-graph-button(type='button', value='RESET')
+						input.btn#generate-graph-button(type='button', value='GENERATE')
+						input.btn#graph-export(type='button', value='EXPORT')
+						div.opts-separator
+						div.number-edit-container
+							div.number-edit-text Smooth order
+							div.number-edit-box#graph-avg(contenteditable='true') 0
+						div.opts-separator
+						for i in [0,1,2]
+							div.custom-checkbox(id='checkbox-' + ['hbr', 'hbo', 'invert'][i])
+								div.custom-checkbox-sq.custom-checkbox-checked
+									i.icon.ion-md-checkmark
+								div.custom-checkbox-label #{['HbR', 'HbO', 'Invert HbR'][i]}
+				div.graph-container
+					div.graph-div#graph
+				div.card-load#graph-progress
+		

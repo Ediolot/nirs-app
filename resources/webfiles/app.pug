@@ -1,0 +1,25 @@
+html
+	head
+		link(rel='stylesheet', href='css/style.css')
+		link(rel='stylesheet', href='ionicons/ionicons.min.css')
+		link(rel='stylesheet', href='dygraph/dygraph.min.css')
+	body
+		div.nav-bar
+			img.logo(src='images/ico.png', alt='logo')
+			div.nav-icon.active#go-home
+				i.icon.ion-md-home
+			div.nac-icon#go-tests
+				i.icon.ion-md-apps
+			div.nav-icon#go-arduino
+				i.icon.ion-md-flash
+			div.nav-icon#go-settings
+				i.icon.ion-md-settings
+			div.nav-icon#go-about
+				i.icon.ion-md-information-circle
+		
+		div.content#body-content
+			include includes/home-section.pug
+			include includes/tests-section.pug
+			include includes/arduino-section.pug
+			include includes/settings-section.pug
+			include includes/about-section.pug
