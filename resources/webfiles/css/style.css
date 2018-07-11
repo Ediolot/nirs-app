@@ -210,6 +210,7 @@ h1 {
   text-align: center;
   font-size: 15px;
   line-height: 15px;
+  border: 1px solid #2C436B;
 }
 
 .custom-checkbox:hover .custom-checkbox-sq {
