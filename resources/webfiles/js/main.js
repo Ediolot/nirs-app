@@ -319,13 +319,13 @@ let goToFilter = function(filter) {
 let addCheckboxTrigger = function(customCheckboxId, onChecked) {
 	$(customCheckboxId).click(e => {
 		let element = $(customCheckboxId + ' > .custom-checkbox-sq');
-		if (element.hasClass('custom-checbox-checked')) {
+		if (element.hasClass('custom-checkbox-checked')) {
 			onChecked(false);
 		} else {
 			onChecked(true);
 		}
-		element.toggleClass('custom-checbox-unchecked');
-		element.toggleClass('custom-checbox-checked');
+		element.toggleClass('custom-checkbox-unchecked');
+		element.toggleClass('custom-checkbox-checked');
 	});
 }
 

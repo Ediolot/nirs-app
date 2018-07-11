@@ -1,3 +1,4 @@
+doctype html
 html
 	head
 		link(rel='stylesheet', href='css/style.css')
@@ -8,7 +9,7 @@ html
 			img.logo(src='images/ico.png', alt='logo')
 			div.nav-icon.active#go-home
 				i.icon.ion-md-home
-			div.nac-icon#go-tests
+			div.nav-icon#go-tests
 				i.icon.ion-md-apps
 			div.nav-icon#go-arduino
 				i.icon.ion-md-flash
@@ -23,3 +24,22 @@ html
 			include includes/arduino-section.pug
 			include includes/settings-section.pug
 			include includes/about-section.pug
+		
+		// JQuery
+		script(src='jquery/jquery-3.3.1.min.js')
+		// QT
+		script(src='qrc:///qtwebchannel/qwebchannel.js')
+		// Dygraph
+		script(src='dygraph/dygraph.min.js')
+		// Pixi
+		script(src='pixi/pixi.min.js')
+		// APP
+		script(src='js/filtercontroller.js')
+		script(src='js/zoomRectangle.js')
+		script(src='js/button.js')
+		script(src='js/zoomzone.js')
+		script(src='js/optionsbar.js')
+		script(src='js/colormap.js')
+		script(src='js/frame.js')
+		script(src='js/imageviewer.js')
+		script(src='js/main.js')

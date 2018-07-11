@@ -17,8 +17,8 @@ div.content-section#home-section
 						input.load-text#filepath-exp(type='text', placeholder='Select file...')
 						div.error-text#load-error-text
 					div.card-load#load-exp-progress
-			// LOAD FILTERS
-			div.card-container.card-container-load
+			// FILTERS
+			div.card-container.card-container-filter
 				div.card-top-margin
 				div.card 
 					div.card-top
@@ -41,7 +41,7 @@ div.content-section#home-section
 										tr
 											td Type
 											td(colspan='2')
-												selection(id='filter-type-' + filter)
+												select(id='filter-type-' + filter)
 													option(value='BUTTER') Butterworth
 													option(value='CHEBYSHEV_I') Chebyshev I
 													option(value='CHEBYSHEV_II') Chebyshev II
@@ -114,7 +114,7 @@ div.content-section#home-section
 						div.opts-separator
 						div.number-edit-container
 							div.number-edit-box#nav-number(contenteditable='true') 0
-							div.number-edit-box#nav-number-max of 0 Fr.
+							div.number-edit-text#nav-number-max of 0 Fr.
 				div.card-content#sat-canvas-container
 					div.canvas-spacer#sat-canvas-spacer
 					div.image-viewer#sat-viewer
@@ -123,7 +123,7 @@ div.content-section#home-section
 	div.bottom-content
 		
 		// GRAPH
-		div.card-container.card-container-image
+		div.card-container.card-container-graph
 			div.card-top-margin
 			div.card
 				div.card-top
