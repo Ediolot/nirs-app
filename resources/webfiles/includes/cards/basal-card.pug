@@ -1,0 +1,18 @@
+div.card-container.card-container-image
+	div.card-top-margin
+	div.card
+		div.card-top
+			div.card-title
+				span.card-title-help
+					i.icon.ion-md-help-circle
+				span BASAL
+			div.card-options
+				input.btn#generate-basal-button(type='button', value='GENERATE')
+				div.opts-separator
+				div.number-edit-container
+					div.number-edit-box#basal-number(contenteditable='true') 340
+					div.number-edit-text#basal-number-unit Fr.
+		div.card-content#basal-canvas-container
+			div.canvas-spacer#basal-canvas-spacer
+			div.image-viewer#basal-viewer
+		div.card-load#basal-progress

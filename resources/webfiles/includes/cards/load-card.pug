@@ -1,0 +1,15 @@
+div.card-container.card-container-load
+	div.card-top-margin
+	div.card 
+		div.card-top
+			div.card-title
+				span.card-title-help
+					i.icon.ion-md-help-circle
+				span.card-title-text LOAD
+			div.card-options
+				input.btn#select-exp-button(type='button', value='SELECT')
+				input.btn#load-exp-button(type='button', value='LOAD')
+		div.card-content
+			input.load-text#filepath-exp(type='text', placeholder='Select file...')
+			div.error-text#load-error-text
+		div.card-load#load-exp-progress

@@ -1,0 +1,61 @@
+div.card-container.card-container-filter
+	div.card-top-margin
+	div.card 
+		div.card-top
+			div.card-title
+				span.card-title-help
+					i.icon.ion-md-help-circle
+				span.card-title-text FILTERS
+			div.card-options
+				input.btn#apply-filter-button(type='button', value='APPLY')
+		div.filter-row
+			div.filter.filter-active#filter-hp-icon(title='High pass filter') HP
+			div.filter#filter-lp-icon(title='Low pass filter') LP
+			div.filter#filter-bp-icon(title='Band pass filter') BP
+			div.filter#filter-bs-icon(title='Band stop filter') BS
+		div.filters-container-parent#filters-scroll
+			div.filters-container-child
+				for filter in ['hp', 'lp', 'bp', 'bs']
+					div.filter-content(id='filter-' + filter)
+						table.options-table
+							tr
+								td Type
+								td(colspan='2')
+									select(id='filter-type-' + filter)
+										option(value='BUTTER') Butterworth
+										option(value='CHEBYSHEV_I') Chebyshev I
+										option(value='CHEBYSHEV_II') Chebyshev II
+										option(value='LEGENDRE') Legendre
+										option(value='BESSEL') Bessel
+										option(value='RBJ_BIQUAD') RBJ Biquad
+										option(value='ELLIPTIC') Elliptic
+							tr
+								td Order
+								td(colspan='2')
+									div.number-edit-box(id='filter-order-' + filter, contenteditable='true') 3
+							tr
+								td Fc (Hz)
+								td(colspan='2')
+									div.number-edit-box(id='filter-order-' + filter, contenteditable='true') 14
+							tr
+								td Fs (Hz)
+								td
+									div.custom-checkbox(id='filter-fs-checkauto-' + filter)
+										div.custom-checkbox-sq.custom-checkbox-checked
+											i.icon.ion-md-checkmark
+										div.custom-checkbox-label Auto
+								td
+									div.number-edit-box(id='filter-fs-' + filter, contenteditable='true') 14
+							tr
+								td(id='filter-fs-wildcard-' + filter + '-name') W
+								td(colspan='2')
+									div.number-edit-box(id='filter-wildcard-' + filter, contenteditable='true') 3
+							tr
+								td Ripple (dB)
+								td(colspan='2')
+									div.number-edit-box(id='filter-ripple-' + filter, contenteditable='true') 3
+							if filter == 'bp' || filter == 'bs'
+								tr
+									td Bandwidth (Hz)
+									td(colspan='2')
+										div.number-edit-box(id='filter-bandwidth-' + filter, contenteditable='true') 2

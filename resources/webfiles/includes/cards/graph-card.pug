@@ -1,0 +1,25 @@
+div.card-container.card-container-graph
+	div.card-top-margin
+	div.card
+		div.card-top
+			div.card-title
+				span.card-title-help
+					i.icon.ion-md-help-circle
+				span GRAPH
+			div.card-options
+				input.btn#reset-graph-button(type='button', value='RESET')
+				input.btn#generate-graph-button(type='button', value='GENERATE')
+				input.btn#graph-export(type='button', value='EXPORT')
+				div.opts-separator
+				div.number-edit-container
+					div.number-edit-text Smooth order
+					div.number-edit-box#graph-avg(contenteditable='true') 0
+				div.opts-separator
+				for i in [0,1,2]
+					div.custom-checkbox(id='checkbox-' + ['hbr', 'hbo', 'invert'][i])
+						div.custom-checkbox-sq.custom-checkbox-checked
+							i.icon.ion-md-checkmark
+						div.custom-checkbox-label #{['HbR', 'HbO', 'Invert HbR'][i]}
+		div.graph-container
+			div.graph-div#graph
+		div.card-load#graph-progress

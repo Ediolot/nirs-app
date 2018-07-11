@@ -1,0 +1,19 @@
+div.card-container.card-container-image
+	div.card-top-margin
+	div.card
+		div.card-top
+			div.card-title
+				span.card-title-help
+					i.icon.ion-md-help-circle
+				span SATURATION
+			div.card-options
+				input.btn#navigator-prev(type='button', value='PREV')
+				input.btn#navigator-next(type='button', value='NEXT')
+				div.opts-separator
+				div.number-edit-container
+					div.number-edit-box#nav-number(contenteditable='true') 0
+					div.number-edit-text#nav-number-max of 0 Fr.
+		div.card-content#sat-canvas-container
+			div.canvas-spacer#sat-canvas-spacer
+			div.image-viewer#sat-viewer
+		div.card-load#saturation-progress
