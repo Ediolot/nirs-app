@@ -192,6 +192,26 @@ h1 {
 	color: $color-text;
 }
 
+.card-title-help:hover .help-box {
+	display: block;
+}
+
+.help-box {
+	max-width: $card-fix-width;
+	margin-top: 2px;
+	margin-left: -12px;
+	color: black;
+	text-align: left;
+	line-height: normal;
+	display: none;
+	position: absolute;
+	z-index: 1;
+	background-color: white;
+	font-size: 14px;
+	padding: 10px;
+	border: 1px solid $color-primary-dark;
+}
+
 .card-badge {
 	font-weight: 400;
 	font-size: 0.9rem;
@@ -519,6 +539,7 @@ h1 {
 	width: 100%;
 	height: calc(100% - #{$card-filter-row-height} - #{$card-top-height});
 	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 .filters-container-child {
