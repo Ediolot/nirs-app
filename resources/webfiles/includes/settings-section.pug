@@ -1,6 +1,58 @@
 div.content-section.text-section#settings-section
 	div.padding-section
 		h1 Settings
-		select#unit-type
-			option(value='FRAMES') Frames
-			option(value='MILLIS') Milliseconds
+		div.center-text
+			div
+				| Measurement Units <span>&nbsp;</span>
+				select#unit-type
+					option(value='FRAMES') Frames
+					option(value='MILLIS') Milliseconds
+			br
+			div
+				div.number-edit-container
+					div.number-edit-text CSV File separator
+					div.number-edit-box#csv-separator(contenteditable='true') ,
+			br
+			div
+				div.custom-checkbox
+					div.custom-checkbox-sq.custom-checkbox-checked
+						i.icon.ion-md-checkmark
+					div.custom-checkbox-label Auto generate basal and saturation frame
+			br
+			br
+			br
+			div
+				| Settings file
+				br
+				input.load-text(type='text', placeholder='settings.ini')
+			br
+			div
+				| Logs folder
+				br
+				input.load-text(type='text', placeholder='logs')
+			br
+			br
+			h3 Colormaps
+			div.colormap
+				| Basal scale <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				select#unit-type
+					option(value='TRUNCATE') Truncate [0, 1]
+					option(value='NORMALIZE') Normalize
+				div.number-edit-container
+					div.number-edit-text Max
+					div.number-edit-box#basal-max(contenteditable='true') 1.0
+				div.number-edit-container
+					div.number-edit-text Min
+					div.number-edit-box#basal-max(contenteditable='true') 0.0
+			br
+			div.colormap
+				| Saturation scale <span>&nbsp;&nbsp;&nbsp;</span>
+				select#unit-type
+					option(value='NORMALIZE') Normalize
+					option(value='TRUNCATE') Truncate [0, 1]
+				div.number-edit-container
+					div.number-edit-text Max
+					div.number-edit-box#sat-max(contenteditable='true') 0.06
+				div.number-edit-container
+					div.number-edit-text Min
+					div.number-edit-box#sat-max(contenteditable='true') 0.0

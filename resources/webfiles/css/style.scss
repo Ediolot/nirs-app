@@ -284,7 +284,7 @@ h1 {
 	float: left;
 }
 
-.about-text {
+.center-text {
 	text-align: justify;
 	width: 90%;
 	max-width: 500px;
@@ -545,4 +545,18 @@ h1 {
 
 .dygraph-roller {
 	opacity: 0;
+}
+
+.colormap {
+	div {
+		float: inherit;
+		display: inline-block;
+		margin-left: 6px;
+	}
+}
+
+#settings-section {
+	div {
+		font-size: 16px;
+	}
 }
