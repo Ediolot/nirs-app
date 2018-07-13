@@ -6,12 +6,15 @@ div.card-container.card-container-graph
 				span.card-title-help
 					i.icon.ion-md-help-circle
 					div.help-box
-						| This is some text in the help box in the help box
+						| This card serves the purpose of displaying oxyhemoglobin and deoxyhemoglobin concetration
+						| values. You mayt export the graph by using the export button into a new CSV
+						| file. The smooth order options smooths the function by applying an average, 
+						| this is equivalent to apply some types low pass filters.
 				span GRAPH
 			div.card-options
-				input.btn#reset-graph-button(type='button', value='RESET')
-				input.btn#generate-graph-button(type='button', value='GENERATE')
-				input.btn#graph-export(type='button', value='EXPORT')
+				input.btn.btn-disabled#reset-graph-button(type='button', value='RESET')
+				input.btn.btn-disabled#generate-graph-button(type='button', value='GENERATE')
+				input.btn.btn-disabled#graph-export(type='button', value='EXPORT')
 				div.opts-separator
 				div.number-edit-container
 					div.number-edit-text Smooth order

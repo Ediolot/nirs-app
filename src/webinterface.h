@@ -26,6 +26,7 @@ public:
     Q_INVOKABLE QString openFileDialog();
     Q_INVOKABLE void generateBasal(int end, QString type);
     Q_INVOKABLE void generateSatFrame(int pos, QString type);
+    Q_INVOKABLE void generatePreview(int kernelSize, double sigma);
     Q_INVOKABLE void calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, int start, QString type);
     Q_INVOKABLE void resetAllSatValues();
     Q_INVOKABLE void exportCSV(char separator);
@@ -45,6 +46,7 @@ signals:
 
     void fileErrorSignal(QString);
     void basalFrameSignal(QVariantList, int, int);
+    void previewFrameSignal(QVariantList, int, int);
     void satFrameSignal(QVariantList, int, int, quint64, quint64, quint64, quint64);
     void satValues(QVariantList, QVariantList);
 

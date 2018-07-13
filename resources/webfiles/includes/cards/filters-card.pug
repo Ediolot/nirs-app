@@ -6,10 +6,13 @@ div.card-container.card-container-filter
 				span.card-title-help
 					i.icon.ion-md-help-circle
 					div.help-box
-						| This is some text in the help box in the help box
+						| Filters can be applied using this card. Select a filter by clicking on
+						| its initials and then, adjust its parameters. After applying the filter
+						| the result will be displayed in the graph, you may reset the graph values
+						| by pressing the reset button in the graph card.
 				span.card-title-text FILTERS
 			div.card-options
-				input.btn#apply-filter-button(type='button', value='APPLY')
+				input.btn.btn-disabled#apply-filter-button(type='button', value='APPLY')
 		div.filter-row
 			div.filter.filter-active#filter-hp-icon(title='High pass filter') HP
 			div.filter#filter-lp-icon(title='Low pass filter') LP

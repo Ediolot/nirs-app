@@ -6,10 +6,12 @@ div.card-container.card-container-image
 				span.card-title-help
 					i.icon.ion-md-help-circle
 					div.help-box
-						| This is some text in the help box in the help box
+						| This card displays an averaged image obtained from the first frames
+						| that serve as a calibration for the rest of the saturation frames.
 				span BASAL
 			div.card-options
-				input.btn#generate-basal-button(type='button', value='GENERATE')
+				input.btn.btn-disabled#smooth-basal-button(type='button', value='SMOOTH')
+				input.btn.btn-disabled#generate-basal-button(type='button', value='GENERATE')
 				div.opts-separator
 				div.number-edit-container
 					div.number-edit-box#basal-number(contenteditable='true') 340

@@ -52,11 +52,12 @@ $(document).ready( () => {
 	icons.lp          = $('#filter-lp-icon');
 	icons.bp          = $('#filter-bp-icon');
 	icons.bs          = $('#filter-bs-icon');
-  sections.home     = $('#home-section');
+  sections.home     = $('#home-section-cards');
   sections.settings = $('#settings-section');
   sections.about    = $('#about-section');
   sections.arduino  = $('#arduino-section');
 	sections.tests    = $('#tests-section');
+  sections.homeSmooth = $('#home-section-smooth');
 	filters.hp        = $('#filter-hp');
 	filters.lp        = $('#filter-lp');
 	filters.bp        = $('#filter-bp');
@@ -71,14 +72,55 @@ $(document).ready( () => {
 	addCheckboxTrigger('#checkbox-hbr',    checked => graph.setVisibility(0, checked));
 	addCheckboxTrigger('#checkbox-hbo',    checked => graph.setVisibility(1, checked));
 
+	onClick('#smooth-basal-button',  e => {
+		moveSectionRight();
+	});
+
+	onClick('#go-back-icon', e => {
+		moveSectionLeft();
+	});
+
+	onClick('#add-group', e => {
+		let start = $('#start-group');
+		let end   = $('#end-group');
+		let row  = '<td><div class="circle"></div></td>';
+			  row += '<td class="tests-list-text">START</td>';
+			  row += '<td>' + start.val() + '</td>';
+			  row += '<td class="tests-list-text">END</td>';
+			  row += '<td>' + end.val() + '</td>';
+			  row += '<td></td>';
+
+		let startVal = Number(end.val()) + 1;
+		let endVal = Number(end.val()) + 2;
+		start.val(startVal);
+		end.val(endVal);
+		start.attr('min', startVal);
+		end.attr('min', endVal);
+		$('#groups-table tr:last').before('<tr>' + row + '</tr>');
+	});
+
+	onClick('#clear-group', e => {
+		let start = $('#start-group');
+		let end   = $('#end-group');
+		let rows  = $('#groups-table tr').length;
+		for (let i = 1; i < rows; ++i) {
+			$('#groups-table tr:last').prev().remove();
+		}
+		start.val(340);
+		end.val(341);
+		start.attr('min', 340);
+		end.attr('min', 341);
+	})
+
 	setQTInterface(qtInterface => {
 		setupNavframeListener(qtInterface);
 		changeUnitsType($('#unit-type').val(), qtInterface);
 		let basalViewer      = new ImageViewer('#basal-viewer', qtInterface);
 		let satViewer        = new ImageViewer('#sat-viewer', qtInterface);
+		let smoothViewer     = new ImageViewer('#smooth-viewer', qtInterface);
 		let filterController = new FilterController(qtInterface, addCheckboxTrigger);
 
-		$('#apply-filter-button').click(e => {
+		onClick('#apply-filter-button', e => {
 			let filter = (currentFilter === filters.hp) ? filterController.hp
 		             : (currentFilter === filters.lp) ? filterController.lp
 				 	  	   : (currentFilter === filters.bp) ? filterController.bp : filterController.bs;
@@ -89,23 +131,23 @@ $(document).ready( () => {
 			changeUnitsType($('#unit-type').val(), qtInterface);
 		});
 
-		$('#navigator-prev').click(e => {
+		onClick('#navigator-prev', e => {
 			if (navigatorId > 0) {
 				qtInterface.generateSatFrame(navigatorPrev, unitsType);
 			}
 		});
 
-		$('#navigator-next').click(e => {
+		onClick('#navigator-next', e => {
 			if (navigatorId + 1 < navigatorMax) {
 				qtInterface.generateSatFrame(navigatorNext, unitsType);
 			}
 		});
 
-		$('#reset-graph-button').click(e => {
+		onClick('#reset-graph-button', e => {
 			qtInterface.resetAllSatValues();
 		});
 
-		$('#generate-graph-button').click(e => {
+		onClick('#generate-graph-button', e => {
 			let x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 			if (basalViewer.frame.roi.complete) {
 				let roi    = basalViewer.frame.roi;
@@ -119,25 +161,31 @@ $(document).ready( () => {
 			qtInterface.calculateAllSatValues(x0, y0, x1, y1, basalEnd, unitsType);
 		});
 
-		$('#graph-export').click(e => {
-			qtInterface.exportCSV(",");
+		onClick('#graph-export', e => {
+			qtInterface.exportCSV($('#csv-separator').html());
 		});
 
-		$('#select-exp-button').click(e => {
+		onClick('#select-exp-button', e => {
 			qtInterface.openFileDialog(filepath => {
 				$('#filepath-exp').val(filepath);
 			});
 		});
 
-		$('#load-exp-button').click(e => {
+		onClick('#load-exp-button', e => {
 			let filepath = $('#filepath-exp').val();
 			if (filepath) {
 				qtInterface.experimentFromFile(filepath);
+				disableBtn('#load-exp-button');
 			}
 		});
 
-		$('#generate-basal-button').click(e => {
+		onClick('#generate-basal-button', e => {
 			qtInterface.generateBasal(basalEnd, unitsType);
+		});
+
+		onClick('#preview-blur-button', e => {
+			console.log($('#kernel-sigma').val() + " " + $('#kernel-size').val());
+			qtInterface.generatePreview($('#kernel-size').val(), $('#kernel-sigma').val());
 		});
 
 		qtInterface.satValues.connect((A, B) => {
@@ -155,14 +203,30 @@ $(document).ready( () => {
 			$('#load-exp-progress').hide();
 			$('#load-exp-progress').width('0%');
 			play('audio/error.wav', volume);
+			enableBtn('#load-exp-button');
 		});
 
 		qtInterface.basalFrameSignal.connect((data, width, height) => {
-			basalViewer.setImage(width, height, 1.0, 0.0, Frame.OPS.NORMALIZE, data.splice(2));
+			let max = $('#basal-max').val();
+			let min = $('#basal-min').val();
+			let type = $('#basal-type').val() === 'NORMALIZE' ? Frame.OPS.NORMALIZE : Frame.OPS.TRUNCATE;
+			basalViewer.setImage(width, height, max, min, type, data.splice(2));
+		});
+
+		qtInterface.previewFrameSignal.connect((data, width, height) => {
+			let max = $('#sat-max').val();
+			let min = $('#sat-min').val();
+			let type = $('#sat-type').val() === 'NORMALIZE' ? Frame.OPS.NORMALIZE : Frame.OPS.TRUNCATE;
+			smoothViewer.setImage(width, height, max, min, type, data.splice(2));
 		});
 
 		qtInterface.satFrameSignal.connect((data, width, height, prev, next, index) => {
-			satViewer.setImage(width, height, 0.06, 0.0, Frame.OPS.NORMALIZE, data.splice(2));
+			let max = $('#sat-max').val();
+			let min = $('#sat-min').val();
+			let type = $('#sat-type').val() === 'NORMALIZE' ? Frame.OPS.NORMALIZE : Frame.OPS.TRUNCATE;
+			data = data.splice(2);
+			satViewer.setImage(width, height, max, min, type, data);
+			smoothViewer.setImage(width, height, max, min, type, data);
 			navigatorId   = index;
 			navigatorPrev = prev;
 			navigatorNext = next;
@@ -171,6 +235,8 @@ $(document).ready( () => {
 			} else {
 				qtInterface.maxMs(val => { navigatorMax = val; updateInterfaceValues(); });
 			}
+			$('#start-group').attr('max', navigatorMax);
+			$('#end-group').attr('max', navigatorMax);
 		});
 
 		// TASKS
@@ -182,13 +248,22 @@ $(document).ready( () => {
 			}
 
 			if (tag === 'LOAD') {
+				enableBtn('#load-exp-button');
+				enableBtn('#smooth-basal-button');
+				enableBtn('#generate-basal-button');
 				$('#load-error-text').html('');
 				qtInterface.generateBasal(basalEnd, unitsType);
 			}
 			if (tag === 'PROCESS') {
+				enableBtn('#reset-graph-button');
+				enableBtn('#graph-export');
+				enableBtn('#apply-filter-button');
 				play('audio/ok.wav', volume);
 			}
 			if (tag === 'BASAL') {
+				enableBtn('#navigator-prev');
+				enableBtn('#navigator-next');
+				enableBtn('#generate-graph-button');
 				qtInterface.generateSatFrame(basalEnd, unitsType);
 				play('audio/ok.wav', volume);
 			}
@@ -213,8 +288,19 @@ $(document).ready( () => {
 
 // ----------------------------------------------------------------------------
 
-let showHelpOnClick = function(element) {
-	element.click(e => {
+let disableBtn = function(id) {
+	$(id).addClass('btn-disabled');
+}
+
+let enableBtn = function(id) {
+	$(id).removeClass('btn-disabled');
+}
+
+let onClick = function(id, callback) {
+	$(id).click(e => {
+		if (!$(id).hasClass('btn-disabled')) {
+			callback(e);
+		}
 	});
 }
 
@@ -289,17 +375,40 @@ let setupNavframeListener = function(qtInterface) {
 }
 
 let goToSection = function(section) {
-    if (section !== sections.home    ) icons.home    .removeClass('active'); else icons.home    .addClass('active');
-    if (section !== sections.settings) icons.settings.removeClass('active'); else icons.settings.addClass('active');
-    if (section !== sections.about   ) icons.about   .removeClass('active'); else icons.about   .addClass('active');
-    if (section !== sections.arduino ) icons.arduino .removeClass('active'); else icons.arduino .addClass('active');
-    if (section !== sections.tests   ) icons.tests   .removeClass('active'); else icons.tests   .addClass('active');
+  if (section !== sections.home    ) icons.home    .removeClass('active'); else icons.home    .addClass('active');
+  if (section !== sections.settings) icons.settings.removeClass('active'); else icons.settings.addClass('active');
+  if (section !== sections.about   ) icons.about   .removeClass('active'); else icons.about   .addClass('active');
+  if (section !== sections.arduino ) icons.arduino .removeClass('active'); else icons.arduino .addClass('active');
+  if (section !== sections.tests   ) icons.tests   .removeClass('active'); else icons.tests   .addClass('active');
 
+	moveSectionLeft(() => {
 		let container = $('#body-content');
 		container.stop();
-    container.animate({
-        scrollTop: section.offset().top - sections.home.offset().top
-    }, 800);
+	  container.animate({
+	    scrollTop: section.offset().top - sections.home.offset().top
+	  }, 800);
+	});
+}
+
+let moveSectionLeft = function(callback) {
+	let container = $('#body-content');
+	if (container.scrollLeft() > 0) {
+		container.stop();
+		container.animate({
+			scrollLeft: 0
+		}, 800);
+		setTimeout(callback, 800);
+	} else {
+		callback();
+	}
+}
+
+let moveSectionRight = function() {
+	let container = $('#body-content');
+	container.stop();
+	container.animate({
+		scrollLeft: sections.homeSmooth.offset().left
+	}, 800);
 }
 
 let goToFilter = function(filter) {
@@ -317,7 +426,7 @@ let goToFilter = function(filter) {
 }
 
 let addCheckboxTrigger = function(customCheckboxId, onChecked) {
-	$(customCheckboxId).click(e => {
+	onClick(customCheckboxId, e => {
 		let element = $(customCheckboxId + ' > .custom-checkbox-sq');
 		if (element.hasClass('custom-checkbox-checked')) {
 			onChecked(false);

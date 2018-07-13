@@ -127,6 +127,21 @@ public:
     const T& at(uint32_t row, uint32_t colum) const;
 
     /*!
+     * \brief Generates a kernel.
+     * \param kernelSize Size of the kernel, must be odd.
+     * \param sigma Sigma value for the gaussian function.
+     * \return A new kernel.
+     */
+    double** genKernel(int kernelSize, double sigma) const;
+
+    /*!
+     * \brief Blur using a gaussian operation.
+     * \param kernelSize Size of the kernel, must be odd.
+     * \param sigma Sigma value for the gaussian function.
+     */
+    void gaussBlur(int kernelSize, double sigma);
+
+    /*!
      * \brief Split the information of this frame into two new separate frames horizontally.
      * \param colum Colum index indicating the ending of the left frame.
      * \param left The new left frame will be saved here.
@@ -367,6 +382,57 @@ void Frame<T>::set(uint32_t row, uint32_t colum, const T& val) {
 template<class T>
 const T& Frame<T>::at(uint32_t row, uint32_t colum) const {
     return data(row, colum);
+}
+
+
+template<class T>
+double** Frame<T>::genKernel(int kernelSize, double sigma) const {
+    double** kernel = new double*[kernelSize];
+    for(int i = 0; i < kernelSize; ++i)
+        kernel[i] = new double[kernelSize];
+
+    double mean = kernelSize / 2.0;
+    double sum  = 0.0; // For accumulating the kernel values
+    double div  = 6.2831853 * sigma * sigma;
+    for (int x = 0; x < kernelSize; ++x) {
+        for (int y = 0; y < kernelSize; ++y) {
+            double A = std::pow((y - mean) / sigma, 2.0);
+            double B = std::pow((x - mean) / sigma, 2.0);
+            kernel[x][y] = std::exp(-0.5 * (B + A)) / div;
+            sum += kernel[x][y];
+        }
+    }
+
+    // Normalize the kernel
+    for (int x = 0; x < kernelSize; ++x)
+        for (int y = 0; y < kernelSize; ++y)
+            kernel[x][y] /= sum;
+
+    return kernel;
+}
+
+template<class T>
+void Frame<T>::gaussBlur(int kernelSize, double sigma) {
+    double** kernel = genKernel(kernelSize, sigma);
+    int half = (kernelSize - 1) / 2;
+    int cols = data.cols();
+    int rows = data.rows();
+
+    for (int col = 0; col < cols; ++col) {
+        for (int row = 0; row < rows; ++row) {
+            double sum = 0;
+            for (int kcol = -half; kcol <= half; ++kcol) {
+                for (int krow = -half; krow <= half; ++krow) {
+                    int x = col + kcol;
+                    int y = row + krow;
+                    double val = ((x < 0) || (y < 0) || (x > (cols - 1)) || (y > (rows - 1))) ? data(row, col) : data(y, x);
+                    if (!std::isnan(val))
+                        sum += val * kernel[krow + half][kcol + half];
+                }
+            }
+            data(row, col) = sum;
+        }
+    }
 }
 
 template<class T>

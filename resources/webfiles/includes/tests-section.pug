@@ -1,1 +1,22 @@
-div.content-section#tests-section
+div.content-section-double
+	div.content-subsection#tests-section
+		div.tests-list-container
+			input.btn.darkbtn.list-spacer#clear-group(type='button', value='CLEAR')
+			|  &nbsp; Measurements in frames
+			table.tests-list#groups-table
+				body
+					tr
+						td 
+							div.circle
+						td START
+						td
+							input.number-edit-box#start-group(type='number', step='1', max='999999', min='0', value='340')
+						td END
+						td
+							input.number-edit-box#end-group(type='number', step='1', max='999999', min='0', value='341')
+						td
+							input.btn.darkbtn#add-group(type='button', value='ADD')
+		div.run-button-container
+			div.run-button
+				| RUN
+	div.content-subsection#tests-results

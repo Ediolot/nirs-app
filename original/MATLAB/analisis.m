@@ -32,9 +32,12 @@ for i = start_selection:end_selection
     im1 = tmp(1:width/2, :);
     
     im2 = tmp((width/2)+1:width, :);
+    
+    % Imágenes im1, im2
     mask = (im1 > 0.9) | (im2 > 0.9);
     im1(mask) = 0;
     im2(mask) = 0;
+    
     img1Mean(i - start_selection + 1) = mean(im1(:));
     img2Mean(i - start_selection + 1) = mean(im2(:));
     currSatImage = hsaturation(im1, im2);

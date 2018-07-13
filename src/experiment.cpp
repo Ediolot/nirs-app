@@ -76,8 +76,8 @@ void Experiment::generateBasalFrame(uint32_t start, uint32_t end, Type type)
     }
     emit taskStart(TAG_BASALGEN);
     TaskLauncher::create([=](){
-        int firstIndex = (type == MILLIS) ? getFrameAt(start) : start;
-        int lastIndex  = (type == MILLIS) ? getFrameAt(end)   : end;
+        int firstIndex = (type == MILLIS) ? getFrameAtMS(start) : start;
+        int lastIndex  = (type == MILLIS) ? getFrameAtMS(end)   : end;
         int sz = lastIndex - firstIndex;
         Frame<double> top;
         Frame<double> bottom;
@@ -118,7 +118,7 @@ void Experiment::maskOperation(Frame<double> &img1, Frame<double> &img2) const
 
 void Experiment::generateSatFrame(uint32_t pos, Type type)
 {
-    int index = (type == MILLIS) ? getFrameAt(pos) : pos;
+    int index = (type == MILLIS) ? getFrameAtMS(pos) : pos;
     Frame<double> aux;
     Frame<double> top;
     Frame<double> bottom;
@@ -150,9 +150,33 @@ void Experiment::generateSatFrame(uint32_t pos, Type type)
                   bottomMean);
 }
 
+void Experiment::generatePreviewBlurFrame(int kernelSize, double sigma)
+{
+    Frame<double> aux;
+    Frame<double> top;
+    Frame<double> bottom;
+    double topMean;
+    double bottomMean;
+
+    aux = frames[0].cast<double>();
+    aux = (aux - dark) * gain;
+    aux.verticalSplit(height / 2, top, bottom);
+    maskOperation(top, bottom);
+    topMean = top.getData().mean();
+    bottomMean = bottom.getData().mean();
+
+    aux = hSaturation(top, bottom);
+    aux -= basal;
+    aux.gaussBlur(kernelSize, sigma);
+
+    emit previewFrame(aux.toQVariantList(Superframe::COL_MAJOR),
+                      aux.getWidth(),
+                      aux.getHeight());
+}
+
 void Experiment::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, uint32_t start, Type type)
 {
-    int first = (type == MILLIS) ? getFrameAt(start) : start;
+    int first = (type == MILLIS) ? getFrameAtMS(start) : start;
     int length = frames.size() - first;
     QAtomicInt *elementsDone = new QAtomicInt(0);
     QVector<std::function<void (void)>> tasks;
@@ -238,7 +262,7 @@ uint64_t Experiment::frameToMs(uint64_t frame) const
 
 uint64_t Experiment::msToFrame(uint64_t ms) const
 {
-    return getFrameAt(ms);
+    return getFrameAtMS(ms);
 }
 
 qint64 Experiment::maxFrame() const
@@ -277,7 +301,7 @@ int Experiment::getStandardBpp(int bpp)
     else                throw FrameBPPTooBig(bpp);
 }
 
-uint64_t Experiment::getFrameAt(uint64_t ms) const
+uint64_t Experiment::getFrameAtMS(uint64_t ms) const
 {
     if (ms == 0) {
         return 0;

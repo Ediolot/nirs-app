@@ -1,9 +1,33 @@
-div.content-section#home-section
-	div.top-content
-		div.card-multiple
-			include cards/load-card.pug
-			include cards/filters-card.pug
-		include cards/basal-card.pug
-		include cards/sat-card.pug
-	div.bottom-content
-		include cards/graph-card.pug
+div.content-section-double
+	div.content-subsection#home-section-cards
+		div.top-content
+			div.card-multiple
+				include cards/load-card.pug
+				include cards/filters-card.pug
+			include cards/basal-card.pug
+			include cards/sat-card.pug
+		div.bottom-content
+			include cards/graph-card.pug
+		
+	div.content-subsection.padding-section#home-section-smooth
+		h2 
+			i.icon.ion-md-arrow-back#go-back-icon
+			| <span>&nbsp;&nbsp;</span>
+			| Smooth filter
+		table
+			tr
+				td Kernel size
+				td
+					input.spinbox#kernel-size(type='number', step='2', max='21', min='3', value='3')
+			tr
+				td Sigma
+				td
+					input.spinbox#kernel-sigma(type='number', step='.1', max='5', min='0.1', value='1')
+			tr.filler-row
+			tr
+				td
+					input.btn.darkbtn#preview-blur-button(type='button', value='PREVIEW')
+				td
+					input.btn.darkbtn#apply-blur-button(type='button', value='APPLY')
+		div.center-text.center-text-fixed-height
+			div.image-viewer#smooth-viewer

@@ -69,6 +69,7 @@ public:
     void generateBasalFrame(uint32_t start, uint32_t end, Type type = MILLIS);
     void maskOperation(Frame<double>& img1, Frame<double>& img2) const;
     void generateSatFrame(uint32_t pos, Type type = MILLIS);
+    void generatePreviewBlurFrame(int kernelSize, double sigma);
     void calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, uint32_t start = 0, Type type = MILLIS);
     void resetAllSatValues();
     void exportSatValuesToCSV(const QString& path, char separator);
@@ -90,11 +91,12 @@ signals:
     void fileError(QString);
     void satFrame(QVariantList, int, int, uint64_t, uint64_t, uint64_t, uint64_t, double, double); // frame, width, height, index, max, meanTop, meanBot
     void basalFrame(QVariantList, int, int); // frame, width, height
+    void previewFrame(QVariantList, int, int); // frame, width, height
     void satValues(QVariantList, QVariantList);
 
 private:
     int getStandardBpp(int bpp);
-    uint64_t getFrameAt(uint64_t ms) const;
+    uint64_t getFrameAtMS(uint64_t ms) const;
     Frame<double> hSaturation(Frame<double> img1, Frame<double> img2) const;
  };
 

@@ -28,6 +28,7 @@ void WebInterface::experimentFromFile(QString filepath)
     connect(exp, &Experiment::satValues,   [this](QVariantList A, QVariantList B) { emit satValues(A, B); });
     connect(exp, &Experiment::satFrame,    [this](QVariantList frame, int w, int h, uint64_t prev, uint64_t next, uint64_t idx, uint64_t max) { emit satFrameSignal(frame, w, h, prev, next, idx, max); });
     connect(exp, &Experiment::basalFrame,  [this](QVariantList frame, int w, int h) { emit basalFrameSignal(frame, w, h); });
+    connect(exp, &Experiment::previewFrame,[this](QVariantList frame, int w, int h) { emit previewFrameSignal(frame, w, h); });
     exp->load(filepath);
 }
 
@@ -44,6 +45,11 @@ void WebInterface::generateBasal(int end, QString type)
 void WebInterface::generateSatFrame(int pos, QString type)
 {
     current->generateSatFrame(pos, QStringToType(type));
+}
+
+void WebInterface::generatePreview(int kernelSize, double sigma)
+{
+    current->generatePreviewBlurFrame(kernelSize, sigma);
 }
 
 void WebInterface::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, int start, QString type)
