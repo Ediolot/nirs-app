@@ -62,13 +62,11 @@ void WebInterface::resetAllSatValues()
     current->resetAllSatValues();
 }
 
-void WebInterface::exportCSV(char separator)
+void WebInterface::exportCSV(QString separator)
 {
     QString filename = QFileDialog::getSaveFileName(nullptr, "Export graph", "", "Comma separated values (*.csv)");
-    qDebug () << filename.isEmpty();
-    if (filename.isEmpty()) {
-        qDebug() << "Exec";
-        current->exportSatValuesToCSV(filename, separator);
+    if (!filename.isEmpty()) {
+        current->exportSatValuesToCSV(filename, separator.at(0).toLatin1());
     }
 }
 

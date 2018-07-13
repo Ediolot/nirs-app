@@ -124,6 +124,7 @@ $(document).ready( () => {
 			let filter = (currentFilter === filters.hp) ? filterController.hp
 		             : (currentFilter === filters.lp) ? filterController.lp
 				 	  	   : (currentFilter === filters.bp) ? filterController.bp : filterController.bs;
+
 			qtInterface.applySatFilter(filter.name, filterController.getFilterData(filter));
 		});
 

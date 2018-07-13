@@ -29,7 +29,7 @@ public:
     Q_INVOKABLE void generatePreview(int kernelSize, double sigma);
     Q_INVOKABLE void calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, int start, QString type);
     Q_INVOKABLE void resetAllSatValues();
-    Q_INVOKABLE void exportCSV(char separator);
+    Q_INVOKABLE void exportCSV(QString separator);
     Q_INVOKABLE qint64 frameToMs(qint64 frame);
     Q_INVOKABLE qint64 msToFrame(qint64 ms);
     Q_INVOKABLE qint64 maxMs();
