@@ -18,6 +18,8 @@ private:
     QVector<Experiment*> experiments;
     Experiment* current;
 
+    const int DEF_SAMPLE_FREQ = 14;
+
 public:
     explicit WebInterface(QObject *parent = nullptr);
     ~WebInterface();

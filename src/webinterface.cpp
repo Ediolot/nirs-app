@@ -39,55 +39,65 @@ QString WebInterface::openFileDialog()
 
 void WebInterface::generateBasal(int end, QString type)
 {
-    current->generateBasalFrame(0, end, QStringToType(type));
+    if (current) {
+        current->generateBasalFrame(0, end, QStringToType(type));
+    }
 }
 
 void WebInterface::generateSatFrame(int pos, QString type)
 {
-    current->generateSatFrame(pos, QStringToType(type));
+    if (current) {
+        current->generateSatFrame(pos, QStringToType(type));
+    }
 }
 
 void WebInterface::generatePreview(int kernelSize, double sigma)
 {
-    current->generatePreviewBlurFrame(kernelSize, sigma);
+    if (current) {
+        current->generatePreviewBlurFrame(kernelSize, sigma);
+    }
 }
 
 void WebInterface::calculateAllSatValues(int roiX0, int roiY0, int roiX1, int roiY1, int start, QString type)
 {
-    current->calculateAllSatValues(roiX0, roiY0, roiX1, roiY1, start, QStringToType(type));
+    if (current) {
+        current->calculateAllSatValues(roiX0, roiY0, roiX1, roiY1, start, QStringToType(type));
+    }
 }
 
 void WebInterface::resetAllSatValues()
 {
-    current->resetAllSatValues();
+    if (current) {
+        current->resetAllSatValues();
+    }
 }
 
 void WebInterface::exportCSV(QString separator)
 {
     QString filename = QFileDialog::getSaveFileName(nullptr, "Export graph", "", "Comma separated values (*.csv)");
-    if (!filename.isEmpty()) {
+    if (!filename.isEmpty() && current) {
         current->exportSatValuesToCSV(filename, separator.at(0).toLatin1());
     }
 }
 
 qint64 WebInterface::frameToMs(qint64 frame)
 {
-    return current->frameToMs(frame);
+    return current ? current->frameToMs(frame) : 0;
 }
 
 qint64 WebInterface::msToFrame(qint64 ms)
 {
-    return current->msToFrame(ms);
+    return current ? current->msToFrame(ms) : 0;
 }
 
 qint64 WebInterface::maxMs()
 {
-    return current->maxMs();
+    return current ? current->maxMs() : 0;
 }
 
 qint64 WebInterface::maxFrame()
 {
-    return current->maxFrame();
+    return current ? current->maxFrame() : 0;
 }
 
 bool WebInterface::isExperimentLoaded()
@@ -112,12 +122,14 @@ void WebInterface::saveImageRGBA(QVariantList rgba, int width, int height)
 
 void WebInterface::applySatFilter(QString name, QVariantList values)
 {
-    current->applySatFilter(name, values);
+    if (current) {
+        current->applySatFilter(name, values);
+    }
 }
 
 double WebInterface::requestSampleFreq()
 {
-    return current->getSampleFreq();
+    return current ? current->getSampleFreq() : DEF_SAMPLE_FREQ;
 }
 
 Experiment::Type WebInterface::QStringToType(const QString &str) const
