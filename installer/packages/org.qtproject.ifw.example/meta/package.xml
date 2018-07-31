@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Nirs App</DisplayName>
+    <Description>An application to analize brain images.</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2018-07-31</ReleaseDate>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>

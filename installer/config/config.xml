@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Nirs App</Name>
+    <Version>1.0.0</Version>
+    <Title>Nirs App</Title>
+		<WizardStyle>Aero</WizardStyle>
+    <Publisher>Jorge Sierra Acosta</Publisher>
+    <!-- Directory name is used in component.xml -->
+    <StartMenuDir>NirsApp</StartMenuDir>
+    <TargetDir>@ApplicationsDirX64@/NirsApp</TargetDir>
+</Installer>
