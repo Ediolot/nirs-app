@@ -27,8 +27,6 @@ QMAKE_CXXFLAGS += -openmp
 
 INCLUDEPATH += "D:\Libs"
 INCLUDEPATH += "D:\Libs\DSPFiltersComplete\shared\DSPFilters\include"
-INCLUDEPATH += "C:\Deps"
-INCLUDEPATH += "C:\Deps\DSPFiltersComplete\shared\DSPFilters\include"
 
 SOURCES += \
     "D:\Libs\DSPFiltersComplete\shared\DSPFilters\source\Bessel.cpp" \
