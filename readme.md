@@ -6,7 +6,7 @@
 
 This application is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). This application's logo is licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) and made by [Freepik](https://www.freepik.com/) at [Flaticon](https://www.flaticon.com/).
 
-## Summary
+## Project Summary
 
 This application was development as a degree final project. It was developed under the supervision of <strong>Vanessa Munoz Cruz</strong> and <strong>Estefania Hernandez Martin</strong> by <strong>Jorge Sierra Acosta</strong>.<br><br>
 The purpose of this project is the development of a multiplatform application to receive images taken by a near infrared spectroscopy hardware by the group of Neuroimaging and Neurochemistry of the ULL and build an interface in which the user may visualize and process such images.<br><br>
