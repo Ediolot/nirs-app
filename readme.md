@@ -71,3 +71,6 @@ _Experiment 1 file was corrupted in the process even though it can still be load
 - [ ] T-student analysis.
 - [ ] Short menu when there is no space available for the main section.
 - [ ] Better multithread protection in the C++ code.
+
+### Notes
+- There is a known typo in the about section: _[...]The purpose of this project is **the** development of a multiplatform application[...]_
